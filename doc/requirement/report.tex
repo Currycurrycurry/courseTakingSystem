@@ -1,0 +1,177 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+% !Mode:: "TeX:UTF-8"
+
+%This file contains the LaTeX code of my laboratory report for my Database course.
+%Author: 黄佳妮/Jiani Huang <17302010063@fudan.edu.cn>
+%Author: 刘佳兴/Jiaxing Liu <17302010049@fudan.edu.cn>
+
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage[top=1.05in, bottom=0.95in, left=0.90in, right=1.10in]{geometry}
+%\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+%\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+%\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily \mdseries \upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily \mdseries \upshape} % No bold!
+\usepackage{titletoc}
+\titlecontents{section}
+              [1.5cm]
+              {\bf \large}%
+              {\contentslabel{1.8em}}%
+              {}%
+              {\titlerule*[0.5pc]{$\cdot$}\contentspage\hspace*{0.6cm}}%
+		   [\vspace{0.5em}]
+\titlecontents{subsection}
+              [1.8cm]
+              {\normalsize}%
+              {\contentslabel{2.0em}}%
+              {}%
+              {\titlerule*[0.5pc]{$\cdot$}\contentspage\hspace*{0.6cm}}%
+		   [\vspace{0.4em}]
+\titlecontents{subsubsection}
+              [2.1cm]
+              {\small}%
+              {\contentslabel{2.5em}}%
+              {}%
+              {\titlerule*[0.5pc]{$\cdot$}\contentspage\hspace*{0.6cm}}%
+		   [\vspace{0.4em}]
+
+\usepackage[UTF8]{ctex}
+\usepackage{fancyhdr}
+\usepackage{enumerate}
+\usepackage{indentfirst}
+\usepackage{extramarks}
+\usepackage{titling}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fontspec}
+\usepackage{float} 
+\usepackage{subfigure}
+\usepackage[CJKbookmarks=true,colorlinks,linkcolor=black]{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ulem}
+\usepackage{stackengine}
+\let\tuwave\uwave
+\newcommand\buline[1]{\raisebox{-3pt}{\uline{\raisebox{2pt}{#1}}}}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}  
+\definecolor{mygray}{rgb}{0.9,0.9,0.9}  
+\definecolor{mymauve}{rgb}{0.58,0,0.82}  
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{ltgray}{rgb}{0.5,0.5,0.5}
+  
+\lstset{%
+  	backgroundcolor=\color{mygray},
+  	basicstyle={
+		\footnotesize
+		\fontspec{Consolas}
+	},
+  	breakatwhitespace=false,
+  	breaklines=true,
+  	captionpos=bl,
+  	commentstyle={
+		\color{mygray}
+		\fontspec{Consolas Italic}
+	},
+  	deletekeywords={identity,date,year,...},
+  	escapeinside={\%*}{*)},
+  	extendedchars=true,
+  	%frame=single,
+  	keepspaces=true,
+  	keywordstyle={
+		\color{blue}
+		\fontspec{Consolas Bold}
+	},
+  	language=SQL,
+  	morekeywords={*,modify,MODIFY,...},
+  	numbers=none,
+  	numbersep=5pt,
+  	numberstyle=\tinyy\color{mygray},
+  	rulecolor=\color{black},
+  	showspaces=false,
+  	showstringspaces=false, 
+  	showtabs=false,
+  	stepnumber=1,
+  	tabsize=4,
+	stringstyle=\color{blue},
+  	title=\lstname,
+	belowcaptionskip=0em,
+    	belowskip=0em,
+}
+
+\newfontfamily\myfont{Consolas}
+
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+%\title{\textbf{Digital Logic and Computer Design Report}}
+\title{\textbf{选课系统项目需求文档}}
+\author{黄佳妮 17302010063 \\刘佳兴 17302010049}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\begin{sloppypar}
+\maketitle
+
+\pagestyle{fancy}
+\lhead{\textbf{{\thetitle}}}
+\rhead{\textbf{\nouppercase{\firstleftmark}}}
+\cfoot{\thepage}
+
+\thispagestyle{empty}
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+
+\setcounter{page}{1}
+\include{overview}
+\include{features}
+
+\end{sloppypar}
+\end{document}
