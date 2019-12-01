@@ -19,10 +19,19 @@ from django.urls import path
 from . import view
 
 
+import os
+import django # to activate the app 
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE","CourseSelectionSystem.settings")
+django.setup()
+
 urlpatterns = [
     path('hello/',view.hello),
     path('selectCourse/', include('selectCourse.urls')),
     url(r'^admin/', admin.site.urls),
+
+    
+
     
 
 

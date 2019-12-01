@@ -1,10 +1,5 @@
 # -*- coding: UTF-8 -*-
 from django.db import models
-#类名：数据库表名
-# class Test(models.Model):
-#     name = models.CharField(max_length=20)
-
-
 
 class Student(models.Model):
     student_id = models.BigIntegerField(primary_key=True,default=0)
@@ -15,7 +10,7 @@ class Student(models.Model):
     student_total_credit = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.id
+        return self.student_id
 
     class Meta:
         db_table = 'student'
