@@ -1,145 +1,162 @@
-# -*- coding: UTF-8 -*-
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-class Student(models.Model):
-    student_id = models.BigIntegerField(primary_key=True,default=0)
-    student_name = models.CharField(max_length=20)
-    student_password = models.CharField(max_length=20)
-    student_major = models.CharField(max_length=20)
-    student_dept_name = models.CharField(max_length=20)
-    student_total_credit = models.IntegerField(default=0)
 
-    def __str__(self):
-        return self.student_id
+class Acount(models.Model):
+    id = models.TextField(db_column='ID')  # Field name made lowercase.
+    password = models.TextField(blank=True, null=True)
+    role = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        db_table = 'student'
-        verbose_name = 'student'
+        managed = False
+        db_table = 'acount'
 
-class Instructor(models.Model):
-    instructor_id = models.BigIntegerField(primary_key=True,default=0)
-    instructor_name = models.CharField(max_length=20)
-    instructor_password = models.CharField(max_length=20)
-    salary = models.IntegerField(default=0)
-    instructor_class = models.CharField(max_length=20,default="讲师")
-    instructor_dept_name = models.CharField(max_length=20)
-    root_flag = models.BooleanField(blank=False)
-
-    def __str__(self):
-        return self.id
-
-    class Meta:
-        db_table = 'instructor'
-        verbose_name = 'instructor'
-
-class Course(models.Model):
-    course_id = models.IntegerField(primary_key=True,default=0)
-    # course_code = models.CharField(max_length=20)
-    title = models.CharField(max_length=20)
-    credit = models.IntegerField(default=0) # unit:hour
-    course_dept_name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.id
-
-    class Meta:
-        db_table = 'course'
-        verbose_name = 'course'
-
-# class Department(models.Model):
-#     dept_name = models.CharField(primary_key=True,max_length=20)
-
-class Time_slot(models.Model):
-    # time_slot_id = models.CharField(primary_key=True,max_length=20) #?
-    day = models.CharField(max_length=20) #Monday
-    start_week = models.IntegerField(default=0) # 1
-    end_week = models.IntegerField(default=0)
-    start_time = models.IntegerField(default=0) 
-    end_time = models.IntegerField(default=0) 
-
-    def __str__(self):
-        return (self.day + start_week + "-" + end_week + " "+ start_time + "-" + end_time)
-
-    class Meta:
-        db_table = 'time'
-        verbose_name = 'time'
 
 class Classroom(models.Model):
-    # building_name = models.CharField(primary_key=True,max_length=20)
-    # room_no = models.IntegerField(default=0)
-    classroom_no = models.CharField(primary_key=True,max_length=20) # char : hard to extract 
-    capacity = models.IntegerField(default=200)
-
-    def __str__(self):
-        return self.classroom_no
+    classroom_no = models.TextField()
+    capacity = models.IntegerField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'classroom'
-        verbose_name = 'classroom'
 
-class Section(models.Model):
-    section_id = models.CharField(primary_key=True,max_length=20)
-    course = models.ForeignKey(Course,on_delete=models.CASCADE)
-    semester = models.CharField(default="第一学期",max_length=20)
-    year = models.IntegerField(default="2017")
-    limit = models.IntegerField(default=0) # max number of students
-    time_slot_id = models.ForeignKey(Time_slot,on_delete=models.CASCADE)
-    classroom = models.ForeignKey(Classroom,on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.classroom_no
+class Course(models.Model):
+    course_id = models.TextField()
+    title = models.TextField(blank=True, null=True)
+    credits = models.TextField(blank=True, null=True)
 
     class Meta:
-        db_table = 'section'
-        verbose_name = 'section'
+        managed = False
+        db_table = 'course'
 
-class Student_Section(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    section = models.ForeignKey(Section,on_delete=models.CASCADE)
-    score = models.IntegerField(default=0)
-    grade = models.CharField(max_length=1) #?
-
-class Instructor_Section(models.Model):
-    instructor = models.ForeignKey(Instructor,on_delete=models.CASCADE)
-    section = models.ForeignKey(Section,on_delete=models.CASCADE)
 
 class Exam(models.Model):
-    section = models.OneToOneField(Section,on_delete=models.CASCADE)
-    type = models.BooleanField(blank=True)
-    open_note_flag = models.BooleanField(blank=True)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    classroom = models.ForeignKey(Classroom,on_delete=models.CASCADE)
+    course_id = models.TextField()
+    section_id = models.TextField()
+    classroom_no = models.ForeignKey(Classroom, models.DO_NOTHING, db_column='classroom_no', blank=True, null=True)
+    day = models.IntegerField(blank=True, null=True)
+    type = models.IntegerField(blank=True, null=True)
+    start_time = models.TextField(blank=True, null=True)
+    end_time = models.TextField(blank=True, null=True)
+    open_note_flag = models.IntegerField(blank=True, null=True)
 
-class CourseApplication(models.Model):
-    course =  models.ForeignKey(Course,on_delete=models.CASCADE)
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    application_time = models.DateField(auto_now=True)
-    application_state = models.BooleanField(blank=False)
-
-
-    
+    class Meta:
+        managed = False
+        db_table = 'exam'
 
 
+class ExamOld(models.Model):
+    section = models.ForeignKey('SectionOld', models.DO_NOTHING)
+    classroom_no = models.ForeignKey(Classroom, models.DO_NOTHING, db_column='classroom_no', blank=True, null=True)
+    day = models.IntegerField(blank=True, null=True)
+    type = models.IntegerField(blank=True, null=True)
+    start_time = models.TextField(blank=True, null=True)
+    end_time = models.TextField(blank=True, null=True)
+    open_note_flag = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'exam_old'
 
 
+class Instructor(models.Model):
+    instructor_id = models.TextField(blank=True, null=True)
+    instructor_name = models.TextField(blank=True, null=True)
+    instructor_class = models.TextField(blank=True, null=True)
+    dept_name = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'instructor'
 
 
-    
+class Section(models.Model):
+    course = models.ForeignKey(Course, models.DO_NOTHING)
+    section_id = models.IntegerField()
+    time = models.TextField(blank=True, null=True)
+    classroom_no = models.TextField(blank=True, null=True)
+    lesson = models.IntegerField(blank=True, null=True)
+    limit = models.IntegerField(blank=True, null=True)
+    day = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'section'
 
 
+class SectionOld(models.Model):
+    section_id = models.TextField()
+    title = models.TextField(blank=True, null=True)
+    time = models.TextField(blank=True, null=True)
+    classroom_no = models.TextField(blank=True, null=True)
+    lesson = models.IntegerField(blank=True, null=True)
+    dept_name = models.TextField(blank=True, null=True)
+    limit = models.IntegerField(blank=True, null=True)
+    credits = models.IntegerField(blank=True, null=True)
+    day = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'section_old'
 
 
+class Student(models.Model):
+    student_id = models.AutoField()
+    student_name = models.CharField(max_length=20)
+    student_major = models.CharField(max_length=20)
+    student_dept_name = models.CharField(max_length=20)
+    student_total_credit = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'student'
 
 
+class Takes(models.Model):
+    course_id = models.AutoField()
+    section_id = models.IntegerField()
+    student = models.ForeignKey(Student, models.DO_NOTHING)
+    grade = models.TextField(blank=True, null=True)
+    drop_flag = models.IntegerField(blank=True, null=True)
 
-    
+    class Meta:
+        managed = False
+        db_table = 'takes'
 
 
+class TakesOld(models.Model):
+    drop_flag = models.IntegerField(blank=True, null=True)
+    grade = models.CharField(max_length=1)
+    section = models.ForeignKey(SectionOld, models.DO_NOTHING)
+    student = models.ForeignKey(Student, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'takes_old'
 
 
+class Teaches(models.Model):
+    instuctor = models.ForeignKey(Instructor, models.DO_NOTHING)
+    course_id = models.TextField()
+    section_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'teaches'
 
 
+class TeachesOld(models.Model):
+    section = models.ForeignKey(SectionOld, models.DO_NOTHING)
+    instructor = models.ForeignKey(Instructor, models.DO_NOTHING)
 
-    
+    class Meta:
+        managed = False
+        db_table = 'teaches_old'
 
