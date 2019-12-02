@@ -1,9 +1,13 @@
+import io
+import sys
+
 import requests
-import os
 import re
 import json
 from tqdm import tqdm
 from time import sleep
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 
 url = "http://jwfw.fudan.edu.cn/eams/stdSyllabus!search.action"
 
@@ -65,7 +69,7 @@ def extract(text):
         place = get(pplace.findall(text))
         timing = get(ptiming.findall(text))
         depart = get(pdepart.findall(text))
-        return {lessonIds: {
+        return {
             'cid': cid,
             'num': num,
             'name': name,
@@ -76,7 +80,7 @@ def extract(text):
             'place': place,
             'timing': timing,
             'depart': depart
-        }}
+        }
 
     except:
         return {}
@@ -89,9 +93,6 @@ def parse(text):
     res = {}
     for line in lines:
         res.update(extract(line))
-    if len(res) != len(lines) - 2:
-        open('err' + str(errcnt) + '.html', 'w').write(text)
-        errcnt = errcnt + 1
     return res
 
 res = {}
