@@ -108,7 +108,7 @@ class SectionOld(models.Model):
 
 
 class Student(models.Model):
-    student_id = models.AutoField()
+    student_id = models.AutoField(primary_key = True)
     student_name = models.CharField(max_length=20)
     student_major = models.CharField(max_length=20)
     student_dept_name = models.CharField(max_length=20)
@@ -120,7 +120,7 @@ class Student(models.Model):
 
 
 class Takes(models.Model):
-    course_id = models.AutoField()
+    course_id = models.AutoField(primary_key = True)
     section_id = models.IntegerField()
     student = models.ForeignKey(Student, models.DO_NOTHING)
     grade = models.TextField(blank=True, null=True)

@@ -12,9 +12,22 @@ from django.core.serializers.json import DjangoJSONEncoder
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
+
+
+def  write_server(request):
+    data = json.loads(request.body)
+    print(data)
+    models.Classroom.objects.create(**data)
+    res = {
+        'success': True
+    }
+    return HttpResponse(json.dumps(res),content_type = 'application/json')
 # POST write to server
 # PAGE 1 : for login 
+# Suppose the models.User has been added 
+# All that can been done by the frontend will be ignored in it.
 def login(request):
+    if  
     
     pass
 
@@ -57,30 +70,15 @@ def registerScore(request):
     pass
 
 
-
-
-
-
-
-
-
-
 # GET
-def  write_server(request):
-    data = json.loads(request.body)
-    print(data)
-    models.Classroom.objects.create(**data)
-    res = {
-        'success': True
-    }
-    return HttpResponse(json.dumps(res),content_type = 'application/json')
+
 
 def read_server(request):
     number = request.GET['classroom_no']
     print(number)
     print(models.Classroom.objects.all())
     data = serializers.serialize('python',models.Classroom.objects.filter(classroom_no=number))
-    print(data)
+    print(data) #from obj to json
     res={
         'success':True,
         'data':data
