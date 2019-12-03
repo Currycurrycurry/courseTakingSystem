@@ -27,7 +27,7 @@ def  write_server(request):
 # Suppose the models.User has been added 
 # All that can been done by the frontend will be ignored in it.
 def login(request):
-    if  
+    # if  
     
     pass
 
