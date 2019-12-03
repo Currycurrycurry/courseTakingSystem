@@ -1,4 +1,13 @@
 from django.shortcuts import render
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
+
+# add for login
+# from rest_framework.viewsets import ModelViewSet
+# from .serializers import UserSerializer, User
+# from rest_framework.decorators import action
+# from django.contrib.auth import login
+# from rest_framework.response import Response
 
 # Create your views here.
 from django.http import HttpResponse
@@ -6,8 +15,7 @@ from selectCourse import models
 import json
 # import uuid
 
-from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
+
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
@@ -26,10 +34,51 @@ def  write_server(request):
 # PAGE 1 : for login 
 # Suppose the models.User has been added 
 # All that can been done by the frontend will be ignored in it.
-def login(request):
-    # if  
+
+
+# class UserViewset(ModelViewSet):
+   
+    # serializer_class = UserSerializer
+# queryset = Acount.objects.all()
+
+    # @action(methods=['POST'], url_path='login', detail=False)
+
+def login(self, request):
+
+    user_id = request.data.get('id')
+    pwd = request.data.get('password')
+
+    res = {
+        'code': 0,
+        'msg': '',
+        'data': {}
+    }
+    if not all([id, pwd]):
+        res['msg'] = 'wrong parameter'
+        return HttpResponse(json.dumps(res),content_type = 'application/json')
+    print(request.data)
+    try:
+        user = models.Acount.objects.get(id=user_id, password=pwd)
+    except:
+        res['msg'] = 'wrong userid or wrong password'
+        return HttpResponse(json.dumps(res),content_type = 'application/json')
+
+    # if user.is_active != 1:
+    #     res['msg'] = '用户不可用，请重新登陆。'
+    #     return HttpResponse(json.dumps(res),content_type = 'application/json')
+
+    request.session['login'] = True
+    request.session['FS_YWPT'] = True
+    request.session.set_expiry(0)
+    res['msg'] = 'login successfully'
+    res['code'] = 1
+    res['data'] = {'username': user_id}
+    return HttpResponse(json.dumps(res),content_type = 'application/json')
+
+# def login(request):
+#     if  
     
-    pass
+#     pass
 
 # EVERY PAGE should have the logout button
 def logout(request):
