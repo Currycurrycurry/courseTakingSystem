@@ -11,7 +11,7 @@ urlpatterns = [
     path('read/',server_views.read_server),
     path('login/',views.login_sql),
     path('logout/',views.logout),
-    path('select/',views.selectCourse),
+    path('select/',views.select_sql),
     path('dropCourse/',views.dropCourse),
     path('checkCourseTable/',views.checkCourseTable),
     path('checkAllCourses/',views.checkAllCourses),

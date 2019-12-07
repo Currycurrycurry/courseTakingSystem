@@ -184,6 +184,81 @@ def selectCourse(request):
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
+
+def select_sql(request):
+    res = {
+        'code': 0,
+        'msg': ''
+    }
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+        user_id = request.GET['user_id']
+        course_id = request.GET['course_id']
+        section_id = request.GET['section_id']
+        print("the course id is ",course_id)
+        print("the section id is ",section_id)
+
+        cursor = connection.cursor()
+        find_course_sql = "SELECT 'course'.'course_id' FROM 'course' WHERE 'course'.'course_id' ='"+course_id+"'"
+        cursor.execute(find_course_sql)
+        raw_course_id = cursor.fetchone()
+        print("raw course id is ",raw_course_id)
+        if raw_course_id == None:
+            res['msg'] = 'wrong course id'
+        else:
+            find_section_sql = "SELECT * FROM 'section' WHERE 'section'.'course_id' ='"+course_id+"' AND 'section'.'section_id'="+section_id
+            cursor.execute(find_section_sql)
+            raw_section_info = cursor.fetchone()
+            if raw_section_info == None:
+                res['msg'] = 'wrong section id'
+            else:
+                find_whether_already_takes_sql = "SELECT * FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id+" AND 'takes'.'student_id'='"+user_id+"'"
+                cursor.execute(find_whether_already_takes_sql)
+                raw_take_info = cursor.fetchone()
+                print("raw take info is ",raw_take_info)
+                if raw_take_info == None:
+                    find_take_num_sql = "SELECT COUNT(*) FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id
+                    cursor.execute(find_take_num_sql)
+                    raw_take_num = cursor.fetchone()
+                    print("the take num is :",raw_take_num[0])
+                    find_section_limit = "SELECT 'section'.'limit' FROM 'section' WHERE 'section'.'course_id'='"+course_id+"' AND 'section'.'section_id' ="+section_id
+                    cursor.execute(find_section_limit)
+                    raw_section_limit = cursor.fetchone()
+                    print("the section limit is :",raw_section_limit[0])
+
+                    if raw_section_limit[0] > raw_take_num[0]:
+                        #INSERT INTO "takes" ("course_id", "section_id", "student_id", "grade", "drop_flag") SELECT 'XDSY118020', 1, '17302010015', NULL, NULL; args=('XDSY118020', 1, '17302010015', None, None)
+                        insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
+                        cursor.execute(insert_takes_sql)
+                        #UPDATE "student" SET "student_name" = '黄鼎竣', "student_major" = '软件工程', "student_dept_name" = '软件学院', "student_total_credit" = -2 WHERE "student"."student_id" = '17302010015'; 
+
+                        check_credit_sql = "SELECT 'student'.'student_total_credit' FROM 'student' WHERE 'student'.'student_id' = '"+user_id+"'"
+                        cursor.execute(check_credit_sql)
+                        raw_credit = cursor.fetchone()
+                        print("before update: the raw_credit is : ",raw_credit[0])
+                        find_course_credit_sql = "SELECT 'course'.'credits' FROM 'course' WHERE 'course'.'course_id'='"+course_id+"'"
+                        cursor.execute(find_course_credit_sql)
+                        raw_course_credit = cursor.fetchone()
+                        print("the course credit is ",raw_course_credit[0])
+                        updated_credit = int(raw_credit[0]+raw_course_credit[0])
+                        print("updated credit is",updated_credit)
+                        # UPDATE "student" SET "student_name" = '黄鼎竣', "student_major" = '软件工程', "student_dept_name" = '软件学院', "student_total_credit" = -2 WHERE "student"."student_id" = '17302010015'; args=('黄鼎竣', '软件工程', '软件学院', -2, '17302010015')
+                        add_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
+                        cursor.execute(add_credits_sql)
+
+                        res['msg'] = 'select successfully'
+                        res['code'] = 1
+                    else:
+                        res['msg'] = 'course with no vacancy'
+
+                else:
+                    res['msg'] = 'already selected'
+    else: 
+        res['msg'] = 'unauthorized as student'
+
+    return HttpResponse(json.dumps(res),content_type = 'application/json')
+
+
 def dropCourse(request):
     res = {
         'code': 0,
