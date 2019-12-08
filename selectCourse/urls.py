@@ -12,10 +12,10 @@ urlpatterns = [
     path('login/',views.login_sql),
     path('logout/',views.logout),
     path('select/',views.select_sql),
-    path('dropCourse/',views.dropCourse),
-    path('checkCourseTable/',views.checkCourseTable),
-    path('checkAllCourses/',views.checkAllCourses),
-    path('checkPersonalInfo/',views.checkPersonalInfo),
+    path('dropCourse/',views.dropCourse_sql),
+    path('checkCourseTable/',views.checkCourseTable_sql),
+    path('checkAllCourses/',views.checkAllCourses_sql),
+    path('checkPersonalInfo/',views.checkPersonalInfo_sql),
     path('checkCourseNamelist/',views.checkCourseNamelist)
 ]
 

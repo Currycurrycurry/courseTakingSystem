@@ -184,7 +184,7 @@ def selectCourse(request):
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
-
+# TODO 选课时间冲突检测
 def select_sql(request):
     res = {
         'code': 0,
@@ -301,7 +301,66 @@ def dropCourse(request):
         res['msg'] = 'unauthorized as student'
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
-    
+
+def dropCourse_sql(request): 
+    res = {
+        'code': 0,
+        'msg': ''
+    }
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+        user_id = request.GET['user_id']
+        course_id = request.GET['course_id']
+        section_id = request.GET['section_id']
+        print("the course id is ",course_id)
+        print("the section id is ",section_id)
+
+        cursor = connection.cursor()
+        find_course_sql = "SELECT 'course'.'course_id' FROM 'course' WHERE 'course'.'course_id' ='"+course_id+"'"
+        cursor.execute(find_course_sql)
+        raw_course_id = cursor.fetchone()
+        print("raw course id is ",raw_course_id)
+        if raw_course_id == None:
+            res['msg'] = 'wrong course id'
+        else:
+            find_section_sql = "SELECT * FROM 'section' WHERE 'section'.'course_id' ='"+course_id+"' AND 'section'.'section_id'="+section_id
+            cursor.execute(find_section_sql)
+            raw_section_info = cursor.fetchone()
+            if raw_section_info == None:
+                res['msg'] = 'wrong section id'
+            else:
+                find_whether_already_takes_sql = "SELECT * FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id+" AND 'takes'.'student_id'='"+user_id+"'"
+                cursor.execute(find_whether_already_takes_sql)
+                raw_take_info = cursor.fetchone()
+                print("raw take info is ",raw_take_info)
+                if raw_take_info == None:
+                    res['msg'] = 'drop error: haven\'t taken yet'
+                else:
+                    # drop couese
+                    drop_course_sql = "DELETE FROM 'takes' WHERE ('takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id+" AND 'takes'.'student_id' = '"+user_id+"')"
+                    cursor.execute(drop_course_sql)
+
+                    check_credit_sql = "SELECT 'student'.'student_total_credit' FROM 'student' WHERE 'student'.'student_id' = '"+user_id+"'"
+                    cursor.execute(check_credit_sql)
+                    raw_credit = cursor.fetchone()
+                    print("before update: the raw_credit is : ",raw_credit[0])
+                    find_course_credit_sql = "SELECT 'course'.'credits' FROM 'course' WHERE 'course'.'course_id'='"+course_id+"'"
+                    cursor.execute(find_course_credit_sql)
+                    raw_course_credit = cursor.fetchone()
+                    print("the course credit is ",raw_course_credit[0])
+                    updated_credit = int(raw_credit[0]-raw_course_credit[0])
+                    print("updated credit is",updated_credit)
+                    # UPDATE "student" SET "student_name" = '黄鼎竣', "student_major" = '软件工程', "student_dept_name" = '软件学院', "student_total_credit" = -2 WHERE "student"."student_id" = '17302010015'; args=('黄鼎竣', '软件工程', '软件学院', -2, '17302010015')
+                    minus_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
+                    cursor.execute(minus_credits_sql)
+                    res['msg'] = 'drop successfully'
+                    res['code'] = 1
+    else: 
+        res['msg'] = 'unauthorized as student'
+
+    return HttpResponse(json.dumps(res),content_type = 'application/json')
+
+
 
 # PAGE 4: for students to check all his/her courses and the school courses
 def checkCourseTable(request):
@@ -336,6 +395,37 @@ def checkCourseTable(request):
 
     pass
 
+
+def checkCourseTable_sql(request):
+    res = {
+        'code': 0,
+        'msg': '',
+        'data':{}
+    }
+
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+        user_id = request.GET['user_id']
+        print("the user id is ",user_id)
+        cursor = connection.cursor()
+        # near "limit": syntax error
+        # check_courses_sql = "WITH 'course_section(course_id,section_id,day,time,classroom_no,lesson,limit)' AS  (SELECT 'section'.'course_id','section'.'section_id','section'.'day','section'.'time','section'.'classroom_no','section'.'lesson','section'.'limit' FROM 'section' NATURAL JOIN 'takes' WHERE 'takes'.'student_id' ='"+user_id+"') SELECT 'course'.'title','course'.'credits','course'.'course_id','course_section'.'section_id','course_section'.'day','course_section'.'time','course_section'.'classroom_no','course_section'.'lesson','course_section'.'limit' FROM 'course_section' NATURAL JOIN 'course'"
+        check_courses_sql = "SELECT * FROM (SELECT * FROM 'section' NATURAL JOIN 'takes' WHERE 'takes'.'student_id'='"+user_id+"') NATUAL JOIN 'course' "
+        cursor.execute(check_courses_sql)
+        raw_courses_taken = cursor.fetchall()
+        print("raw courses taken are :",raw_courses_taken)
+
+        data = raw_courses_taken
+     
+        res['data'] = data
+        res['code'] = 1
+        res['msg'] = 'show course table'
+     
+    else: 
+        res['msg'] = 'unauthorized as student'
+
+    return HttpResponse(json.dumps(res),content_type = 'application/json')
+
 # need to paginate
 def checkAllCourses(request):
     res = {
@@ -358,6 +448,31 @@ def checkAllCourses(request):
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
+# TODO: 加载过慢——ajax实现
+def checkAllCourses_sql(request):
+    res = {
+        'code': 0,
+        'msg': '',
+        'data':{}
+    }
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+        user_id = request.GET['user_id']
+        print("the user id is ",user_id)
+        # the course name and credit hasn't been showed since the model may be changed later
+
+        cursor = connection.cursor()
+        check_all_courses_sql = "SELECT * FROM 'section' NATUAL JOIN 'course'"
+        cursor.execute(check_all_courses_sql)
+        data = cursor.fetchall()
+        res['data'] = data
+        res['code'] = 1
+        res['msg'] = 'show all courses '
+     
+    else: 
+        res['msg'] = 'unauthorized as student'
+
+    return HttpResponse(json.dumps(res),content_type = 'application/json')
 
 # PAGE 5: for students to check his/her own info
 def checkPersonalInfo(request):
@@ -373,6 +488,30 @@ def checkPersonalInfo(request):
         print("the user id is ",course_id)
 
         data = serializers.serialize('python',models.Student.objects.filter(student_id=user_id))
+        res['data'] = data
+        res['code'] = 1
+        res['msg'] = 'show student info '
+     
+    else: 
+        res['msg'] = 'unauthorized as student'
+
+    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+
+def checkPersonalInfo_sql(request):
+    res = {
+        'code': 0,
+        'msg': '',
+        'data':{}
+    }
+
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+        user_id = request.GET['user_id']
+        print("the user id is ",user_id)
+        cursor = connection.cursor()
+        check_personal_info_sql = "SELECT * FROM 'student' where 'student'.'student_id'='"+user_id+"'"
+        cursor.execute(check_personal_info_sql)
+        data = cursor.fetchone()
         res['data'] = data
         res['code'] = 1
         res['msg'] = 'show student info '
@@ -415,6 +554,38 @@ def checkCourseNamelist(request):
         res['msg'] = 'unauthorized as instructor'
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+
+def checkCourseNamelist_sql(request):
+    res = {
+        'code': 0,
+        'msg': '',
+        'data':{},
+        'course_num':0
+    }
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True and request.session['role'] == INSTRUCTOR_ROLE:
+        user_id = request.GET['user_id']
+        print("the user id is ",user_id)
+
+        instructor = models.Instructor.objects.get(instructor_id=user_id)
+        courses = models.Teaches.objects.filter(instructor=instructor)
+        courses = [x.course_id for x in courses ]
+        res['course_num'] = len(courses)
+        data = {}
+        for course_id in courses:
+            students_taken = models.Takes.objects.filter(course_id=course_id).values('student')
+            data[course_id] = students_taken # maybe buggy
+            
+        data = serializers.serialize('python',models.Teaches.objects.filter(instructor=instructor))
+        res['data'] = data
+        res['code'] = 1
+        res['msg'] = 'show all courses\' name list '
+     
+    else: 
+        res['msg'] = 'unauthorized as instructor'
+
+    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+
 
     
 # PAGE 7: for teachers to handle the course applications
