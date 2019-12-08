@@ -7,8 +7,8 @@ from selectCourse import views as server_views
 urlpatterns = [
     # path('admin/',admin.site.urls),
     path('index/', views.index, name='index'),
-    path('write/',server_views.write_server),
-    path('read/',server_views.read_server),
+    # path('write/',server_views.write_server),
+    # path('read/',server_views.read_server),
     path('login/',views.login_sql),
     path('logout/',views.logout),
     path('select/',views.select_sql),
@@ -22,6 +22,10 @@ urlpatterns = [
     path('handleApplication/',views.handleApplication_sql),
     path('applyCourse/',views.applyCourse_sql),
     path('registerScore/',views.registerScore_sql),
+    path('registerStudent/',views.registerStudent_sql),
+    path('registerInstructor/',views.registerInstructor_sql),
+    path('registerCourses/',views.registerCourses_sql),
+
 
 ]
 

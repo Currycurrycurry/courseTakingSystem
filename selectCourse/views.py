@@ -6,37 +6,18 @@ from selectCourse import models
 from django.db import connection
 import json
 
+# AUTHORIZATION
 ROOT_ROLE = 0
 STUDENT_ROLE = 1
 INSTRUCTOR_ROLE = 2
 
+# APPLICATION STATUS
+STATUS_PENDING = 0 # submitted successfully
+STATUS_PASSED = 1
+STATUS_UNPASSED = -1
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
-
-def  write_server(request):
-    # data = json.loads(request.body)
-    data = request.POST
-    print(data)
-    # models.Classroom.objects.create(**data)
-    res = {
-        'success': True
-    }
-    return HttpResponse(json.dumps(res),content_type = 'application/json')
-
-
-def read_server(request):
-    print(request.GET)
-    number = request.GET['classroom_no']
-    print(number)
-    print(models.Classroom.objects.all())
-    data = serializers.serialize('python',models.Classroom.objects.filter(classroom_no=number))
-    print(data) #from obj to json
-    res={
-        'success':True,
-        'data':data
-    }
-    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type='application/json')
 
 
 def login(request):
@@ -82,7 +63,6 @@ def login_sql(request):
     if request.method == "POST":
         data = request.POST
         print(data)
-        print(models.Account.objects.all())
         user_id = data.get('id')
         pwd = data.get('password')
         res_user_name = ""
@@ -114,6 +94,7 @@ def login_sql(request):
 
                     request.session['is_login'] = True
                     request.session['user_name'] = res_user_name
+                    request.session['user_id'] = user_id
                     request.session['role'] = raw_pass[1]
                     request.session.set_expiry(0)
 
@@ -184,7 +165,7 @@ def selectCourse(request):
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
-# TODO 选课时间冲突检测
+# TODO 选课时间冲突检测 
 def select_sql(request):
     res = {
         'code': 0,
@@ -302,6 +283,7 @@ def dropCourse(request):
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
+# TODO if drop the course applied before, set the drop_flag = 1 
 def dropCourse_sql(request): 
     res = {
         'code': 0,
@@ -359,8 +341,6 @@ def dropCourse_sql(request):
         res['msg'] = 'unauthorized as student'
 
     return HttpResponse(json.dumps(res),content_type = 'application/json')
-
-
 
 # PAGE 4: for students to check all his/her courses and the school courses
 def checkCourseTable(request):
@@ -558,9 +538,6 @@ def checkTaughtCourses_sql(request):
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
 
-    
-
-
 def checkCourseNamelist(request):
     res = {
         'code': 0,
@@ -621,26 +598,166 @@ def checkCourseNamelist_sql(request):
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
-
-
 # PAGE 7: for teachers to handle the course applications
 def handleApplication_sql(request):
-    pass
+    res = {
+        'code':0,
+        'msg':'',
+    }
 
+    data = request.POST
+    user_id = data.get("user_id") # PAY ATTENTION : it is the student user id!
+    course_id = data.get("course_id")
+    section_id = data.get("section_id")
+    status = data.get("status")
+    
+    if request.session['is_login'] == True:
+        if request.session['role'] == INSTRUCTOR_ROLE:
+            # check all the applications whose course is under his/her management
+            cursor = connection.cursor()
+            handle_app_sql = "UPDATE application SET status = '"+status+"' WHERE student_id='"+user_id+"' AND course_id='"+course_id+"' AND section_id='"+section_id+"'"
+            cursor.execute(handle_app_sql)
+            raw_app_data = cursor.fetchall()
+            res['code'] = 1
+            res['msg'] = "handle successfully"
+
+        else:
+            res['msg'] = "unauthorized as instructor"
+    else:
+        res['msg'] = "unauthorized"
+
+# TODO : according to the STATUS order the result
+def checkApplication_sql(request):
+    res = {
+        'code':0,
+        'msg':'',
+        'data':{}
+    }
+    user_id = request.GET['user_id']
+
+    if request.session['is_login'] == True:
+        if request.session['role'] == INSTRUCTOR_ROLE:
+            # check all the applications whose course is under his/her management
+            cursor = connection.cursor()
+            find_target_apps_sql = "SELECT * FROM teaches NATURAL JOIN application WHERE instructor_id='"+user_id+"'"
+            cursor.execute(find_target_apps_sql)
+            raw_app_data = cursor.fetchall()
+            res['code'] = 1
+            res['msg'] = "check application info"
+            res['data'] = raw_app_data
+        elif request.session['role'] == STUDENT_ROLE:
+            # check all the applications whose course is under his/her management
+            cursor = connection.cursor()
+            find_target_apps_sql = "SELECT * FROM student NATURAL JOIN application WHERE student_id='"+user_id+"'"
+            cursor.execute(find_target_apps_sql)
+            raw_app_data = cursor.fetchall()
+            res['code'] = 1
+            res['msg'] = "check application info"
+            res['data'] = raw_app_data
+        else:
+            res['msg'] = "unauthorized as instructor"
+
+    else:
+        res['msg'] = "unauthorized"
 
 # PAGE 3: for students to apply for courses
 def applyCourse_sql(request):
-    pass
+# RESTRICTION: can't apply the courses which have been applied before but dropped (drop flag = 1)
+    res = {
+        'code': 0,
+        'msg': '',
+    }
+
+    # 0 - root 1 - students 2 -teachers
+    if request.session['is_login'] == True:
+        # user_id = request.GET['user_id']
+        # print("the user id is ",user_id)
+        cursor = connection.cursor()
+        if request.session['role'] == STUDENT_ROLE:
+            # since the total data amount is big, use the post method.
+            data = request.POST
+            print(data)
+            user_id = data.get('user_id')
+            course_id = data.get('course_id')
+            section_id = data.get('section_id')
+            app_reason = data.get('application_reason')
+            # can't apply selected courses 
+            # can't apply courses with vacancy
+            # can't apply dropped courses
+            # can't apply courses whose selected number will be  greater than the classroom capacity
+            # one student for one section can apply for one time
+
+            find_whether_already_applys_sql = "SELECT * FROM 'application' WHERE 'application'.'course_id' = '"+course_id+"' AND 'application'.'section_id' ="+section_id+" AND 'application'.'student_id'='"+user_id+"'"
+            cursor.execute(find_whether_already_applys_sql)
+            raw_apply_info = cursor.fetchone()
+            print("raw take info is ",raw_apply_info)
+            if raw_apply_info == None:
+                find_whether_already_takes_sql = "SELECT * FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id+" AND 'takes'.'student_id'='"+user_id+"'"
+                cursor.execute(find_whether_already_takes_sql)
+                raw_take_info = cursor.fetchone()
+                print("raw take info is ",raw_take_info)
+                if raw_take_info == None:
+                    find_take_num_sql = "SELECT COUNT(*) FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id
+                    cursor.execute(find_take_num_sql)
+                    raw_take_num = cursor.fetchone()
+                    print("the take num is :",raw_take_num[0])
+                    find_section_limit = "SELECT 'section'.'limit' FROM 'section' WHERE 'section'.'course_id'='"+course_id+"' AND 'section'.'section_id' ="+section_id
+                    cursor.execute(find_section_limit)
+                    raw_section_limit = cursor.fetchone()
+                    print("the section limit is :",raw_section_limit[0])
+
+                    find_section_capacity = "SELECT capacity FROM classroom NATURAL JOIN section WHERE course_id='"+course_id+"' AND section_id='"+section_id+"'"
+                    cursor.execute(find_section_capacity)
+                    raw_section_capacity = cursor.fetchone()
+                    print("the section capacity is ",raw_section_capacity[0])
+                    
+                    if raw_section_limit[0] > raw_take_num[0]:
+                        res['msg'] = "can't apply course with vacancy"
+                    elif raw_take_num[0] >= raw_section_capacity[0] :
+                        res['msg'] = "exceed the classroom capacity"
+                    else:
+                        check_drop_flag_app_sql = "SELECT 'application'.'if_drop' FROM 'application' WHERE 'application'.'course_id'='"+course_id+"' AND 'application'.'section_id'='"+section_id+"' AND 'application'.'student_id'='"+user_id+"'"
+                        cursor.execute(check_drop_flag_app_sql)
+                        raw_whether_drop = cursor.fetchone()
+                        if raw_whether_drop == None or raw_whether_drop[0] == 0:
+                            # insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
+                            # without application id, so maybe buggy
+                            apply_course_sql = "INSERT INTO 'application' ('course_id','section_id','student_id','status','application_reason') SELECT '"+course_id+"',"+section_id+",'"+user_id+"',0,'"+app_reason+"'"
+                            cursor.execute(apply_course_sql)
+                            res['code'] = 1
+                            res['msg'] = "apply successfully"
+                        else:
+                            res['msg'] = "can't apply dropped course"
+                else:
+                    res['msg'] = "can't apply selected course"
+            else:
+                res['msg'] = "can't apply course which is already applied"
+        else: 
+            res['msg'] = "unauthorized as student"
+    else: 
+        res['msg'] = 'unauthorized'
+
+    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+
 
 # PAGE 8: for teachers to log the score of students in his class 
 def registerScore_sql(request):
     pass
 
 
-# GET
-
-
-# according to what to search?
-def searchCourse_sql(request):
+def registerStudent_sql(request):
     pass
+
+def registerInstructor_sql(request):
+    pass
+
+def registerCourses_sql(request):
+    pass
+
+# according to what to search? : (1) instructor (2) course_id+section_id (3) dept_name
+def searchCourse_sql(request):
+
+    pass
+
+
 
