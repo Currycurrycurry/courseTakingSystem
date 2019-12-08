@@ -475,27 +475,27 @@ def checkAllCourses_sql(request):
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
 # PAGE 5: for students to check his/her own info
-def checkPersonalInfo(request):
-    res = {
-        'code': 0,
-        'msg': '',
-        'data':{}
-    }
+# def checkPersonalInfo(request):
+#     res = {
+#         'code': 0,
+#         'msg': '',
+#         'data':{}
+#     }
 
-    # 0 - root 1 - students 2 -teachers
-    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
-        user_id = request.GET['user_id']
-        print("the user id is ",course_id)
+#     # 0 - root 1 - students 2 -teachers
+#     if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+#         user_id = request.GET['user_id']
+#         print("the user id is ",course_id)
 
-        data = serializers.serialize('python',models.Student.objects.filter(student_id=user_id))
-        res['data'] = data
-        res['code'] = 1
-        res['msg'] = 'show student info '
+#         data = serializers.serialize('python',models.Student.objects.filter(student_id=user_id))
+#         res['data'] = data
+#         res['code'] = 1
+#         res['msg'] = 'show student info '
      
-    else: 
-        res['msg'] = 'unauthorized as student'
+#     else: 
+#         res['msg'] = 'unauthorized as student'
 
-    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+#     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
 def checkPersonalInfo_sql(request):
     res = {
@@ -505,19 +505,28 @@ def checkPersonalInfo_sql(request):
     }
 
     # 0 - root 1 - students 2 -teachers
-    if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
+    if request.session['is_login'] == True:
         user_id = request.GET['user_id']
         print("the user id is ",user_id)
         cursor = connection.cursor()
-        check_personal_info_sql = "SELECT * FROM 'student' where 'student'.'student_id'='"+user_id+"'"
-        cursor.execute(check_personal_info_sql)
-        data = cursor.fetchone()
-        res['data'] = data
-        res['code'] = 1
-        res['msg'] = 'show student info '
-     
+        if request.session['role'] == STUDENT_ROLE:
+            check_personal_info_sql = "SELECT * FROM 'student' where 'student'.'student_id'='"+user_id+"'"
+            cursor.execute(check_personal_info_sql)
+            data = cursor.fetchone()
+            res['data'] = data
+            res['code'] = 1
+            res['msg'] = 'show student info '
+        
+        if request.session['role'] == INSTRUCTOR_ROLE:
+            check_personal_info_sql = "SELECT * FROM 'instructor' where 'instructor'.'instructor_id'='"+user_id+"'"
+            cursor.execute(check_personal_info_sql)
+            data = cursor.fetchone()
+            res['data'] = data
+            res['code'] = 1
+            res['msg'] = 'show instructor info '
+
     else: 
-        res['msg'] = 'unauthorized as student'
+        res['msg'] = 'unauthorized'
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
@@ -611,6 +620,7 @@ def checkCourseNamelist_sql(request):
         res['msg'] = 'unauthorized as instructor'
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+
 
 
 # PAGE 7: for teachers to handle the course applications
