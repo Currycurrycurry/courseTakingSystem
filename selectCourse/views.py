@@ -17,6 +17,11 @@ STATUS_PENDING = 0 # submitted successfully
 STATUS_PASSED = 1
 STATUS_UNPASSED = -1
 
+STUDENT_FILE = 1
+COURSE_FILE = 2
+SCORE_FILE = 3
+
+
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
@@ -167,6 +172,7 @@ def selectCourse(request):
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
 # TODO 选课时间冲突检测 
+# TODO 考试时间冲突检查？？
 def select_sql(request):
     res = {
         'code': 0,
@@ -494,6 +500,7 @@ def checkPersonalInfo_sql(request):
             check_personal_info_sql = "SELECT * FROM 'student' where 'student'.'student_id'='"+user_id+"'"
             cursor.execute(check_personal_info_sql)
             data = cursor.fetchone()
+            # TODO check the score and calculate the total gpa 
             res['data'] = data
             res['code'] = 1
             res['msg'] = 'show student info '
@@ -741,6 +748,7 @@ def applyCourse_sql(request):
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
+
 #############################Excel Processing###############################################################
 # PAGE 8: for teachers to log the score of students in his class 
 def importExcel(res,request):
@@ -811,6 +819,41 @@ def registerCourses_sql(request):
 def searchCourse_sql(request):
 
     pass
+
+
+######################################Exam Info#############################################################
+def checkExamInfo(request):
+    
+    pass
+
+
+######################################Download Template File#################################################
+from django.http import FileResponse
+def download_template_file(request):
+    file_type = request.GET('file_type')
+    if file_type == STUDENT_FILE:
+        file = open('../data/student_list_example.xlsx','rw')
+        response = FileResponse(file)
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="student_list_example.xlsx"'
+        return response
+
+    elif file_type == COURSE_FILE:
+        file = open('../data/course_list_example.xlsx','rw')
+        response = FileResponse(file)
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="course_list_example.xlsx"'
+        return response
+
+    elif file_type == SCORE_FILE:
+        file = open('../data/score_list_example.xlsx','rw')
+        response = FileResponse(file)
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="score_list_example.xlsx"'
+        return response
+
+
+
 
 
 
