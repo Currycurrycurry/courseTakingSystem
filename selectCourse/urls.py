@@ -19,6 +19,7 @@ urlpatterns = [
     path('checkTaughtCourses/',views.checkTaughtCourses_sql),
     path('checkCourseNamelist/',views.checkCourseNamelist_sql),
     path('searchCourse/',views.searchCourse_sql),
+    path('checkApplication/',views.checkApplication_sql),
     path('handleApplication/',views.handleApplication_sql),
     path('applyCourse/',views.applyCourse_sql),
     path('registerScore/',views.registerScore_sql),

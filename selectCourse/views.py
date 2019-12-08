@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from selectCourse import models
 from django.db import connection
 import json
+import xlrd
 
 # AUTHORIZATION
 ROOT_ROLE = 0
@@ -598,6 +599,7 @@ def checkCourseNamelist_sql(request):
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
+####################Application without enough test!###############################################################
 # PAGE 7: for teachers to handle the course applications
 def handleApplication_sql(request):
     res = {
@@ -739,21 +741,72 @@ def applyCourse_sql(request):
 
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
-
+#############################Excel Processing###############################################################
 # PAGE 8: for teachers to log the score of students in his class 
+def importExcel(res,request):
+    if request.method == 'POST':
+        f = request.FILES['csvFile']
+        type_excel = f.name.split('.')[1]
+        if type_excel in ['xlsx','xls']:
+            wb = xlrd.open_workbook(filename=None,file_content=f.read())
+            table = wb.sheets()[0]
+            nrows = table.nrows
+            rowValues = []
+            try:
+                for i in range(1,nrows):
+                    # ignore the excel head
+                    rowValues.append(table.row_value(i))
+            except Exception as e:
+                res['msg'] = "error in loading"
+                res['code'] = 0
+                print(str(e))
+        else:
+            res['msg'] = "file type error: must be xlsx"
+    else:
+        res['msg'] = "must be post request"
+    
+    return rowValues
+
+# judge the inserted excel whether have duplicate student list 
 def registerScore_sql(request):
-    pass
+    res = {
+        'code': 0,
+        'msg': '',
+    }
 
+    raw_student_scores = importExcel(res,request)
+    print("the student scores are ",raw_student_scores)
 
+# Auto import student info
 def registerStudent_sql(request):
-    pass
+    res = {
+        'code': 0,
+        'msg': '',
+    }
+    raw_student_infos = importExcel(res,request)
+    print("the raw student infos are ",raw_student_infos)
 
+# Auto import instructor info
 def registerInstructor_sql(request):
-    pass
+    res = {
+        'code': 0,
+        'msg': '',
+    }
+    raw_instructor_infos = importExcel(res,request)
+    print("the raw instructor infos are ",raw_instructor_infos)
 
+# Auto import course info 
+# Tables need to insert : course section exam 
 def registerCourses_sql(request):
-    pass
+    res = {
+        'code': 0,
+        'msg': '',
+    }
+    raw_course_infos = importExcel(res,request)
+    print("the raw course infos are ",raw_course_infos)
 
+
+#######################################Search###############################################################
 # according to what to search? : (1) instructor (2) course_id+section_id (3) dept_name
 def searchCourse_sql(request):
 
