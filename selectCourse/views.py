@@ -524,6 +524,34 @@ def checkPersonalInfo_sql(request):
 
 ###################################################################################
 # PAGE 6: for teachers to check the name list
+# PAY ATTENTION : have fixed the typo error in the table teaches (now  the instuctor_id be instructor_id )
+def checkTaughtCourses_sql(request):
+    res = {
+        'code':0,
+        'msg':'',
+        'data':{}
+    }
+    if request.session['is_login'] == True and request.session['role'] == INSTRUCTOR_ROLE:
+        user_id = request.GET['user_id']
+        print("the user id is ",user_id)
+        
+        cursor = connection.cursor()
+        check_courses_taught_sql ="SELECT * FROM (SELECT * FROM 'teaches' NATURAL JOIN 'section' WHERE 'teaches'.'instructor_id' = '"+user_id+"') NATURAL JOIN 'course' "
+        cursor.execute(check_courses_taught_sql)
+        data = cursor.fetchall()
+        print("the courses taught are :",data)
+        res['data'] = data
+        res['code'] = 1
+        res['msg'] = "show courses taught by the instructor"
+
+    else:
+        res['msg'] = 'unauthorized as instructor'
+    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
+
+
+    
+
+
 def checkCourseNamelist(request):
     res = {
         'code': 0,
@@ -560,23 +588,21 @@ def checkCourseNamelist_sql(request):
         'code': 0,
         'msg': '',
         'data':{},
-        'course_num':0
     }
     # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True and request.session['role'] == INSTRUCTOR_ROLE:
         user_id = request.GET['user_id']
         print("the user id is ",user_id)
+        course_id = request.GET['course_id']
+        section_id = request.GET['section_id']
+        print("the course id is",course_id)
+        print("the section id is ",section_id)
 
-        instructor = models.Instructor.objects.get(instructor_id=user_id)
-        courses = models.Teaches.objects.filter(instructor=instructor)
-        courses = [x.course_id for x in courses ]
-        res['course_num'] = len(courses)
-        data = {}
-        for course_id in courses:
-            students_taken = models.Takes.objects.filter(course_id=course_id).values('student')
-            data[course_id] = students_taken # maybe buggy
-            
-        data = serializers.serialize('python',models.Teaches.objects.filter(instructor=instructor))
+        cursor = connection.cursor()
+        check_namelist_sql = "SELECT * FROM 'takes' NATURAL JOIN 'student' WHERE 'takes'.'course_id'='"+course_id+"' AND 'takes'.'section_id'="+section_id
+        cursor.execute(check_namelist_sql)
+        data = cursor.fetchall()
+
         res['data'] = data
         res['code'] = 1
         res['msg'] = 'show all courses\' name list '
@@ -587,22 +613,24 @@ def checkCourseNamelist_sql(request):
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
 
-    
 # PAGE 7: for teachers to handle the course applications
-def handleApplication(request):
+def handleApplication_sql(request):
     pass
 
 
 # PAGE 3: for students to apply for courses
-def applyCourse(request):
+def applyCourse_sql(request):
     pass
 
 # PAGE 8: for teachers to log the score of students in his class 
-def registerScore(request):
+def registerScore_sql(request):
     pass
 
 
 # GET
 
 
+# according to what to search?
+def searchCourse_sql(request):
+    pass
 

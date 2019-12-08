@@ -16,6 +16,12 @@ urlpatterns = [
     path('checkCourseTable/',views.checkCourseTable_sql),
     path('checkAllCourses/',views.checkAllCourses_sql),
     path('checkPersonalInfo/',views.checkPersonalInfo_sql),
-    path('checkCourseNamelist/',views.checkCourseNamelist)
+    path('checkTaughtCourses/',views.checkTaughtCourses_sql),
+    path('checkCourseNamelist/',views.checkCourseNamelist_sql),
+    path('searchCourse/',views.searchCourse_sql),
+    path('handleApplication/',views.handleApplication_sql),
+    path('applyCourse/',views.applyCourse_sql),
+    path('registerScore/',views.registerScore_sql),
+
 ]
 
