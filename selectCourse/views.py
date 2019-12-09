@@ -28,7 +28,6 @@ SCORE_FILE = 3
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
-
 ##################################Login in/out#################################################
 
 def login_sql(request):
@@ -164,7 +163,7 @@ def select_sql(request):
     return HttpResponse(json.dumps(res),content_type = 'application/json')
 
 ##################################Drop#################################################
-# TODO if drop the course applied before, set the drop_flag = 1 
+
 def dropCourse_sql(request): 
     res = {
         'code': 0,
@@ -527,6 +526,7 @@ def importExcel(res,request):
     return rowValues
 
 # judge the inserted excel whether have duplicate student list 
+# TODO change the score into grade when registering
 def registerScore_sql(request):
     res = {
         'code': 0,

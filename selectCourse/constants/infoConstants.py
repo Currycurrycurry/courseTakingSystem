@@ -1,0 +1,21 @@
+##################################Constants#################################################
+# AUTHORIZATION
+ROOT_ROLE = 0
+STUDENT_ROLE = 1
+INSTRUCTOR_ROLE = 2
+
+# APPLICATION STATUS
+STATUS_PENDING = 0 # submitted successfully
+STATUS_PASSED = 1
+STATUS_UNPASSED = -1
+
+# EXCEL FILE 
+STUDENT_FILE = 1
+COURSE_FILE = 2
+SCORE_FILE = 3
+
+# SEARCH KEY
+SEARCH_BY_SECTION = 1
+SEARCH_BY_DEPT = 2
+SEARCH_BY_INSTRUCTOR = 3
+SEARCH_BY_NAME = 4
