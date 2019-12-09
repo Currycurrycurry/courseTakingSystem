@@ -204,3 +204,35 @@
 #         res['msg'] = 'unauthorized as student'
 
 #     return HttpResponse(json.dumps(res),content_type = 'application/json')
+
+
+# def checkCourseNamelist(request):
+#     res = {
+#         'code': 0,
+#         'msg': '',
+#         'data':{},
+#         'course_num':0
+#     }
+
+#     if request.session['is_login'] == True and request.session['role'] == INSTRUCTOR_ROLE:
+#         user_id = request.GET['user_id']
+#         print("the user id is ",course_id)
+
+#         instructor = models.Instructor.objects.get(instructor_id=user_id)
+#         courses = models.Teaches.objects.filter(instructor=instructor)
+#         courses = [x.course_id for x in courses ]
+#         res['course_num'] = len(courses)
+#         data = {}
+#         for course_id in courses:
+#             students_taken = models.Takes.objects.filter(course_id=course_id).values('student')
+#             data[course_id] = students_taken # maybe buggy
+            
+#         data = serializers.serialize('python',models.Teaches.objects.filter(instructor=instructor))
+#         res['data'] = data
+#         res['code'] = 1
+#         res['msg'] = 'show all courses\' name list '
+     
+#     else: 
+#         res['msg'] = 'unauthorized as instructor'
+
+#     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')

@@ -100,7 +100,6 @@ def select_sql(request):
         'code': 0,
         'msg': ''
     }
-    # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
         user_id = request.GET['user_id']
         course_id = request.GET['course_id']
@@ -137,11 +136,8 @@ def select_sql(request):
                     print("the section limit is :",raw_section_limit[0])
 
                     if raw_section_limit[0] > raw_take_num[0]:
-                        #INSERT INTO "takes" ("course_id", "section_id", "student_id", "grade", "drop_flag") SELECT 'XDSY118020', 1, '17302010015', NULL, NULL; args=('XDSY118020', 1, '17302010015', None, None)
                         insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
                         cursor.execute(insert_takes_sql)
-                        #UPDATE "student" SET "student_name" = '黄鼎竣', "student_major" = '软件工程', "student_dept_name" = '软件学院', "student_total_credit" = -2 WHERE "student"."student_id" = '17302010015'; 
-
                         check_credit_sql = "SELECT 'student'.'student_total_credit' FROM 'student' WHERE 'student'.'student_id' = '"+user_id+"'"
                         cursor.execute(check_credit_sql)
                         raw_credit = cursor.fetchone()
@@ -152,7 +148,6 @@ def select_sql(request):
                         print("the course credit is ",raw_course_credit[0])
                         updated_credit = int(raw_credit[0]+raw_course_credit[0])
                         print("updated credit is",updated_credit)
-                        # UPDATE "student" SET "student_name" = '黄鼎竣', "student_major" = '软件工程', "student_dept_name" = '软件学院', "student_total_credit" = -2 WHERE "student"."student_id" = '17302010015'; args=('黄鼎竣', '软件工程', '软件学院', -2, '17302010015')
                         add_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
                         cursor.execute(add_credits_sql)
 
@@ -175,7 +170,6 @@ def dropCourse_sql(request):
         'code': 0,
         'msg': ''
     }
-    # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
         user_id = request.GET['user_id']
         course_id = request.GET['course_id']
@@ -218,7 +212,6 @@ def dropCourse_sql(request):
                     print("the course credit is ",raw_course_credit[0])
                     updated_credit = int(raw_credit[0]-raw_course_credit[0])
                     print("updated credit is",updated_credit)
-                    # UPDATE "student" SET "student_name" = '黄鼎竣', "student_major" = '软件工程', "student_dept_name" = '软件学院', "student_total_credit" = -2 WHERE "student"."student_id" = '17302010015'; args=('黄鼎竣', '软件工程', '软件学院', -2, '17302010015')
                     minus_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
                     cursor.execute(minus_credits_sql)
                     res['msg'] = 'drop successfully'
@@ -237,20 +230,15 @@ def checkCourseTable_sql(request):
         'data':{}
     }
 
-    # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
         user_id = request.GET['user_id']
         print("the user id is ",user_id)
         cursor = connection.cursor()
-        # near "limit": syntax error
-        # check_courses_sql = "WITH 'course_section(course_id,section_id,day,time,classroom_no,lesson,limit)' AS  (SELECT 'section'.'course_id','section'.'section_id','section'.'day','section'.'time','section'.'classroom_no','section'.'lesson','section'.'limit' FROM 'section' NATURAL JOIN 'takes' WHERE 'takes'.'student_id' ='"+user_id+"') SELECT 'course'.'title','course'.'credits','course'.'course_id','course_section'.'section_id','course_section'.'day','course_section'.'time','course_section'.'classroom_no','course_section'.'lesson','course_section'.'limit' FROM 'course_section' NATURAL JOIN 'course'"
         check_courses_sql = "SELECT * FROM (SELECT * FROM 'section' NATURAL JOIN 'takes' WHERE 'takes'.'student_id'='"+user_id+"') NATUAL JOIN 'course' "
         cursor.execute(check_courses_sql)
         raw_courses_taken = cursor.fetchall()
         print("raw courses taken are :",raw_courses_taken)
-
         data = raw_courses_taken
-     
         res['data'] = data
         res['code'] = 1
         res['msg'] = 'show course table'
@@ -267,12 +255,9 @@ def checkAllCourses_sql(request):
         'msg': '',
         'data':{}
     }
-    # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True and request.session['role'] == STUDENT_ROLE:
         user_id = request.GET['user_id']
         print("the user id is ",user_id)
-        # the course name and credit hasn't been showed since the model may be changed later
-
         cursor = connection.cursor()
         check_all_courses_sql = "SELECT * FROM 'section' NATUAL JOIN 'course'"
         cursor.execute(check_all_courses_sql)
@@ -293,7 +278,6 @@ def checkPersonalInfo_sql(request):
         'data':{}
     }
 
-    # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True:
         user_id = request.GET['user_id']
         print("the user id is ",user_id)
@@ -346,44 +330,12 @@ def checkTaughtCourses_sql(request):
         res['msg'] = 'unauthorized as instructor'
     return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
 
-def checkCourseNamelist(request):
-    res = {
-        'code': 0,
-        'msg': '',
-        'data':{},
-        'course_num':0
-    }
-    # 0 - root 1 - students 2 -teachers
-    if request.session['is_login'] == True and request.session['role'] == INSTRUCTOR_ROLE:
-        user_id = request.GET['user_id']
-        print("the user id is ",course_id)
-
-        instructor = models.Instructor.objects.get(instructor_id=user_id)
-        courses = models.Teaches.objects.filter(instructor=instructor)
-        courses = [x.course_id for x in courses ]
-        res['course_num'] = len(courses)
-        data = {}
-        for course_id in courses:
-            students_taken = models.Takes.objects.filter(course_id=course_id).values('student')
-            data[course_id] = students_taken # maybe buggy
-            
-        data = serializers.serialize('python',models.Teaches.objects.filter(instructor=instructor))
-        res['data'] = data
-        res['code'] = 1
-        res['msg'] = 'show all courses\' name list '
-     
-    else: 
-        res['msg'] = 'unauthorized as instructor'
-
-    return HttpResponse(json.dumps(res,cls=DjangoJSONEncoder),content_type = 'application/json')
-
 def checkCourseNamelist_sql(request):
     res = {
         'code': 0,
         'msg': '',
         'data':{},
     }
-    # 0 - root 1 - students 2 -teachers
     if request.session['is_login'] == True and request.session['role'] == INSTRUCTOR_ROLE:
         user_id = request.GET['user_id']
         print("the user id is ",user_id)
@@ -470,6 +422,11 @@ def checkApplication_sql(request):
         res['msg'] = "unauthorized"
 
 # PAGE 3: for students to apply for courses
+# can't apply selected courses 
+# can't apply courses with vacancy
+# can't apply dropped courses
+# can't apply courses whose selected number will be  greater than the classroom capacity
+# one student for one section can apply for one time
 def applyCourse_sql(request):
 # RESTRICTION: can't apply the courses which have been applied before but dropped (drop flag = 1)
     res = {
@@ -490,12 +447,7 @@ def applyCourse_sql(request):
             course_id = data.get('course_id')
             section_id = data.get('section_id')
             app_reason = data.get('application_reason')
-            # can't apply selected courses 
-            # can't apply courses with vacancy
-            # can't apply dropped courses
-            # can't apply courses whose selected number will be  greater than the classroom capacity
-            # one student for one section can apply for one time
-
+    
             find_whether_already_applys_sql = "SELECT * FROM 'application' WHERE 'application'.'course_id' = '"+course_id+"' AND 'application'.'section_id' ="+section_id+" AND 'application'.'student_id'='"+user_id+"'"
             cursor.execute(find_whether_already_applys_sql)
             raw_apply_info = cursor.fetchone()
