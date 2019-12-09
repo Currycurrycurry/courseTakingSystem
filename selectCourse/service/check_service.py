@@ -116,6 +116,7 @@ class CheckService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
+    # TODO calculate gpa and show grade of every courses taken
     def checkStudentInfo(self,user_id):
         try:
             cursor = connection.cursor()
