@@ -62,31 +62,35 @@ urlpatterns = [
     path('deleteCourse/',service_view.deleteCourse),
     path('insertCourse/',service_view.insertCourse),
     path('checkCourses/',service_view.checkCourses),
-    path('updateCourse/',service_view.updateCourse),
-
-
+    # path('updateCourse/',service_view.updateCourse),
 
     path('deleteSection/',service_view.deleteSection),
     path('insertSection/',service_view.insertSection),
     path('checkSections/',service_view.checkSections),
-    path('updateSection/',service_view.updateSection),
+    # path('updateSection/',service_view.updateSection),
 
     path('deleteStudent/',service_view.deleteStudent),
     path('insertStudent/',service_view.insertStudent),
-    path('updateStudent/',service_view.updateStudent),
+    # path('updateStudent/',service_view.updateStudent),
     path('checkStudents/',service_view.checkStudents),
 
-    path('updateExam/',service_view.updateExam),
-    path('checkExams',service_view.checkExams),
+
+    path('deleteInstructor/',service_view.deleteInstructor),
+    path('insertInstructor/',service_view.insertInstructor),
+    # path('updateStudent/',service_view.updateStudent),
+    path('checkInstructors/',service_view.checkInstructors),
+    
+    # path('updateExam/',service_view.updateExam),
+    path('checkExams/',service_view.checkExams),
 
     path('insertClassroom/',service_view.insertClassroom),
     path('deleteClassroom/',service_view.deleteClassroom),
     path('checkClassrooms/',service_view.checkClassrooms),
-    path('updateClassroom/',service_view.updateClassroom),
+    # path('updateClassroom/',service_view.updateClassroom),
 
     path('insertAccount/',service_view.insertAccount),
     path('deleteAccount/',service_view.deleteAccount),
-    path('updateAccount/',service_view.updateAccount),
+    # path('updateAccount/',service_view.updateAccount),
     path('checkAccounts/',service_view.checkAccounts),
 
   

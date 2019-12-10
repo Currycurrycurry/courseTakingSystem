@@ -77,7 +77,7 @@ class CheckService(BaseService):
             return self._get_response(UNAUTHORIZED)
         
         try:
-            page_num = self.data['current_page_num'] #0,1,2,...
+            page_num = int(self.data['current_page_num']) #0,1,2,...
     
         except Exception as error:
             self._init_response()
@@ -93,7 +93,7 @@ class CheckService(BaseService):
             print("raw courses are :",raw_courses)
             total_num_sql = 'select count(*) from section'
             cursor.execute(total_num_sql)
-            total_num = int(cursor.fetechone()[0])
+            total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
             # sections = list(raw_courses_taken)
             sections = []
