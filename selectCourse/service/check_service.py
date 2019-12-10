@@ -69,7 +69,6 @@ class CheckService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
-    # TODO ajax version
     def checkAllCourses(self):
 
         if self.request.session['is_login'] != True or \
@@ -78,12 +77,23 @@ class CheckService(BaseService):
             return self._get_response(UNAUTHORIZED)
         
         try:
+            page_num = self.data['current_page_num'] #0,1,2,...
+    
+        except Exception as error:
+            self._init_response()
+            return self._get_response(POST_ARG_ERROR,-1)
+
+        
+        try:
             cursor = connection.cursor()
-            check_all_courses_sql = "SELECT * FROM 'section' NATUAL JOIN 'course'"
-            cursor.execute(check_all_courses_sql)
+
+            check_all_courses_sql = "SELECT * FROM 'section' NATURAL JOIN 'course' limit %s,%s"
+            cursor.execute(check_all_courses_sql,(page_num*ITEM_NUM_FOR_ONE_PAGE),ITEM_NUM_FOR_ONE_PAGE,)
             raw_courses = sql_util.dictfetchall(cursor)
             print("raw courses are :",raw_courses)
-            total_num = len(raw_courses)
+            total_num_sql = 'select count(*) from section'
+            cursor.execute(total_num_sql)
+            total_num = int(cursor.fetechone()[0])
             print("total num is ",total_num)
             # sections = list(raw_courses_taken)
             sections = []

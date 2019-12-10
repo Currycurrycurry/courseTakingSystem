@@ -173,7 +173,7 @@ POST /selectCourse/checkAllCourses
 ```json
 {
     "total_num" : 1,
-    "":
+    "ret_num": 15
     "sections" : {
         'title': '大气环境科学'
         'course_id': 'ATMO00000003'
