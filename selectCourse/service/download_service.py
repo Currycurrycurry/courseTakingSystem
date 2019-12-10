@@ -43,11 +43,11 @@ class DownloadService():
             response['Content-Disposition'] = 'attachment;filename="student_list_example.xlsx"'
             return response
 
-        elif file_type == COURSE_FILE:
-            file = open('../../data/course_list_example.xlsx','rw')
+        elif file_type == SECTION_FILE:
+            file = open('../../data/section_list_example.xlsx','rw')
             response = FileResponse(file)
             response['Content-Type'] = 'application/octet-stream'
-            response['Content-Disposition'] = 'attachment;filename="course_list_example.xlsx"'
+            response['Content-Disposition'] = 'attachment;filename="section_list_example.xlsx"'
             return response
 
         elif file_type == SCORE_FILE:
@@ -56,7 +56,23 @@ class DownloadService():
             response['Content-Type'] = 'application/octet-stream'
             response['Content-Disposition'] = 'attachment;filename="score_list_example.xlsx"'
             return response
-            pass
+
+        elif file_type == COURSE_FILE:
+            file = open('../../data/course_list_example.xlsx','rw')
+            response = FileResponse(file)
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="course_list_example.xlsx"'
+            return response
+
+        elif file_type == INSTRUCTOR_FILE:
+            file = open('../../data/instructor_list_example.xlsx','rw')
+            response = FileResponse(file)
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="instructor_list_example.xlsx"'
+            return response
+
+
+
 
 
         

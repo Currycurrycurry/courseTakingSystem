@@ -29,10 +29,10 @@ class ApplyService(BaseService):
             return self._get_response(POST_ARG_ERROR,-1)
         
         if self.request.session['role'] == STUDENT_ROLE:
-            return self.checkApplicationsByStudent
+            return self.checkApplicationsByStudent(user_id)
         
         elif self.request.session['role'] == INSTRUCTOR_ROLE:
-            return self.checkApplicationsByInstructor
+            return self.checkApplicationsByInstructor(user_id)
         else:
             self._init_response()
             return self._get_response(UNAUTHORIZED)

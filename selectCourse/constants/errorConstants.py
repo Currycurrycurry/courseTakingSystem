@@ -63,3 +63,9 @@ APP_OK = "apply successfully"
 APP_VACANCY = "can't apply course with vacancy"
 
 APP_CAPACITY = "exceed the classroom capacity"
+
+
+
+ERROR_LOADING_FILE = "error when loading file"
+
+FILE_FORMAT_ERROR = "file format error"

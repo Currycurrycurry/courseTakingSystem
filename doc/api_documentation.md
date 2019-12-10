@@ -156,7 +156,7 @@ POST /selectCourse/checkCourseTable
 | ---- | ---- |
 | show course table | 显示课程信息 |
 
-## 查询所有课程信息
+## 查询所有课程信息(学生和root权限)
 
 POST /selectCourse/checkAllCourses
 
@@ -165,12 +165,15 @@ POST /selectCourse/checkAllCourses
 | 名称 | 类型 | 描述 |
 | ---- | ---- | ---- |
 | user_id | string | 用户 ID（留空则默认获取当前已登录用户的信息） |
+| current_page_num | int | 当前页数 |
+
 
 ### 返回值
 
 ```json
 {
     "total_num" : 1,
+    "":
     "sections" : {
         'title': '大气环境科学'
         'course_id': 'ATMO00000003'
@@ -254,35 +257,263 @@ POST /selectCourse/search
 | ---- | ---- | ---- |
 | user_id | string | 用户 ID |
 | search_type | int | 搜索类型 1/2/3/4分别表示 |
-| course_id | string | |
-| section_id | int |  |
-| title | string | |
-| instructor_name | string |  |
-| dept_name | string | |
+| course_id | string | 根据course_id和section_id进行搜索|
+| section_id | int | 根据course_id和section_id进行搜索 |
+| title | string | 根据课程名称进行搜索|
+| instructor_name | string | 根据教师名字进行搜索 |
+| dept_name | string | 根据开课院系进行搜索|
 
 
 ### 返回值
 
 ```json
-{}
+{
+    "total_num" : 1,
+    "sections" : {
+        'title': '大气环境科学'
+        'course_id': 'ATMO00000003'
+        'section_id':1,
+        'dept_name':“航空航天系”,
+        'credits':2,
+        'classroom_no':Z2202,
+        'day':2, //周二
+        'time':4-5, //第4到第5节
+        'lesson':2, //课时 
+    }   
+}
 ```
 
 ### 错误码
 
 | 错误码 | 含义 |
 | ---- | ---- |
-| user_not_exist | 该用户不存在 |
+| search succeessfully| 搜索成功 |
+| no search result| 无搜索结果 |
 
-## 获取项目信息
+## 提交选课申请
 
-GET /project
+POST /selectCourse/submitApplication
 
 ### 参数列表
 
 | 名称 | 类型 | 描述 |
 | ---- | ---- | ---- |
-| id | int | 项目 ID |
+| user_id | string |  |
+| course_id | string |  |
+| section_id | int |  |
+| application_reason | string | 申请理由 |
+
+### 返回值
+
+无
+
+### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+
+| can't apply course which is already applied| 不能申请已申请课程 |
+| can't apply selected course| 不能申请已选课程 |
+| can't apply dropped course| 不能申请已退的申请通过课程 |
+| apply successfully| 提交成功 |
+| can't apply course with vacancy| 不能申请有余量课程 |
+| exceed the classroom capacity| 不能申请人数已超过教室容量的课程 |
+
+
+## 处理选课申请
+
+POST /selectCourse/handleApplication
+
+### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| user_id | string |  |
+| course_id | string |  |
+| section_id | int |  |
+| status | int | 处理状态 |
+
+### 返回值
+
+无
+
+### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| handle successfully| 处理成功 |
 
 
 
+## 查看选课申请
+
+*学生和老师都可查看其对应的选课申请*
+
+POST /selectCourse/handleApplication
+
+### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| user_id | string |  |
+
+### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "applications" : {
+        'course_id': 'ATMO00000003'
+        'section_id': 1,
+        'student_id':"17302010063",
+        'status':1, // 0表示提交成功 1表示通过 -1表示不通过
+        'application_reason':"I love this course",
+        'if_drop':1, //1 表示退过 0 表示没退过
+    }   
+}
+```
+
+### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| check application info| 显示选课申请信息 |
+
+## 查看所教授课程（教师权限）
+
+POST /selectCourse/checkTaughtCourses/
+
+### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| user_id | string |  |
+
+### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "sections" : [
+        {
+        'title': '大气环境科学'
+        'course_id': 'ATMO00000003'
+        'section_id':1,
+        'dept_name':“航空航天系”,
+        'credits':2,
+        'classroom_no':Z2202,
+        'day':2, //周二
+        'time':4-5, //第4到第5节
+        'lesson':2, //课时 
+        },   
+    ]
+}
+```
+
+### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| show course table| 显示课程信息 |
+
+
+## 查看该课程花名册（教师权限）
+
+POST /selectCourse/checkCourseNameList/
+
+
+### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| user_id | string |  |
+
+### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "sections" : [
+        {
+        'title': '大气环境科学'
+        'student_id': '17302010063'
+        'student_name':"黄佳妮",
+        'student_major':“航空航天系”,
+        'student_dept_name':"航空航天学院",
+        'grade':“A”,
+    },
+    ]  
+}
+```
+
+### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| show course table| 显示课程信息 |
+
+
+
+
+## 查看课程考试列表（学生权限）
+
+POST /selectCourse/checkExamTable/
+
+### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| user_id | string |  |
+
+### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "sections" : [
+        {
+        'title': '大气环境科学'
+        'student_id': '17302010063'
+        'student_name':"黄佳妮",
+        'student_major':“航空航天系”,
+        'student_dept_name':"航空航天学院",
+        'grade':“A”,
+    },
+    ]  
+}
+```
+
+### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| show course table| 显示课程信息 |
+
+
+
+## 自动导入模块
+
+### 下载模版文件（老师）
+
+GET /selectCourse/downloadFile
+
+### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| file_type | int | STUDENT_FILE = 1
+COURSE_FILE = 2
+SCORE_FILE = 3
+SECTION_FILE = 4
+INSTRUCTOR_FILE = 5 |
+
+
+### 导入学生课程成绩（教师权限）
+
+### 导入课程信息（root权限）
+
+
+### 导入学生信息（root权限）
+
+### 导入教师信息（root权限）
 
