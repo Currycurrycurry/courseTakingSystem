@@ -510,9 +510,252 @@ INSTRUCTOR_FILE = 5 |
 
 ### 导入学生课程成绩（教师权限）
 
+
 ### 导入课程信息（root权限）
 
 ### 导入学生信息（root权限）
 
 ### 导入教师信息（root权限）
+
+
+
+
+## 管理员增删改查统一接口说明
+
+### 增 Insert
+
+#### 手动导入课程信息
+
+POST /selectCourse/insertCourse/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| title | string |
+| credits | int |
+| dept_name | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+#### 手动导入开课信息
+
+POST /selectCourse/insertSection/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| section_id | string |
+| time | string |
+| classroom_no | int |
+| lesson | int |
+| limit | int |
+| day | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 开课已存在 |
+｜ handle successfully ｜ ok｜
+
+
+
+
+#### 手动导入学生信息
+
+POST /selectCourse/insertStudent/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| student_id | string |
+| student_name | string |
+| student_major| string |
+| student_dept_name | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 学生已存在 |
+｜ handle successfully ｜ ok｜
+
+#### 手动导入教师信息
+
+POST /selectCourse/insertInstructor/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| instructor_id | string |
+| instructor_name | string |
+| instructor_class | string |
+| dept_name | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+
+#### 手动导入教室信息
+
+POST /selectCourse/insertClassroom/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| classroom_no | string |
+| capacity | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+#### 手动导入账户信息
+
+POST /selectCourse/insertAccount/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| user_id | string |
+| password | string |
+| role | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+
+### 删
+
+#### 删除课程信息
+
+POST /selectCourse/deleteCourse/
+
+#### 删除开课信息
+
+POST /selectCourse/deleteSection/
+
+#### 删除学生信息
+
+POST /selectCourse/deleteStudent/
+
+#### 删除教师信息
+
+POST /selectCourse/deleteInstructor/
+
+#### 删除教室信息
+
+POST /selectCourse/deleteClassroom/
+
+#### 删除账户信息
+
+POST /selectCourse/deleteAccount/
+
+
+### 改 
+
+#### 修改课程信息
+
+POST /selectCourse/updateCourse/
+
+#### 修改开课信息
+
+POST /selectCourse/updateSection/
+
+#### 修改学生信息
+
+POST /selectCourse/updateStudent/
+
+#### 修改教师信息
+
+POST /selectCourse/updateInstructor/
+
+#### 修改教室信息
+
+POST /selectCourse/updateClassroom/
+
+#### 修改账户信息
+
+POST /selectCourse/updateAccount/
+
+
+### 查
+
+#### 查看课程信息
+
+POST /selectCourse/checkCourses/
+
+#### 查看开课信息
+
+POST /selectCourse/checkSections/
+
+#### 查看学生信息
+
+POST /selectCourse/checkStudents/
+
+#### 查看教师信息
+
+POST /selectCourse/checkInstructors/
+
+#### 查看教室信息
+
+POST /selectCourse/checkClassrooms/
+
+#### 查看账户信息
+
+POST /selectCourse/checkAccounts/
 

@@ -20,7 +20,7 @@ class SelectCourseTestCase(TestCase):
     
     def test_login_ok(self):       
         c = Client()
-        data = {'id':17302010015,'password':'17302010015'}
+        data = {'user_id':17302010015,'password':'17302010015'}
         response = c.post('/selectCourse/login/',data)
         print(response.content)
         self.assertEqual(response.status_code,200)
@@ -33,19 +33,19 @@ class SelectCourseTestCase(TestCase):
     #     print(response.content)
     #     self.assertEqual(response.status_code,200)
 
-    def test_read(self):
-        c = Client();
-        data = {'classroom_no':"Z2001"}
-        response = c.get('/selectCourse/read/',data)
-        print(response.content)
+    # def test_read(self):
+    #     c = Client();
+    #     data = {'classroom_no':"Z2001"}
+    #     response = c.get('/selectCourse/read/',data)
+    #     print(response.content)
+    #     self.assertEqual(response.status_code,200)
+
+
+
+    def test_login_wrong_usrid(self):
+        c = Client()
+        response = c.post('/selectCourse/login/',{'user_id':17302010062,'password':'17302010063'})
         self.assertEqual(response.status_code,200)
-
-
-
-    # def test_login_wrong_usrid(self):
-    #     c = Client()
-    #     response = c.post('/login/',{'id':17302010062,'password':'17302010063'})
-    #     self.assertEqual(response,status_code,200)
 
     # def test_login_wrong_passwd(self):
     #     c = Client()

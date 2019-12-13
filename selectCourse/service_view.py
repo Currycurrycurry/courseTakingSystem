@@ -84,8 +84,8 @@ def insertCourse(request):
 def checkCourses(request):
     return RootService(request).checkCourses()
 
-# def updateCourse(request):
-#     return RootService(request).updateCourse()
+def updateCourse(request):
+    return RootService(request).updateCourse()
 ################################################
 def deleteSection(request):
     return RootService(request).deleteSection()
@@ -96,8 +96,8 @@ def insertSection(request):
 def checkSections(request):
     return RootService(request).checkSections()
 
-# def updateSection(request):
-#     return RootService(request).updateSection()
+def updateSection(request):
+    return RootService(request).updateSection()
 ################################################
 def deleteStudent(request):
     return RootService(request).deleteStudent()
@@ -105,8 +105,8 @@ def deleteStudent(request):
 def insertStudent(request):
     return RootService(request).insertStudent()
 
-# def updateStudent(request):
-#     return RootService(request).updateStudent()
+def updateStudent(request):
+    return RootService(request).updateStudent()
 
 def checkStudents(request):
     return RootService(request).checkStudents()
@@ -119,14 +119,14 @@ def deleteInstructor(request):
 def insertInstructor(request):
     return RootService(request).insertInstructor()
 
-# def updateStudent(request):
-#     return RootService(request).updateStudent()
+def updateStudent(request):
+    return RootService(request).updateStudent()
 
 def checkInstructors(request):
     return RootService(request).checkInstructors()
 ################################################
-# def updateExam(request):
-#     return RootService(request).updateExam()
+def updateExam(request):
+    return RootService(request).updateExam()
 
 def checkExams(request):
     return RootService(request).checkExams()
@@ -140,8 +140,8 @@ def deleteClassroom(request):
 def checkClassrooms(request):
     return RootService(request).checkClassrooms()
 
-# def updateClassroom(request):
-#     return RootService(request).updateClassroom()
+def updateClassroom(request):
+    return RootService(request).updateClassroom()
 
 ################################################
 
@@ -151,8 +151,8 @@ def insertAccount(request):
 def deleteAccount(request):
     return RootService(request).deleteAccount()
 
-# def updateAccount(request):
-#     return RootService(request).updateAccount()
+def updateAccount(request):
+    return RootService(request).updateAccount()
 
 def checkAccounts(request):
     return RootService(request).checkAccounts()

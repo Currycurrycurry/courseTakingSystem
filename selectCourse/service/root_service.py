@@ -1,4 +1,3 @@
-import xlrd
 import json
 import traceback
 from django.http import JsonResponse
@@ -59,7 +58,7 @@ class RootService(BaseService):
         if self.request.session['is_login'] != True or \
             (self.request.session['role'] != ROOT_ROLE):
             self._init_response()
-            return self._get_response(UNAUTHORIZED)
+            return self._get_response(UNAUTHORIZED) 
 
         try:
             course_id = self.data['course_id']
@@ -81,7 +80,8 @@ class RootService(BaseService):
                 self._init_response()
                 return self._get_response("insert error: already exist",-1)
             sql = 'insert into course(course_id,title,credits,dept_name) values(%s,%s,%s,%s)'
-            cursor.execute(sql,(course_id,course_id,title,credits,dept_name,))
+            cursor.execute(sql,(course_id,title,credits,dept_name,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -150,6 +150,8 @@ class RootService(BaseService):
 
         pass
    
+    def updateCourse(self):
+        pass 
 
 ################Section###################
     def deleteSection(self):
@@ -215,9 +217,24 @@ class RootService(BaseService):
             if test != None:
                 self._init_response()
                 return self._get_response("insert error: already exist",-1)
-            
-            sql = 'insert into section(course_id,section_id,time,classroom_no,lesson,limit,day) values(%s,%s,%s,%s,%s,%s,%s)'
+
+            sql = 'select * from course where course_id = %s'
+            cursor.execute(sql,(course_id,))
+            test = sql_util.dictfetchone(cursor)
+            if test == None:
+                self._init_response()
+                return self._get_response("insert error: no such course",-1)
+
+            sql = 'select * from classroom where classroom_no = %s'
+            cursor.execute(sql,(classroom_no,))
+            test = sql_util.dictfetchone(cursor)
+            if test == None:
+                self._init_response()
+                return self._get_response("insert error: no such classroom",-1)
+
+            sql = 'insert into section(course_id,section_id,time,classroom_no,lesson,`limit`,day) values(%s,%s,%s,%s,%s,%s,%s)'
             cursor.execute(sql,(course_id,section_id,time,classroom_no,lesson,limit,day,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -228,6 +245,7 @@ class RootService(BaseService):
             return self._get_response(SERVER_ERROR)
 
     def checkSections(self):
+
 
         if self.request.session['is_login'] != True or \
             (self.request.session['role'] != ROOT_ROLE):
@@ -281,7 +299,9 @@ class RootService(BaseService):
             connection.rollback()
             self._init_response()
             return self._get_response(SERVER_ERROR)
-
+   
+    def updateSection(self):
+        pass 
 
 ############Student######################
 
@@ -332,6 +352,7 @@ class RootService(BaseService):
             student_name = self.data['student_name']
             student_major = self.data['student_major']
             student_dept_name = self.data['student_dept_name']
+            student_total_credit = self.data['student_total_credit']
     
         except Exception as error:
             self._init_response()
@@ -340,16 +361,24 @@ class RootService(BaseService):
         try:
             cursor = connection.cursor()
 
-            sql = 'select * from instructor where student_id = %s'
+            sql = 'select * from student where student_id = %s'
             cursor.execute(sql,(student_id,))
             test = sql_util.dictfetchone(cursor)
             if test != None:
                 self._init_response()
                 return self._get_response("insert error: already exist",-1)
-            
-            sql = 'insert into student(student_id,student_name,student_major,student_dept_name)'\
-                            'values(%s,%s,%s,%s)'
-            cursor.execute(sql,(student_id,student_name,student_major,student_dept_name))
+
+            sql = 'select * from account where id = %s'
+            cursor.execute(sql,(student_id,))
+            test = sql_util.dictfetchone(cursor)
+            if test == None:
+                self._init_response()
+                return self._get_response("insert error: no such account",-1)
+
+            sql = 'insert into student(student_id,student_name,student_major,student_dept_name,student_total_credit)'\
+                            'values(%s,%s,%s,%s,%s)'
+            cursor.execute(sql,(student_id,student_name,student_major,student_dept_name,student_total_credit))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -412,8 +441,13 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
+    def updateStudent(self):
+        pass 
 
 ############Instructor######################
+
+    def updateInstructor(self):
+        pass 
 
     def deleteInstructor(self):
         if self.request.session['is_login'] != True or \
@@ -473,12 +507,24 @@ class RootService(BaseService):
             sql = 'select * from instructor where instructor_id = %s'
             cursor.execute(sql,(instructor_id,))
             test = sql_util.dictfetchone(cursor)
+
             if test != None:
                 self._init_response()
                 return self._get_response("insert error: already exist",-1)
+
+
+            sql = 'select * from account where id = %s'
+            cursor.execute(sql,(instructor_id,))
+            test = sql_util.dictfetchone(cursor)
+
+            if test == None:
+                self._init_response()
+                return self._get_response("insert error: no such account",-1)
+
             sql = 'insert into instructor(instructor_id,instructor_name,instructor_class,dept_name)'\
                             'values(%s,%s,%s,%s)'
             cursor.execute(sql,(instructor_id,instructor_name,instructor_class,dept_name))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -579,6 +625,9 @@ class RootService(BaseService):
             return self._get_response(SERVER_ERROR)
 
 
+    def updateExam(self):
+        pass
+
 ###########Classroom##################
     def insertClassroom(self):
         if self.request.session['is_login'] != True or \
@@ -607,6 +656,7 @@ class RootService(BaseService):
             sql = 'insert into classroom(classroom_no,capacity)'\
                             'values(%s,%s)'
             cursor.execute(sql,(classroom_no,capacity))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -697,6 +747,8 @@ class RootService(BaseService):
         
         pass
 
+    def updateClassroom(self):
+        pass
   
 ###########Account#####################
     def insertAccount(self):
@@ -728,6 +780,7 @@ class RootService(BaseService):
             sql = 'insert into account(id,password,role)'\
                             'values(%s,%s,%s)'
             cursor.execute(sql,(user_id,password,role))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -773,7 +826,6 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
- 
     def checkAccounts(self):
 
         if self.request.session['is_login'] != True or \
@@ -821,68 +873,5 @@ class RootService(BaseService):
         
         pass
         
-    def execute(self):
-        try:
-            user_id = self.data["user_id"]
-            password = self.data["password"]
-            # logger.info("user id is ",user_id)
-            # logger.info("user password is ",password)
-        except Exception as error:
-            # logger.error(error)
-            self._init_response(POST_ARG_ERROR)
-            return self._get_response()
-
-        try:
-            cursor = connection.cursor()
-            id_sql = 'select * from account where id = %s'
-            cursor.execute(id_sql, (user_id,))
-            row = sql_util.dictfetchone(cursor)
-            if row is None:
-                self._init_response()
-                return self._get_response(WRONG_USERID,-1)
-            else:
-                pass_sql = 'select * from account where id = %s and password = %s '
-                cursor.execute(pass_sql,(user_id,password))
-                row = sql_util.dictfetchone(cursor)
-                print(row)
-                if row is None:
-                    self._init_response()
-                    return self._get_response(WRONG_PASSWD,-1)
-                else:
-                    role_num = row['role']
-                    if role_num == STUDENT_ROLE:
-                        find_student_name_sql = "SELECT 'student'.'student_name' FROM 'student' WHERE 'student'.'student_id' = '"+user_id+"'"
-                        cursor.execute(find_student_name_sql)
-                        raw_student_name = sql_util.dictfetchone(cursor)
-                        res_name= raw_student_name["student_name"]
-                        # logger.info(res_name)
-
-                    if role_num == INSTRUCTOR_ROLE:
-                        find_instructor_name_sql = "SELECT 'instructor'.'instructor_name' FROM 'instructor' WHERE 'instructor'.'instructor_id' = '"+user_id+"'"
-                        cursor.execute(find_instructor_name_sql)
-                        raw_instructor_name = sql_util.dictfetchone(cursor)
-                        res_name= raw_instructor_name["instructor_name"]
-                        # logger.info(res_name)
-
-                    if role_num == ROOT_ROLE:
-                        res_name = "administrator"
-
-                    data = {'user_name':res_name,
-                            'role':role_num}
-                    self.request.session['user_id'] = user_id
-                    self.request.session['role'] = row['role']
-                    self.request.session['is_login'] = True
-                    self.response.update(data)
-                    self._init_response()
-                    return self._get_response(LOGIN_OK,1)
-
-        except Exception as error:
-            traceback.print_exc()
-            # logger.error(error)
-            connection.rollback()
-            self._init_response()
-            return self._get_response(str(error))
-
-
-
-
+    def updateAccount(self):
+        pass
