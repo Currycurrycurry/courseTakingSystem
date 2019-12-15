@@ -119,8 +119,8 @@ def deleteInstructor(request):
 def insertInstructor(request):
     return RootService(request).insertInstructor()
 
-def updateStudent(request):
-    return RootService(request).updateStudent()
+def updateInstructor(request):
+    return RootService(request).updateInstructor()
 
 def checkInstructors(request):
     return RootService(request).checkInstructors()
@@ -130,6 +130,12 @@ def updateExam(request):
 
 def checkExams(request):
     return RootService(request).checkExams()
+
+def insertExam(request):
+    return RootService(request).insertExam()
+
+def deleteExam(request):
+    return RootService(request).deleteExam()
 ################################################
 def insertClassroom(request):
     return RootService(request).insertClassroom()

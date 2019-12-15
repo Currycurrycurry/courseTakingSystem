@@ -69,3 +69,6 @@ APP_CAPACITY = "exceed the classroom capacity"
 ERROR_LOADING_FILE = "error when loading file"
 
 FILE_FORMAT_ERROR = "file format error"
+
+UPDATE_ERROR = "update error: nonexist"
+INSERT_ERROR = "insert error"

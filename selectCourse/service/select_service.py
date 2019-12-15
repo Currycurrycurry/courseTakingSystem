@@ -9,7 +9,7 @@ from selectCourse.constants.errorConstants import *
 from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
-# TODO prevent the SQL injection
+
 # TODO the exam time conflict when selecting (the exam table need to be revised!)
 # TODO test the no_vacancy section_time_conflict conditions!
 class SelectService(BaseService):

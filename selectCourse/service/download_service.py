@@ -1,6 +1,6 @@
 import json
 import traceback
-from django.http import FileResponse
+from django.http import FileResponse,HttpResponse
 
 from selectCourse.logs import logger
 from selectCourse.util import sql_util
@@ -34,11 +34,11 @@ class DownloadService():
         return FileResponse(self.response)
 
     def execute(self):
-        logger.warning("[BaseService] method execute of BaseHandler should be implemented")
-        file_type = request.GET('file_type')
+        file_type = self.request.GET['file_type']
         if file_type == STUDENT_FILE:
-            file = open('../../data/student_list_example.xlsx','rw')
-            response = FileResponse(file)
+            # file = open('/Users/huangjiani/CourseSelectionSystem/data/student_list_example.xlsx','rw')
+            file = open('./select_service.py','rw')
+            response = HttpResponse(file)
             response['Content-Type'] = 'application/octet-stream'
             response['Content-Disposition'] = 'attachment;filename="student_list_example.xlsx"'
             return response

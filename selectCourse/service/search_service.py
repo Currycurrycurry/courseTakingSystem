@@ -9,7 +9,7 @@ from selectCourse.constants.errorConstants import *
 from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
-# TODO wait for more tests
+# 2019.12.15 merge the checking all courses with searching courses.
 class SearchService(BaseService):
     def __init__(self, request):
         super(SearchService, self).__init__(request)
@@ -22,25 +22,54 @@ class SearchService(BaseService):
             return self._get_response(UNAUTHORIZED,-1)
 
         try:
-            user_id = self.data['user_id']
-            search_type = int(self.data['search_type'])
+          
+            course_id = self.request.GET['course_id']
+            section_id = self.request.GET['section_id']
+            title = self.request.GET['title']
+            instructor_name = self.request.GET['instructor_name']
+            dept_name = self.request.GET['dept_name']
+            page_num = self.request.GET['page_num']
 
-
-    
         except Exception as error:
             self._init_response()
-            return self._get_response(POST_ARG_ERROR,-1)
+            return self._get_response(GET_ARG_ERROR,-1)
         
-        try:
+        try:  
+            get_dict = self.request.GET.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
-            if search_type == SEARCH_BY_SECTION:
-                course_id = self.data['course_id']
-                section_id = self.data['section_id']
-                sql = 'select * from section natural join course natural join teaches natural join instructor where course_id = %s and section_id = %s'
-                cursor.execute(sql,(course_id,section_id,))
-                row = sql_util.dictfetchone(cursor)
-                if row != None :
-                    self._init_response()
+            sql = 'select * from section natural join course natural join teaches natural join instructor'
+            cnt_sql = 'select count(*) from section natural join course natural join teaches natural join instructor'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+"='"+get_dict[key]+"'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+
+            cursor.execute(cnt_sql)
+            total_num = int(cursor.fetchone()[0])
+            print("total num is ",total_num)
+
+            if rows != None:
+                sections = []
+                for row in rows:
                     res = {
                         'title':row['title'],
                         'course_id':row['course_id'],
@@ -53,99 +82,15 @@ class SearchService(BaseService):
                         'time':row['time'],
                         'lesson':row['lesson'],    
                     }
-                    self.response.update(res)
-                    return self._get_response(SEARCH_OK,1)
-                else:
-                    self._init_response()
-                    return self._get_response(NO_RESULT,-1)
-
-            if search_type == SEARCH_BY_NAME:
-                title = self.data['title']
-                sql = 'select * from section natural join course natural join teaches natural join instructor where title = %s'
-                cursor.execute(sql,(title,))
-                row = sql_util.dictfetchone(cursor)
-                if row != None :
-                    self._init_response()
-                    res = {
-                    'title':row['title'],
-                    'course_id':row['course_id'],
-                    'section_id':row['section_id'],
-                    'dept_name':row['dept_name'],
-                    'instructor_name':row['instructor_name'],
-                    'credits':row['credits'],
-                    'classroom_no':row['classroom_no'],
-                    'day':row['day'],
-                    'time':row['time'],
-                    'lesson':row['lesson'],    
-                    }
-                    self.response.update(res)
-                    return self._get_response(SEARCH_OK,1)
-                else:
-                    self._init_response()
-                    return self._get_response(NO_RESULT,-1)
-
-            if search_type == SEARCH_BY_DEPT:
-                dept_name = self.data['dept_name']
-                sql = 'select * from section natural join course natural join teaches natural join instructor where dept_name = %s'
-                cursor.execute(sql,(dept_name,))
-                rows = sql_util.dictfetchall(cursor)
-                sections = []
-                if rows != None :
-
-                    for row in rows:
-                        res = {
-                            'title':row['title'],
-                            'course_id':row['course_id'],
-                            'section_id':row['section_id'],
-                            'dept_name':row['dept_name'],
-                            'instructor_name':row['instructor_name'],
-                            'credits':row['credits'],
-                            'classroom_no':row['classroom_no'],
-                            'day':row['day'],
-                            'time':row['time'],
-                            'lesson':row['lesson'],    
-                        }
-                        sections.append(res)
-
-                    self._init_response()
-                    self.response.update(sections)
-                    return self._get_response(SEARCH_OK,1)
-                else:
-                    self._init_response()
-                    return self._get_response(NO_RESULT,-1)
-
-            if search_type == SEARCH_BY_INSTRUCTOR:
-                instructor_name = self.data['instructor_name']
-                sql = 'select * from section natural join course natural join teaches natural join instructor where instructor_name = %s'
-                cursor.execute(sql,(instructor_name,))
-                rows = sql_util.dictfetchall(cursor)
-                sections = []
-                if rows != None :
-                    for row in rows:
-                        res = {
-                            'title':row['title'],
-                            'course_id':row['course_id'],
-                            'section_id':row['section_id'],
-                            'dept_name':row['dept_name'],
-                            'instructor_name':row['instructor_name'],
-                            'credits':row['credits'],
-                            'classroom_no':row['classroom_no'],
-                            'day':row['day'],
-                            'time':row['time'],
-                            'lesson':row['lesson'],    
-                        }
-                        sections.append(res)
-
-                    self._init_response()
-                    self.response.update(sections)
-                    return self._get_response(SEARCH_OK,1)
-                else:
-                    self._init_response()
-                    return self._get_response(NO_RESULT,-1)
-
-                pass
-            
-
+                    sections.append(res)
+                self._init_response()
+                reses = {'sections':sections,
+                            'total_num':total_num,}
+                self.response.update(reses)
+                return self._get_response(SEARCH_OK,1)
+            else:
+                self._init_response()
+                return self._get_response(NO_RESULT,-1)
 
         except Exception as error:
             traceback.print_exc()

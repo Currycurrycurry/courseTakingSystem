@@ -9,7 +9,8 @@ from selectCourse.constants.errorConstants import *
 from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
-# TODO all without test
+# TODO all without test 只有无余量的课才能被申请，测试的前提是（需要单元测试来进行批量学生选课）
+
 class ApplyService(BaseService):
     def __init__(self, request):
         super(ApplyService, self).__init__(request)
@@ -109,7 +110,8 @@ class ApplyService(BaseService):
             connection.rollback()
             self._init_response()
             return self._get_response(SERVER_ERROR)
-        
+
+
     def submitApplication(self):
 
         if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE:
@@ -130,18 +132,18 @@ class ApplyService(BaseService):
             cursor = connection.cursor()
             sql = 'select * from application where course_id = %s and section_id = %s and student_id = %s'
             cursor.execute(sql,(course_id,section_id,user_id,))
-            row = sql_util.dictfetchone()
+            row = sql_util.dictfetchone(cursor)
             if row != None:
                 self._init_response()
                 return self._get_response(APP_ALREADY,-1)
             
-            if row['id_drop'] == 1:
+            if row != None and row['if_drop'] == 1:
                 self._init_response()
                 return self._get_response(APP_DROPPED,-1)
 
             sql = 'select * from takes where course_id = %s and section_id = %s and student_id = %s'
             cursor.execute(sql,(course_id,section_id,user_id,))
-            row = sql_util.dictfetchone()
+            row = sql_util.dictfetchone(cursor)
             if row != None:
                 self._init_response()
                 return self._get_response(APP_SELECTED,-1)
@@ -153,6 +155,9 @@ class ApplyService(BaseService):
             find_section_limit = "SELECT 'section'.'limit' FROM 'section' WHERE 'section'.'course_id'='"+course_id+"' AND 'section'.'section_id' ="+section_id
             cursor.execute(find_section_limit)
             raw_section_limit = cursor.fetchone()
+            if raw_section_limit == None:
+                self._init_response()
+                return self._get_response("nonexist section ",-1)
             print("the section limit is :",raw_section_limit[0])
 
             find_section_capacity = "SELECT capacity FROM classroom NATURAL JOIN section WHERE course_id='"+course_id+"' AND section_id='"+section_id+"'"
@@ -169,16 +174,9 @@ class ApplyService(BaseService):
 
             
 
-
-
-
-
-
-
-
-
-            sql ='update application set status = %s where course_id = %s and section_id = %s'
-            cursor.execute(sql,(status,course_id,section_id))
+            sql = 'insert into application(course_id,section_id,student_id)'\
+                'values(%s,%s,%s)'
+            cursor.execute(sql,(course_id,section_id,user_id,app_reason,))
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 

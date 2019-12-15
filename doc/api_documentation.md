@@ -312,7 +312,7 @@ POST /selectCourse/submitApplication
 | 错误码 | 含义 |
 | ---- | ---- |
 
-| can't apply course which is already applied| 不能申请已申请课程 |
+| can't apply course which is already applied | 不能申请已申请课程|
 | can't apply selected course| 不能申请已选课程 |
 | can't apply dropped course| 不能申请已退的申请通过课程 |
 | apply successfully| 提交成功 |
@@ -592,7 +592,7 @@ POST /selectCourse/insertStudent/
 | student_name | string |
 | student_major| string |
 | student_dept_name | string |
-
+| student_total_credit | string |
 
 ##### 返回值
 
@@ -679,31 +679,192 @@ None
 ｜ handle successfully ｜ ok｜
 
 
+#### 手动导入考试信息
+
+POST /selectCourse/insertExam/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| title | string |
+| credits | int |
+| dept_name | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 考试已存在 |
+｜ handle successfully ｜ ok｜
+
 ### 删
 
 #### 删除课程信息
 
 POST /selectCourse/deleteCourse/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist course| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+
 #### 删除开课信息
 
 POST /selectCourse/deleteSection/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| section_id | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist section| 课程已存在 |
+｜ handle successfully ｜ ok｜
 
 #### 删除学生信息
 
 POST /selectCourse/deleteStudent/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| student_id | string |
+
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist student| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
 #### 删除教师信息
 
 POST /selectCourse/deleteInstructor/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| instructor_id | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist instructor| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
 
 #### 删除教室信息
 
 POST /selectCourse/deleteClassroom/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| classroom_no | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist classroom| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+
 #### 删除账户信息
 
 POST /selectCourse/deleteAccount/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| user_id | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist account| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+#### 删除考试信息
+
+POST /selectCourse/deleteExam/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| section_id | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| delete nonexist exam| 课程不存在 |
+｜ handle successfully ｜ ok｜
 
 
 ### 改 
@@ -712,26 +873,182 @@ POST /selectCourse/deleteAccount/
 
 POST /selectCourse/updateCourse/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| title | string |
+| credits | int |
+| dept_name | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+
 #### 修改开课信息
 
 POST /selectCourse/updateSection/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| section_id | string |
+| time | string |
+| classroom_no | int |
+| lesson | int |
+| limit | int |
+| day | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 开课已存在 |
+｜ handle successfully ｜ ok｜
+
 
 #### 修改学生信息
 
 POST /selectCourse/updateStudent/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| student_id | string |
+| student_name | string |
+| student_major| string |
+| student_dept_name | string |
+| student_total_credit | string |
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 学生已存在 |
+｜ handle successfully ｜ ok｜
+
 #### 修改教师信息
 
 POST /selectCourse/updateInstructor/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| instructor_id | string |
+| instructor_name | string |
+| instructor_class | string |
+| dept_name | string |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
 
 #### 修改教室信息
 
 POST /selectCourse/updateClassroom/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| classroom_no | string |
+| capacity | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+
 #### 修改账户信息
 
 POST /selectCourse/updateAccount/
 
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| user_id | string |
+| password | string |
+| role | int |
+
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| insert error: already exist| 课程已存在 |
+｜ handle successfully ｜ ok｜
+
+#### 修改考试信息
+
+POST /selectCourse/updateExam/
+
+##### 参数列表
+
+| 名称 | 类型 | 
+| ---- | ---- | 
+| course_id | string |
+| section_id | string |
+| classroom_no | int |
+| day | int |
+| type | int |
+| start_time | string |
+| end_time | string |
+| open_note_flag | int |
+
+##### 返回值
+
+None
+
+##### 错误码
+
+| 错误码 | 含义 |
+| ---- | ---- |
+| update error: nonexist| 课程不存在 |
+｜ handle successfully ｜ ok｜
 
 ### 查
 
@@ -739,23 +1056,222 @@ POST /selectCourse/updateAccount/
 
 POST /selectCourse/checkCourses/
 
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "ret_num": 15
+    "courses" : [
+        {
+        'title': '大气环境科学'
+        'course_id': 'ATMO00000003'
+        'dept_name':“航空航天系”,
+        'credits':2,
+        }  
+    ] 
+}
+```
+
+##### 错误码
+
+无
+
 #### 查看开课信息
 
 POST /selectCourse/checkSections/
+
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "ret_num": 15
+    "sections" : {
+        'course_id': 'ATMO00000003'
+        'section_id':1,
+        'credits':2,
+        'classroom_no':Z2202,
+        'day':2, //周二
+        'time':4-5, //第4到第5节
+        'lesson':2, //课时 
+    }   
+}
+```
+
+##### 错误码
+
+无
+
 
 #### 查看学生信息
 
 POST /selectCourse/checkStudents/
 
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+
+```json
+{   
+     "total_num" : 1,
+    "ret_num": 15,
+    "students" : {
+    "student_id": "17302010063",
+    "student_name": "黄佳妮",
+    "student_major": "软件工程",
+    "student_dept_name":"软件学院",
+    "student_total_creidt":95,
+    }
+}
+```
+
+##### 错误码
+
+无
+
+
 #### 查看教师信息
 
 POST /selectCourse/checkInstructors/
+
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+```json
+{   
+    "total_num" : 1,
+    "ret_num": 15,
+    "instructors" : {
+    "instructor_id": "SOFT00000001",
+    "instructor_name": "王小明",
+    "instructor_class": "副教授",
+    "dept_name":"软件学院"
+    }
+}
+```
+
+##### 错误码
+
+无
+
 
 #### 查看教室信息
 
 POST /selectCourse/checkClassrooms/
 
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "ret_num": 15
+    "classrooms" : {
+        'classroom_no':Z2202,
+        'capacity':90
+    }   
+}
+```
+
+##### 错误码
+
+无
+
+
 #### 查看账户信息
 
 POST /selectCourse/checkAccounts/
+
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "ret_num": 15,
+    "accounts" : [{
+       'id':'www',
+       'password':'www',
+       'role':1
+    } ]  
+}
+```
+
+##### 错误码
+
+无
+
+#### 查看考试信息
+
+POST /selectCourse/checkExams/
+
+##### 参数列表
+
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| current_page_num | int | 当前页数 |
+
+
+##### 返回值
+
+```json
+{
+    "total_num" : 1,
+    "ret_num": 15,
+    "exams" : [{
+      'course_id’:"ATMO130004",
+      'section_id':1
+      'classroom_no':"Z2204",
+      'day':5,
+      'type':1,
+      'start_time':"13:00",
+      'end_time':"15:00",
+      'open_note_flag':1
+    } ]  
+}
+```
+
+##### 错误码
+
+无
+
 

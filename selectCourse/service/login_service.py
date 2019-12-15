@@ -67,6 +67,7 @@ class LoginService(BaseService):
                     self.request.session['user_id'] = user_id
                     self.request.session['role'] = row['role']
                     self.request.session['is_login'] = True
+                    print(self.request.session)
                     self.response.update(data)
                     self._init_response()
                     return self._get_response(LOGIN_OK,1)
