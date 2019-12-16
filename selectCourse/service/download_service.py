@@ -15,7 +15,9 @@ class DownloadService():
         self.response = {}
         if request.method == 'POST':
             self.data = request.POST
-
+        elif request.method == 'GET':
+            self.data = request.GET
+        
     def _init_response(self, status=None):
         if status and status["code"]:
             # self.response["result"] = False

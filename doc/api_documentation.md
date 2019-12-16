@@ -22,7 +22,7 @@
 
 ## 登录
 
-POST /selectCourse//login/
+POST /selectCourse/login/
 
 ### 参数列表
 
@@ -51,7 +51,7 @@ POST /selectCourse//login/
 
 ## 登出
 
- /selectCourse//login/
+ /selectCourse/logout/
 
 ### 参数列表
 
@@ -141,6 +141,7 @@ POST /selectCourse/checkCourseTable
         'course_id': 'ATMO00000003'
         'section_id':1,
         'dept_name':“航空航天系”,
+        'instructor_name':'curry',
         'credits':2,
         'classroom_no':Z2202,
         'day':2, //周二

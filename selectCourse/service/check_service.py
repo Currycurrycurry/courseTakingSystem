@@ -14,6 +14,8 @@ class CheckService(BaseService):
         super(CheckService, self).__init__(request)
         if request.method == 'POST':
             self.data = request.POST
+        elif request.method == 'GET':
+            self.data = request.GET
 
     def checkCourseTable(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE:
@@ -29,9 +31,9 @@ class CheckService(BaseService):
         
         try:
             cursor = connection.cursor()
-            check_courses_sql = 'select * from section natural join course natural join teaches natural join takes natural join instructor where student_id = %s'
+            #  
+            check_courses_sql = 'select * from section natural join course natural join teaches natural join takes natural join instructor natural join exam where student_id = %s'
             cursor.execute(check_courses_sql,(user_id,))
-            
             raw_courses_taken = sql_util.dictfetchall(cursor)
             print("raw courses taken are :",raw_courses_taken)
             total_num = len(raw_courses_taken)
@@ -45,12 +47,17 @@ class CheckService(BaseService):
                     'dept_name':row['dept_name'],
                     'instructor_name':row['instructor_name'],
                     'credits':row['credits'],
-                    'classroom_no':row['classroom_no'],
+                    'classroom_no':row['exam_classroom_no'],
                     'day':row['day'],
                     'time':row['time'],
-                    'lesson':row['lesson'],    
+                    'lesson':row['lesson'],  
+                    'exam_classroom_no':row['classroom_no'],
+                    'exam_day':row['exam_day'],
+                    'exam_type':row['type'],
+                    'start_time':row['start_time'],
+                    'end_time':row['end_time'],
+                    'open_note_flag':row['open_note_flag']
                 }
-                
                 sections.append(tmp)
             res = {
                 'total_num':total_num,
@@ -149,8 +156,6 @@ class CheckService(BaseService):
             self._init_response()
             return self._get_response(UNAUTHORIZED)
 
-    # TODO wait for more tests
-    # TODO ljx the exam table 不完整？
     def checkExamTable(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE:
             self._init_response()
@@ -161,19 +166,16 @@ class CheckService(BaseService):
     
         except Exception as error:
             self._init_response()
-            return self._get_response(POST_ARG_ERROR,-1)
+            return self._get_response(GET_ARG_ERROR,-1)
         
         try:
             cursor = connection.cursor()
-            # check_exams_sql = "select * from (SELECT * FROM (SELECT * FROM 'section' NATURAL JOIN 'takes' WHERE 'takes'.'student_id'='"+user_id+"') NATURAL JOIN 'course') natural join exam "
-            # cursor.execute(check_exams_sql)
             sql = 'select * from section natural join takes natural join course natural join exam where student_id = %s'
             cursor.execute(sql,(user_id,))
             raw_exams_taken = sql_util.dictfetchall(cursor)
             print("raw courses taken are :",raw_exams_taken)
             total_num = len(raw_exams_taken)
             print("total num is ",total_num)
-            # sections = list(raw_courses_taken)
             sections = []
             for row in raw_exams_taken:
                 tmp = {
@@ -203,12 +205,6 @@ class CheckService(BaseService):
             connection.rollback()
             self._init_response()
             return self._get_response(SERVER_ERROR)
-
-
-
-
-
-        pass
 
     def checkTaughtCourses(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE:
@@ -261,7 +257,6 @@ class CheckService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
-
     def checkCourseNameList(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE:
             self._init_response()
@@ -284,7 +279,7 @@ class CheckService(BaseService):
             print("raw name list taken are :",raw_namelist)
             total_num = len(raw_namelist)
             print("total num is ",total_num)
-            sections = []
+            students = []
             for row in raw_namelist:
                 tmp = {
                     'title':row['title'],
@@ -294,11 +289,11 @@ class CheckService(BaseService):
                     'student_dept_name':row["student_dept_name"],
                     'grade':row['grade'],
                 }
-                sections.append(tmp)
+                students.append(tmp)
 
             res = {
                 'total_num':total_num,
-                'sections':sections,
+                'students':students,
             }
            
             self.response.update(res)

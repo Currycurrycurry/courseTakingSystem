@@ -9,13 +9,13 @@ from selectCourse.constants.errorConstants import *
 from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
-# TODO all without test 只有无余量的课才能被申请，测试的前提是（需要单元测试来进行批量学生选课）
-
 class ApplyService(BaseService):
     def __init__(self, request):
         super(ApplyService, self).__init__(request)
         if request.method == 'POST':
             self.data = request.POST
+        elif request.method == 'GET':
+            self.data = request.GET
 
     def checkApplications(self):
         if self.request.session['is_login'] != True:
@@ -172,10 +172,9 @@ class ApplyService(BaseService):
                 self._init_response()
                 return self._get_response(APP_CAPACITY,-1)
 
-            
-
-            sql = 'insert into application(course_id,section_id,student_id)'\
-                'values(%s,%s,%s)'
+            sql = 'insert into application(course_id,section_id,student_id,application_reason) '\
+                'values(%s,%s,%s,%s)'
+            print(sql)
             cursor.execute(sql,(course_id,section_id,user_id,app_reason,))
             self._init_response()
             return self._get_response(HANDLE_OK,1)
@@ -185,20 +184,7 @@ class ApplyService(BaseService):
             connection.rollback()
             self._init_response()
             return self._get_response(SERVER_ERROR)
-        
-
-
-
-
-
-
-
-
-
-
-
-        pass
-
+  
     def execute(self):
        pass
 

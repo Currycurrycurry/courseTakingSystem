@@ -15,6 +15,8 @@ class SearchService(BaseService):
         super(SearchService, self).__init__(request)
         if request.method == 'POST':
             self.data = request.POST
+        elif request.method == 'GET':
+            self.data = request.GET
 
     def execute(self):
         if self.request.session['is_login'] != True:
@@ -23,19 +25,19 @@ class SearchService(BaseService):
 
         try:
           
-            course_id = self.request.GET['course_id']
-            section_id = self.request.GET['section_id']
-            title = self.request.GET['title']
-            instructor_name = self.request.GET['instructor_name']
-            dept_name = self.request.GET['dept_name']
-            page_num = self.request.GET['page_num']
+            course_id = self.data['course_id']
+            section_id = self.data['section_id']
+            title = self.data['title']
+            instructor_name = self.data['instructor_name']
+            dept_name = self.data['dept_name']
+            page_num = self.data['page_num']
 
         except Exception as error:
             self._init_response()
             return self._get_response(GET_ARG_ERROR,-1)
         
         try:  
-            get_dict = self.request.GET.copy() 
+            get_dict = self.data.copy() 
             del get_dict['page_num']
             print(get_dict)
             cursor = connection.cursor()
