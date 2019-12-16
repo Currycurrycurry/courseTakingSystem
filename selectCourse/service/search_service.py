@@ -46,7 +46,7 @@ class SearchService(BaseService):
             sql_conditions = []
             for key in get_dict.keys():
                 if get_dict[key]!=None and get_dict[key]!='':
-                    sql_conditions.append(str(key+"='"+get_dict[key]+"'"))
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
             if len(sql_conditions)==0:
                 final_sql = sql
             else:
@@ -69,7 +69,7 @@ class SearchService(BaseService):
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
 
-            if rows != None:
+            if len(rows) != 0:
                 sections = []
                 for row in rows:
                     res = {

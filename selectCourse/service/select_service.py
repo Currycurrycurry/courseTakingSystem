@@ -10,7 +10,7 @@ from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
 
-# TODO the exam time conflict when selecting (the exam table need to be revised!)
+
 # TODO test the no_vacancy section_time_conflict conditions!
 class SelectService(BaseService):
     def __init__(self, request):
@@ -98,18 +98,13 @@ class SelectService(BaseService):
                         self._init_response()
                         return self._get_response(SECTION_TIME_CONFLICT)
             
-
-            # # exam time conflict
-            # find_the_exam_sql = 'select * from exam where course_id = %s and section_id = %s'
-            # cursor.execute(find_the_exam_sql,(course_id,section_id,))
-            # the_exam_info = sql_util.dictfetchone(cursor)
-
-
-            # find_exams_sql = 'select * from exam natural join takes where student_id = %'
-            # cursor.execute(find_exams_sql,(user_id,))
-            # exams_info = sql_util.dictfetchall(cursor)
-
-
+            # application conflict
+            app_sql = 'select * from application where course_id=%s and section_id=%s and student_id=%s and if_drop=1'
+            cursor.execute(app_sql,(course_id,section_id,user_id))
+            raw_app = sql_util.dictfetchall(cursor)
+            if raw_app != None:
+                self._init_response()
+                return self._get_response(DROP_SELECT_ERROR)
 
             insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
             cursor.execute(insert_takes_sql)

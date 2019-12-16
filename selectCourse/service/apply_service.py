@@ -27,7 +27,7 @@ class ApplyService(BaseService):
     
         except Exception as error:
             self._init_response()
-            return self._get_response(POST_ARG_ERROR,-1)
+            return self._get_response(GET_ARG_ERROR,-1)
         
         if self.request.session['role'] == STUDENT_ROLE:
             return self.checkApplicationsByStudent(user_id)
@@ -41,7 +41,7 @@ class ApplyService(BaseService):
     def checkApplicationsByStudent(self,user_id):
         try:
             cursor = connection.cursor()
-            check_app_sql = 'select * from appication where student_id = %s'
+            check_app_sql = 'select * from application where student_id = %s'
             cursor.execute(check_app_sql,(user_id,))
             app_infos = sql_util.dictfetchall(cursor)
             total_num = len(app_infos)
@@ -65,7 +65,7 @@ class ApplyService(BaseService):
         try:
             cursor = connection.cursor()
             sql = 'select * from teaches natural join application where instructor_id = %s'
-            cursor.execute(sql)
+            cursor.execute(sql,(user_id,))
             rows = sql_util.dictfetchall(cursor)
             total_num = len(rows)
             self._init_response()
@@ -84,7 +84,7 @@ class ApplyService(BaseService):
 
     def handleApplication(self):
 
-        if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE:
+        if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
             return self._get_response(UNAUTHORIZED_AS_INSTRUCTOR)
 
@@ -111,10 +111,9 @@ class ApplyService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
-
     def submitApplication(self):
 
-        if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE:
+        if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
             return self._get_response(UNAUTHORIZED_AS_STUDENT)
 

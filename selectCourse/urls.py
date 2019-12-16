@@ -25,7 +25,7 @@ urlpatterns = [
 ################################################
     path('submitApplication/',service_view.submitApplication),
     path('checkApplications/',service_view.checkApplications),
-    path('handleApplications/',service_view.handleApplication),
+    path('handleApplication/',service_view.handleApplication),
 
 ################################################v
     path('downloadFile/',service_view.downloadFile),

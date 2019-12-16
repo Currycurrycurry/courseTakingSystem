@@ -20,6 +20,8 @@ class RootService(BaseService):
         super(RootService, self).__init__(request)
         if request.method == 'POST':
             self.data = request.POST
+        elif request.method == 'GET':
+            self.data = request.GET
 
 #################Course##################
     def deleteCourse(self):
@@ -102,45 +104,74 @@ class RootService(BaseService):
             return self._get_response(UNAUTHORIZED)
 
         try:
-
-            page_num = int(self.data['current_page_num']) #0,1,2,...
+            page_num = int(self.data['page_num']) #0,1,2,...
+            course_id = self.data['course_id']
+            title = self.data['title']
+            dept_name = self.data['dept_name']
     
         except Exception as error:
             self._init_response()
-            return self._get_response(POST_ARG_ERROR,-1)
+            return self._get_response(GET_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
 
-            check_all_courses_sql = "SELECT * FROM 'course' limit %s,%s"
-            # start_page = ITEM_NUM_FOR_ONE_PAGE * page_num
-            # print("start page is ",start_page)
-            cursor.execute(check_all_courses_sql,(ITEM_NUM_FOR_ONE_PAGE * page_num,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw courses are :",raw_courses)
-            total_num_sql = 'select count(*) from course'
-            cursor.execute(total_num_sql)
+            sql = "SELECT * FROM 'course'"
+            cnt_sql = 'select count(*) from course'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            # sections = list(raw_courses_taken)
-            sections = []
-            for row in raw_courses:
-                tmp = {
-                    'title':row['title'],
-                    'course_id':row['course_id'],
-                    'credits':row['credits'],
-                    'dept_name':row['dept_name'],
-                }
-                sections.append(tmp)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
-           
-            self.response.update(res)
-            self._init_response()
-            return self._get_response(SHOW_COURSES,1)
+            if len(rows)!=0:
+                sections = []
+            
+                for row in rows:
+                    tmp = {
+                        'title':row['title'],
+                        'course_id':row['course_id'],
+                        'credits':row['credits'],
+                        'dept_name':row['dept_name'],
+                    }
+                    sections.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'sections':sections,
+                }
+            
+                self.response.update(res)
+                self._init_response()
+                return self._get_response(SHOW_COURSES,1)
+            else:
+                self._init_response()
+                return self._get_response(NO_RESULT,-1)
 
         except Exception as error:
             traceback.print_exc()
@@ -148,11 +179,6 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
-
-
-
-
-        pass
    
     def updateCourse(self):
         if self.request.session['is_login'] != True or \
@@ -286,7 +312,6 @@ class RootService(BaseService):
 
     def checkSections(self):
 
-
         if self.request.session['is_login'] != True or \
             (self.request.session['role'] != ROOT_ROLE):
             self._init_response()
@@ -294,45 +319,72 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['current_page_num']) #0,1,2,...
+            page_num = int(self.data['page_num']) #0,1,2,...
+            course_id = self.data['course_id']
+            section_id = self.data['section_id']
     
         except Exception as error:
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
 
-            check_all_courses_sql = "SELECT * FROM 'section' limit %s,%s"
-            cursor.execute(check_all_courses_sql,(page_num*ITEM_NUM_FOR_ONE_PAGE,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw courses are :",raw_courses)
-            total_num_sql = 'select count(*) from section'
-            cursor.execute(total_num_sql)
+            sql = "SELECT * FROM 'section'"
+            cnt_sql = 'select count(*) from course'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            # sections = list(raw_courses_taken)
-            sections = []
-            for row in raw_courses:
-                tmp = {  
-                    'course_id':row['course_id'],
-                    'section_id':row['section_id'],
-                    'limit':row['limit'],
-                    'classroom_no':row['classroom_no'],
-                    'day':row['day'],
-                    'time':row['time'],
-                    'lesson':row['lesson'],    
-                }
-                sections.append(tmp)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
-           
-            self.response.update(res)
-            self._init_response()
-            return self._get_response(SHOW_COURSES,1)
+            if len(rows)!=0:
+                sections = []
+                for row in rows:
+                    tmp = {  
+                        'course_id':row['course_id'],
+                        'section_id':row['section_id'],
+                        'limit':row['limit'],
+                        'classroom_no':row['classroom_no'],
+                        'day':row['day'],
+                        'time':row['time'],
+                        'lesson':row['lesson'],    
+                    }
+                    sections.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'sections':sections,
+                }
+            
+                self.response.update(res)
+                self._init_response()
+                return self._get_response(SHOW_COURSES,1)
 
         except Exception as error:
             traceback.print_exc()
@@ -481,45 +533,72 @@ class RootService(BaseService):
             return self._get_response(UNAUTHORIZED)
 
         try:
+            page_num = int(self.data['page_num']) #0,1,2,...
+            student_id = self.data['student_id']
+            student_name = self.data['student_name']
+            student_major = self.data['student_major']
+            student_dept_name = self.data['student_dept_name']
+            student_total_credit = self.data['student_total_credit']
 
-            page_num = int(self.data['current_page_num']) #0,1,2,...
-    
         except Exception as error:
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
 
-            check_all_courses_sql = "SELECT * FROM student limit %s,%s"
-            start_page = page_num * ITEM_NUM_FOR_ONE_PAGE
-            cursor.execute(check_all_courses_sql,(start_page,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw students are :",raw_courses)
-            total_num_sql = 'select count(*) from student'
-            cursor.execute(total_num_sql)
+            sql = "SELECT * FROM student"
+            cnt_sql = 'select count(*) from student'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            # sections = list(raw_courses_taken)
-            sections = []
-            for row in raw_courses:
-                tmp = {
-                    'student_id':row['student_id'],
-                    'student_name':row['student_name'],
-                    'student_major':row["student_major"],
-                    'student_dept_name':row["student_dept_name"],
-                    'student_total_credit':row["student_total_credit"],
-                }
-                sections.append(tmp)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
-           
-            self.response.update(res)
-            self._init_response()
-            return self._get_response(SHOW_PERSONAL_INFO,1)
+            if len(rows)!=0:
+                sections = []
+                for row in rows:
+                    tmp = {
+                        'student_id':row['student_id'],
+                        'student_name':row['student_name'],
+                        'student_major':row["student_major"],
+                        'student_dept_name':row["student_dept_name"],
+                        'student_total_credit':row["student_total_credit"],
+                    }
+                    sections.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'sections':sections,
+                }
+            
+                self.response.update(res)
+                self._init_response()
+                return self._get_response(SHOW_PERSONAL_INFO,1)
 
         except Exception as error:
             traceback.print_exc()
@@ -645,7 +724,6 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
         
-
     def insertInstructor(self):
         if self.request.session['is_login'] != True or \
         (self.request.session['role'] != ROOT_ROLE):
@@ -695,7 +773,6 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
-
     def checkInstructors(self):
         if self.request.session['is_login'] != True or \
         (self.request.session['role'] != ROOT_ROLE):
@@ -705,28 +782,67 @@ class RootService(BaseService):
         try:
 
             page_num = int(self.data['current_page_num']) #0,1,2,...
+            instructor_id = self.data['instructor_id']
+            instructor_name = self.data['instructor_name']
+            instructor_class = self.data['instructor_class']
+            dept_name = self.data['dept_name']
+
     
         except Exception as error:
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
+       
+            sql = "SELECT * FROM instructor"
+            cnt_sql = 'select count(*) from instructor'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
 
-            check_all_courses_sql = "SELECT * FROM instructor limit %s,%s"
-            cursor.execute(check_all_courses_sql,(page_num*ITEM_NUM_FOR_ONE_PAGE,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw instructor are :",raw_courses)
-            total_num_sql = 'select count(*) from instructor'
-            cursor.execute(total_num_sql)
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            sections = list(raw_courses)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
+            if len(rows)!=0:
+                instructors = []
+                for row in rows:
+                    tmp = {
+                        'instructor_id':row['instructor_id'],
+                        'instructor_name':row['instructor_name'],
+                        'instructor_class':row['insturctor_class'],
+                        'dept_name':row['dept_name']
+                    }
+                    instructors.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'instructors':instructors,
+                }
            
             self.response.update(res)
             self._init_response()
@@ -741,8 +857,6 @@ class RootService(BaseService):
 
 ############Exam######################
 
-
-    
     def checkExams(self):
 
         if self.request.session['is_login'] != True or \
@@ -752,39 +866,87 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['current_page_num']) #0,1,2,...
-    
+            page_num = int(self.data['page_num']) #0,1,2,...
+            course_id = self.data['course_id']
+            section_id = self.data['section_id']
+            exam_classroom_no = self.data['exam_classroom_no']
+            exam_day = self.data['exam_day']
+            type = self.data['type']
+            start_time = self.data['start_time']
+            end_time = self.data['end_time']
+            
         except Exception as error:
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
 
-            check_all_courses_sql = "SELECT * FROM exam limit %s,%s"
-            cursor.execute(check_all_courses_sql,(page_num*ITEM_NUM_FOR_ONE_PAGE,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw exam are :",raw_courses)
-            total_num_sql = 'select count(*) from exam'
-            cursor.execute(total_num_sql)
+            sql = "SELECT * FROM exam"
+            cnt_sql = 'select count(*) from exam'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            sections = list(raw_courses)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
-           
-            self.response.update(res)
-            self._init_response()
-            return self._get_response(SHOW_PERSONAL_INFO,1)
+            if len(rows)!=0:
+                exams = []
+            
+                for row in rows:
+                    tmp = {
+                    "course_id" :row['course_id'],
+                    "section_id":row['section_id'],
+                    "exam_classroom_no":row['exam_classroom_no'],
+                    "exam_day":row['exam_day'],
+                    "type":row['type'],
+                    "start_time":row['start_time'],
+                    "end_time":row['end_time']
+                    }
+                    exams.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'exams':exams,
+                }
+                self.response.update(res)
+                self._init_response()
+                return self._get_response(SHOW_PERSONAL_INFO,1)
+            else:
+                self._init_response()
+                return self._get_response(NO_RESULT,-1)
 
         except Exception as error:
             traceback.print_exc()
             connection.rollback()
             self._init_response()
             return self._get_response(SERVER_ERROR)
+
     def insertExam(self):
         if self.request.session['is_login'] != True or \
         (self.request.session['role'] != ROOT_ROLE):
@@ -1008,34 +1170,71 @@ class RootService(BaseService):
         try:
 
             page_num = int(self.data['current_page_num']) #0,1,2,...
-    
+            classroom_no = self.data['classroom_no']
+            capacity = self.data['capacity']
+
         except Exception as error:
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
 
-            check_all_courses_sql = "SELECT * FROM classroom limit %s,%s"
-            cursor.execute(check_all_courses_sql,(page_num*ITEM_NUM_FOR_ONE_PAGE,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw classroom  are :",raw_courses)
-            total_num_sql = 'select count(*) from classroom'
-            cursor.execute(total_num_sql)
+            sql = "SELECT * FROM classroom"
+            cnt_sql = 'select count(*) from classroom'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            sections = list(raw_courses)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
-           
-           
-            self.response.update(res)
-            self._init_response()
-            return self._get_response(SHOW_PERSONAL_INFO,1)
+            if len(rows)!=0:
+                classrooms = []
 
+                for row in rows:
+                    tmp = {
+                        'classroom_no':row['classroom_no'],
+                        'capacity':row['capacity']
+                    }
+                    classrooms.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'classrooms':classrooms
+                }
+           
+                self.response.update(res)
+                self._init_response()
+                return self._get_response(SHOW_PERSONAL_INFO,1)
+            else:
+                self._init_response()
+                return self._get_response(NO_RESULT,-1)
+            
         except Exception as error:
             traceback.print_exc()
             connection.rollback()
@@ -1168,29 +1367,65 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['current_page_num']) #0,1,2,...
+            page_num = int(self.data['page_num']) #0,1,2,...
+            ID = self.data['id']
+            password = self.data['password']
     
         except Exception as error:
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
         try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
             cursor = connection.cursor()
 
-            check_all_courses_sql = "SELECT * FROM account limit %s,%s"
-            cursor.execute(check_all_courses_sql,(page_num*ITEM_NUM_FOR_ONE_PAGE,ITEM_NUM_FOR_ONE_PAGE,))
-            raw_courses = sql_util.dictfetchall(cursor)
-            print("raw account  are :",raw_courses)
-            total_num_sql = 'select count(*) from account'
-            cursor.execute(total_num_sql)
+            sql = 'select * from account'
+            cnt_sql = 'select count(*) from account'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
             total_num = int(cursor.fetchone()[0])
             print("total num is ",total_num)
-            sections = list(raw_courses)
 
-            res = {
-                'total_num':total_num,
-                'sections':sections,
-            }
+
+            if len(rows)!=0:
+                accounts = []
+                for row in rows:
+                    tmp = {
+                        'id':row['ID'],
+                        'password':row['password'],
+                        'role':row['role']
+                    }
+                    accounts.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'accounts':accounts,
+                }
            
            
             self.response.update(res)
@@ -1245,4 +1480,174 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR)
 
+
+###########Application#####################
+
+    def checkApplications(self):
+        if self.request.session['is_login'] != True or \
+        (self.request.session['role'] != ROOT_ROLE):
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
+
+        try:
+            page_num = int(self.data['page_num']) #0,1,2,...
+            course_id = self.data['course_id']
+            section_id = self.data['section_id']
+            student_id = self.data['student_id']
+            application_reason = self.data['application_reason']
+
+
+        except Exception as error:
+            self._init_response()
+            return self._get_response(GET_ARG_ERROR,-1)
+
+        try:
+            get_dict = self.data.copy() 
+            del get_dict['page_num']
+            print(get_dict)
+            cursor = connection.cursor()
+
+            sql = 'select * from application'
+            cnt_sql = 'select count(*) from application'
+            sql_conditions = []
+            for key in get_dict.keys():
+                if get_dict[key]!=None and get_dict[key]!='':
+                    sql_conditions.append(str(key+" like '%"+get_dict[key]+"%'"))
+            if len(sql_conditions)==0:
+                final_sql = sql
+            else:
+                final_sql = (sql+" where ")
+                cnt_sql += " where "
+                for i,condition in enumerate(sql_conditions):
+                    if i != len(sql_conditions)-1:
+                        final_sql += (condition + " and ")
+                        cnt_sql += (condition + " and ")
+                    else:
+                        final_sql += condition
+                        cnt_sql += condition
+
+            final_sql += (" limit "+str(page_num*ITEM_NUM_FOR_ONE_PAGE)+","+str(ITEM_NUM_FOR_ONE_PAGE))
+
+            print(final_sql)    
+            cursor.execute(final_sql)
+            rows = sql_util.dictfetchall(cursor)
+            # print("rows are ",rows)
+
+            cursor.execute(cnt_sql)
+            total_num = int(cursor.fetchone()[0])
+            print("total num is ",total_num)
+
+            if len(rows)!=0:
+                applications = []
+            
+                for row in rows:
+                    tmp = {
+                     'course_id':row['course_id'],
+                     'section_id':row['section_id'],
+                     'student_id':row['student_id'],
+                     'status':row['status'],
+                     'application_reason':row['application_reaosn'],
+                     'if_drop':row['if_drop']
+                    }
+                    applications.append(tmp)
+
+                res = {
+                    'total_num':total_num,
+                    'applications':applications,
+                }
+            
+                self.response.update(res)
+                self._init_response()
+                return self._get_response(SHOW_COURSES,1)
+            else:
+                self._init_response()
+                return self._get_response(NO_RESULT,-1)
+
+        except Exception as error:
+            traceback.print_exc()
+            connection.rollback()
+            self._init_response()
+            return self._get_response(SERVER_ERROR)
+
+
+
         pass
+
+
+
+    def deleteApplication(self):
+        if self.request.session['is_login'] != True or \
+            (self.request.session['role'] != ROOT_ROLE):
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
+    
+        try:
+            user_id= self.data['user_id']
+            course_id = self.data['course_id']
+            section_id = self.data['section_id']
+    
+        except Exception as error:
+            self._init_response()
+            return self._get_response(POST_ARG_ERROR,-1)
+
+        try:
+            cursor = connection.cursor()
+
+            sql = 'select * from application where student_id = %s and course_id=%s and section_id=%s'
+            cursor.execute(sql,(user_id,))
+            courses = sql_util.dictfetchone(cursor)
+
+            if courses == None:
+                self._init_response()
+                return self._get_response("delete nonexist application",-1)
+
+            sql = 'delete from application where student_id = %s and course_id=%s and section_id=%s'
+            cursor.execute(sql,(user_id,))
+            self._init_response()
+            return self._get_response(HANDLE_OK,1)
+
+        except Exception as error:
+            traceback.print_exc()
+            connection.rollback()
+            self._init_response()
+            return self._get_response(SERVER_ERROR)
+
+
+
+
+
+    # def delete(self,tb_name,*pk):
+    #     if self.request.session['is_login'] != True or \
+    #         (self.request.session['role'] != ROOT_ROLE):
+    #         self._init_response()
+    #         return self._get_response(UNAUTHORIZED)
+    
+    #     try:
+    #         user_id= self.data['user_id']
+    
+    #     except Exception as error:
+    #         self._init_response()
+    #         return self._get_response(POST_ARG_ERROR,-1)
+
+    #     try:
+    #         cursor = connection.cursor()
+
+
+    #         sql = 'select * from '+tb_name+' where '+pk+' = %s'
+    #         cursor.execute(sql,(pk,))
+    #         courses = sql_util.dictfetchone(cursor)
+
+    #         if courses == None:
+    #             self._init_response()
+    #             return self._get_response("delete nonexist account",-1)
+
+    #         sql = 'delete from account where id = %s'
+    #         cursor.execute(sql,(user_id,))
+    #         self._init_response()
+    #         return self._get_response(HANDLE_OK,1)
+
+    #     except Exception as error:
+    #         traceback.print_exc()
+    #         connection.rollback()
+    #         self._init_response()
+    #         return self._get_response(SERVER_ERROR)

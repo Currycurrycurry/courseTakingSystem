@@ -61,6 +61,7 @@ class DropService(BaseService):
                 self._init_response()
                 return self._get_response(NOT_TAKE,-1)
 
+
             drop_course_sql = "DELETE FROM 'takes' WHERE ('takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id+" AND 'takes'.'student_id' = '"+user_id+"')"
             cursor.execute(drop_course_sql)
 
@@ -76,7 +77,14 @@ class DropService(BaseService):
             print("updated credit is",updated_credit)
             minus_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
             cursor.execute(minus_credits_sql)
-         
+
+            # application conflict
+            app_sql = 'select * from application where course_id=%s and section_id=%s and student_id=%s'
+            cursor.execute(app_sql,(course_id,section_id,user_id))
+            raw_app = sql_util.dictfetchall(cursor)
+            if raw_app != None:
+                sql = 'update application set if_drop=1 where course_id=%s and section_id=%s and student_id=%s'
+                cursor.execute(sql,(course_id,section_id,user_id))
             self._init_response()
             return self._get_response(DROP_OK,1)
                             

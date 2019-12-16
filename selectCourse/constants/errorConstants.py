@@ -64,7 +64,7 @@ APP_VACANCY = "can't apply course with vacancy"
 
 APP_CAPACITY = "exceed the classroom capacity"
 
-
+DROP_SELECT_ERROR = "can't select sections which are dropped before by application"
 
 ERROR_LOADING_FILE = "error when loading file"
 
