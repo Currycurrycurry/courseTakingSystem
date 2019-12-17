@@ -1614,8 +1614,6 @@ class RootService(BaseService):
 
 
 
-
-
     # def delete(self,tb_name,*pk):
     #     if self.request.session['is_login'] != True or \
     #         (self.request.session['role'] != ROOT_ROLE):
