@@ -5,8 +5,7 @@ from selectCourse import views
 from selectCourse import service_view
 
 urlpatterns = [
-    path('index/', views.index, name='index'),
-
+    path('index.html', views.index),
 
     path('login/',service_view.login),
     path('login.html', views.login_view),

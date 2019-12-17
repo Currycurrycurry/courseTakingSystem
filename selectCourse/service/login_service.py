@@ -18,10 +18,13 @@ class LoginService(BaseService):
 
     def execute(self):
         try:
+            print("enter the login service")
+            print(self.data)
             user_id = self.data["user_id"]
             password = self.data["password"]
-            # logger.info("user id is ",user_id)
-            # logger.info("user password is ",password)
+        
+            print("user id is ",user_id)
+            print("user password is ",password)
         except Exception as error:
             # logger.error(error)
             self._init_response()
