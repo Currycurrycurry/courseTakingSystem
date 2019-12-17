@@ -1,0 +1,108 @@
+<script src="js/utils.js"></script>
+<script src="js/router/student.router.js"></script>
+<div class="container student-container" style="display: none">
+    <div class="row mt-20">
+        <label>申请记录</label>
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <table class="table table-bordered table-hover table-check text-center">
+                    <thead>
+                    <tr class="success">
+                        <th>课程编号</th>
+                        <th>课程名</th>
+                        <th>任课教师</th>
+                        <th>申请理由</th>
+                        <th>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ATMO130001.01</td>
+                        <td>大气动力学基础</td>
+                        <td>吴志伟</td>
+                        <td title="好像没啥特别的的理由">好像没啥特别的的理由</td>
+                        <td>待处理</td>
+                    </tr>
+                    <tr>
+                        <td>ATMO130001.01</td>
+                        <td>大气动力学基础</td>
+                        <td>吴志伟</td>
+                        <td title="好像没啥特别的的理由">好像没啥特别的的理由</td>
+                        <td>已同意</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div><!-- end of panel -->
+    </div>
+    <div class="row">
+        <label>申请课程</label>
+        <div class="panel panel-primary">
+            <div class="panel panel-body">
+                <form class="form-inline ml-10 mb-20">
+                    <div class="form-group">
+                        <label class="ml-20">课程编号</label>
+                        <input type="text" class="form-control" name="course_sec" id="course_sec" placeholder="课程编号" >
+
+                        <label class="ml-20">课程名</label>
+                        <input type="text" class="form-control" name="title" id="title" placeholder="课程名">
+                    </div>
+                </form>
+                <form class="form-inline ml-10">
+                    <label class="ml-20">申请理由</label>
+                </form>
+                <form class="form-inline ml-10 mb-20">
+                    <textarea name="applicationReason" class="ml-20" id="application_reason" cols="60" rows="10">
+
+                    </textarea>
+                </form>
+                <form class="form-inline ml-10">
+                    <a class="btn btn-success ml-20" id="submit">提交申请</a> <label style="color: #d9534f;display: none" id="exits_empty">请将信息填写完整</label>
+                </form>
+            </div>
+
+        </div><!-- end of panel -->
+    </div>
+    <script>
+        $(function(){
+            getMyApplications();
+            bindEvents();
+        });
+        function getMyApplications() {
+            let params = {'user_id': getCookie('user_id')};
+            $.when(getMyApplyCourse(params))
+                .done(function (res) {
+                    console.log(res.status, res.data);
+                })
+        }
+        function showError() {
+            $("#exits_empty").css('display','inline');
+            setTimeout(function () {
+                $("#exits_empty").css('display','none');
+            },1500);
+        }
+        function applicationCourse() {
+            let param_keys = ['course_sec','title','application_reason'];
+            let params = {};
+            for(let i=0; i < param_keys.length; i++){
+                let key = param_keys[i];
+                let value = $("#" + key).val().trim();
+                if(value === ''){
+                    showError();
+                    return
+                }
+                params[key] = value;
+            }
+            $.when(applyCourse(params))
+                .done(function (res) {
+                    console.log(res.status, res.data);
+                })
+        }
+        function bindEvents() {
+            $('#submit').click(function () {
+                applicationCourse()
+            })
+        }
+    </script>
+</div>

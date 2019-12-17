@@ -1,0 +1,100 @@
+
+<script src="js/utils.js"></script>
+<script src="js/router/instructor.router.js"></script>
+<div class="container instructor-container" style="display: none">
+    <div class="row mt-20">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <form class="form-inline mb-10" id="search">
+                    <div class="form-group">
+                        <label class="ml-20">课程编号</label>
+                        <input type="text" class="form-control" name="userName" placeholder="课程编号" >
+
+                        <label class="ml-20">课程名</label>
+                        <input type="text" class="form-control" name="name" placeholder="课程名">
+                        <a class="btn btn-success ml-20">查 询</a>
+
+                    </div>
+                </form>
+                <table class="table table-bordered table-hover table-check text-center">
+                    <thead>
+                    <tr class="success">
+                        <th>课程编号</th>
+                        <th>课程名</th>
+                        <th>任课教师</th>
+                        <th>上课时间</th>
+                        <th>教室</th>
+                        <th>申请理由</th>
+                        <th>申请人学号</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ATMO130001.01</td>
+                        <td>大气动力学基础</td>
+                        <td>吴志伟</td>
+                        <td>星期二 4-5</td>
+                        <td>JA306</td>
+                        <td title="好像没啥特别的的理由">好像没啥特别的的理由</td>
+                        <td>17302010049</td>
+                        <td>待处理</td>
+                        <td>
+                            <a href="javascript:void(0)" class="selection hover-underline">同意</a>
+                            <a href="javascript:void(0)" class="selection hover-underline">拒绝</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ATMO130001.01</td>
+                        <td>大气动力学基础</td>
+                        <td>吴志伟</td>
+                        <td>星期二 4-5</td>
+                        <td>JA306</td>
+                        <td title="好像没啥特别的的理由">好像没啥特别的的理由</td>
+                        <td>17302010049</td>
+                        <td>待处理</td>
+                        <td>
+                            <a href="javascript:void(0)" class="selection hover-underline">同意</a>
+                            <a href="javascript:void(0)" class="selection hover-underline">拒绝</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ATMO130001.01</td>
+                        <td>大气动力学基础</td>
+                        <td>吴志伟</td>
+                        <td>星期二 4-5</td>
+                        <td>JA306</td>
+                        <td title="好像没啥特别的的理由">好像没啥特别的的理由</td>
+                        <td>17302010049</td>
+                        <td>待处理</td>
+                        <td>
+                            <a href="javascript:void(0)" class="selection hover-underline">同意</a>
+                            <a href="javascript:void(0)" class="selection hover-underline">拒绝</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav class="pull-right" id="pagination">
+                <ul class="pagination pagination-sm">
+                    <li class="disabled">
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div><!-- end of panel -->
+    </div>
+</div>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="10e8a45e-38d2-4f95-a651-33f36ede7ad8" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="CSS File" />
+        <option value="HTML File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1V1PWj3zdJLjaOwf9zNoiyoOrXW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../海宇/医疗机构定点规划/medical_institutions/hospital" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="ts.external.directory.path" value="D:\Program Files\JetBrains\WebStorm 2019.1.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\asus\WebstormProjects\courseSelection\img" />
+      <recent name="C:\Users\asus\WebstormProjects\courseSelection" />
+      <recent name="C:\Users\asus\WebstormProjects\courseSelection\js" />
+      <recent name="C:\Users\asus\WebstormProjects\courseSelection\css" />
+      <recent name="C:\Users\asus\WebstormProjects\courseSelection\assets" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.index.html">
+    <configuration name="courseSelection.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/courseSelection/courseSelection.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/courseSelection/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.index.html" />
+        <item itemvalue="JavaScript Debug.courseSelection.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="10e8a45e-38d2-4f95-a651-33f36ede7ad8" name="Default Changelist" comment="" />
+      <created>1575877684600</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1575877684600</updated>
+      <workItem from="1575877686181" duration="6021000" />
+      <workItem from="1575889855456" duration="10475000" />
+      <workItem from="1575935804747" duration="3278000" />
+      <workItem from="1575958350482" duration="5979000" />
+      <workItem from="1576417664127" duration="975000" />
+      <workItem from="1576456680769" duration="15132000" />
+      <workItem from="1576502673693" duration="709000" />
+      <workItem from="1576543340398" duration="2071000" />
+      <workItem from="1576546892609" duration="1380000" />
+      <workItem from="1576550924235" duration="588000" />
+      <workItem from="1576555844076" duration="2133000" />
+      <workItem from="1576567264124" duration="38000" />
+      <workItem from="1576577108906" duration="4101000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="365" y="112" key="#Deployment" timestamp="1576581380328">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="365" y="112" key="#Deployment/0.0.1920.1040@0.0.1920.1040" timestamp="1576581380328" />
+    <state x="747" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1576543630991">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="747" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576543630991" />
+    <state x="688" y="212" key="FileChooserDialogImpl" timestamp="1576581317829">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="550" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1576567300240" />
+    <state x="688" y="212" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1576581317829" />
+    <state x="641" y="184" key="ftp.server.browser" timestamp="1576581378195">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="641" y="184" key="ftp.server.browser/0.0.1920.1040@0.0.1920.1040" timestamp="1576581378195" />
+    <state x="627" y="247" width="672" height="678" key="search.everywhere.popup" timestamp="1576480219119">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="627" y="247" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1576480219119" />
+  </component>
+</project>
