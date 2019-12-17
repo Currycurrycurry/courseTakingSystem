@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+.DS_Store
+build/
+.vagrant/
+__pycache__/
+db.sqlite3

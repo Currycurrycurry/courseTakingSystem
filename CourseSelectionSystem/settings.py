@@ -67,7 +67,7 @@ ROOT_URLCONF = 'CourseSelectionSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR+"/selectCourse/templates/courseSelection",],
+        'DIRS': [BASE_DIR+"/selectCourse/templates",],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
