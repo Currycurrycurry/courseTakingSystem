@@ -11,4 +11,5 @@ function login(data) {
         type: 'post',
         data: data
     })
+    
 }

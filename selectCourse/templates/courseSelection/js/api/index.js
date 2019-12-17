@@ -1,15 +1,15 @@
 let api = {
-    logout: 'selectCourse/logout',
-    login: 'selectCourse/login',
+    logout: 'selectCourse/logout/',
+    login: 'selectCourse/login/',
 
     //about course
-    search: 'selectCourse/search',
-    select: 'selectCourse/select',
-    applyCourse: 'selectCourse/submitApplication',
-    studentCourseTb: 'selectCourse/checkCourseTable',
-    myApplyCourse: 'selectCourse/checkCourseTable',
-    coursesGrade: 'selectCourse/checkPersonalInfo',
-    userInfo: 'users/info'
+    // search: 'selectCourse/search/',
+    // select: 'selectCourse/select/',
+    // applyCourse: 'selectCourse/submitApplication/',
+    // studentCourseTb: 'selectCourse/checkCourseTable/',
+    // myApplyCourse: 'selectCourse/checkCourseTable/',
+    // coursesGrade: 'selectCourse/checkPersonalInfo/',
+    // userInfo: 'users/info'
 
 };
 

@@ -7,7 +7,9 @@ from selectCourse import service_view
 urlpatterns = [
     path('index/', views.index, name='index'),
 
+
     path('login/',service_view.login),
+    path('login.html', views.login_view),
     path('logout/',service_view.logout),
 ################################################
     path('select/',service_view.select),
