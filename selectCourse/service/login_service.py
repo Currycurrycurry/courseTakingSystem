@@ -26,7 +26,6 @@ class LoginService(BaseService):
             print("user id is ",user_id)
             print("user password is ",password)
         except Exception as error:
-            # logger.error(error)
             self._init_response()
             return self._get_response(POST_ARG_ERROR,-1)
 
@@ -68,6 +67,7 @@ class LoginService(BaseService):
                     data = {'user_name':res_name,
                             'role':role_num}
                     self.request.session['user_id'] = user_id
+                    self.request.session['user_name'] = res_name
                     self.request.session['role'] = row['role']
                     self.request.session['is_login'] = True
                     print(self.request.session)

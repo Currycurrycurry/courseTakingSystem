@@ -20,7 +20,6 @@ function bindEvents() {
                     if(response['code'] == 1){
                         showMessage("登录成功，即将跳转。",1);
                         setTimeout(function () {
-                        // window.location.href = goBack($(".login-body").attr("id"));
                         window.location.href="/selectCourse/index.html";
                     },500);
                     }

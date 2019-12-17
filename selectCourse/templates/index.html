@@ -66,8 +66,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div><!-- /.modal -->
 </div>
 <script src="../static/js/message.inc.js"></script>
-<script src="../static/js/router/user.rooter.js"></script>
-<div class="wrapper index-container" style="display: none">
+<!-- <script src="../static/js/router/user.rooter.js"></script> -->
+<div class="wrapper index-container" style="display: block">
     <header class="main-header">
         <a href="#" target="_blank" class="logo">
             <span class="logo-mini"><b>J</b>W</span>
@@ -82,7 +82,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="../static/img/1.png" class="user-image" alt="User Image">
-                            <span class="hidden-xs">Alexander Pierce</span>
+                            <span class="hidden-xs">{{user_id}}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- The user img in the menu -->
@@ -90,7 +90,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <img src="../static/img/1.png" class="img-circle" alt="User Image">
 
                                 <p>
-                                    Alexander Pierce - Web Developer
+                                    {{request.session.user_name}}
                                     <small>Member since Nov. 2012</small>
                                 </p>
                             </li>
@@ -128,7 +128,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <aside class="main-sidebar">
         <section class="sidebar">
             <ul class="sidebar-menu" data-widget="tree">
-                <li class="treeview" id="student-menu" style="display: none">
+                <li class="treeview" id="student-menu" style="display: block">
                     <a href="#"><i class="fa fa-link"></i> <span>学生事务</span>
                         <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -141,7 +141,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <li><a href="javascript:void(0)" class="myLeftMenu" data="courseGrade.html">课程成绩</a></li>
                     </ul>
                 </li>
-                <li class="treeview " id="instructor-menu" style="display: none">
+                <li class="treeview " id="instructor-menu" style="display: block">
                     <a href="#"><i class="fa fa-link"></i> <span>教师事务</span>
                         <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -152,7 +152,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <li><a href="javascript:void(0)" class="myLeftMenu" data="sectionManagementInstructor.html">开课事务管理</a></li>
                     </ul>
                 </li>
-                <li class="treeview" id="root-menu" style="display: none">
+                <li class="treeview" id="root-menu" style="display: block">
                     <a href="#"><i class="fa fa-link"></i> <span>管理员管理</span>
                         <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -185,7 +185,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main content -->
         <section class="content container-fluid">
             <div id="container">
-                复旦大学教务系统
+                复旦大学教务系统 欢迎：{{ request.session.user_id }}
             </div>
         </section>
         <!-- /.content -->
@@ -212,6 +212,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('#container').load(url);
         });
     })
+    
+  
 </script>
 </body>
 </html>
