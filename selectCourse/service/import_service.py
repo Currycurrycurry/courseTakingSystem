@@ -266,7 +266,6 @@ class ImportService(BaseService):
                 self._init_response()
                 return self._get_response(SERVER_ERROR,-1)
 
-
     def registerSection(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
