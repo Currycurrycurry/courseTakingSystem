@@ -46,9 +46,10 @@ class ImportService(BaseService):
     
 
     def registerScore(self):  
-        res = {}
+        if self.request.session['is_login'] != True or (self.request.session['role'] != ROOT_ROLE and self.request.session['role']!=INSTRUCTOR_ROLE):
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
         raw_student_scores = self.importExcel(self.request)
-
         if raw_student_scores != None:
             print("the student scores are ",raw_student_scores)
             try:
@@ -136,8 +137,10 @@ class ImportService(BaseService):
                 return self._get_response(SERVER_ERROR,-1)
 
     def registerInstructor(self):
-
-        raw_instructor_infos = importExcel(self.request)
+        if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
+        raw_instructor_infos = self.importExcel(self.request)
         if raw_instructor_infos != None:
             print("the raw_instructor_infos are ",raw_instructor_infos)
             try:
@@ -181,6 +184,9 @@ class ImportService(BaseService):
                 return self._get_response(SERVER_ERROR,-1)
 
     def registerStudent(self):
+        if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
         raw_student_scores = self.importExcel(self.request)
         if raw_student_scores != None:
             print("the student scores are ",raw_student_scores)
@@ -224,7 +230,10 @@ class ImportService(BaseService):
                 return self._get_response(SERVER_ERROR,-1)
 
     def registerCourse(self):
-        raw_courses = importExcel(self.request)
+        if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
+        raw_courses = self.importExcel(self.request)
         if raw_courses != None:
             print("the courses are ",raw_courses)
             try:
@@ -259,7 +268,10 @@ class ImportService(BaseService):
 
 
     def registerSection(self):
-        raw_sections = importExcel(self.request)
+        if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
+            self._init_response()
+            return self._get_response(UNAUTHORIZED)
+        raw_sections = self.importExcel(self.request)
         if raw_sections != None:
             print("the sections are ",raw_sections)
             try:
