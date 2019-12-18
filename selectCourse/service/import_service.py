@@ -17,34 +17,29 @@ class ImportService(BaseService):
         if request.method == 'POST':
             self.data = request.POST
 
-    # TODO can only be test after merging into the frontend
+
     def importExcel(self,request):
-        if request.method == 'POST':
-            # f = request.FILES['csvFile']
+        if request.method == 'POST':  
             f = request.FILES.get('excel_file')
-            # type_excel = f.name.split('.')[1]
-            # if type_excel in ['xlsx','xls']:
-            wb = xlrd.open_workbook(filename=None,file_content=f.read())
+            wb = xlrd.open_workbook(filename=None,file_contents=f.read())
             table = wb.sheets()[0]
             nrows = table.nrows
             rowValues = []
             try:
                 for i in range(1,nrows): 
                     # ignore the excel head
-                    rowValues.append(table.row_value(i))
+                    rowValues.append(table.row_values(i))
             except Exception as e:
                 self._init_response()
                 self._get_response(ERROR_LOADING_FILE)
                 print(str(e))
-            # else:
-            #     self._init_response()
-            #     self._get_response(FILE_FORMAT_ERROR)
+
         else:
             self._init_response()
             self._get_response(POST_ARG_ERROR)
         return rowValues
     
-
+    # test ok
     def registerScore(self):  
         if self.request.session['is_login'] != True or (self.request.session['role'] != ROOT_ROLE and self.request.session['role']!=INSTRUCTOR_ROLE):
             self._init_response()
@@ -55,15 +50,15 @@ class ImportService(BaseService):
             try:
                 cursor = connection.cursor()
                 for row in raw_student_scores:
-                    row = row.split(",")
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and (row[0]!='' and row[1]!='' and row[2]!='' and row[3]!=''):
-                        course_id,section_id,student_id,grade = row[0],row[1],row[2],row[3]
+                        course_id,section_id,student_id,grade = row[0],int(row[1]),str(int(row[2])),row[3]
 
                         # 1. whether exist conflict
                         # (1) account
+                        print("the student_id is ",student_id)
                         sql = 'select * from account where ID=%s'
-                        cursor.execute(sql,(student_id))
+                        cursor.execute(sql,(student_id,))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
                             msg = "no such account: "+str(student_id)
@@ -71,6 +66,7 @@ class ImportService(BaseService):
                             return self._get_response(msg,-1)
                             
                         # (2) student
+                        
                         sql = 'select * from student where student_id=%s'
                         cursor.execute(sql,(student_id,))
                         flag = sql_util.dictfetchone(cursor)
@@ -81,7 +77,7 @@ class ImportService(BaseService):
                         
                         # (3) course 
                         sql = 'select * from course where course_id=%s'
-                        cursor.execute(sql,(course_id))
+                        cursor.execute(sql,(course_id,))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
                             msg = "no such course: "+str(course_id)
@@ -136,6 +132,7 @@ class ImportService(BaseService):
                 self._init_response()
                 return self._get_response(SERVER_ERROR,-1)
 
+    # test ok
     def registerInstructor(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
@@ -146,7 +143,6 @@ class ImportService(BaseService):
             try:
                 cursor = connection.cursor()
                 for row in raw_instructor_infos:
-                    row = row.split(",")
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and (row[0]!='' and row[1]!='' and row[2]!='' and row[3]!=''):
                         instructor_id,instructor_name,instructor_class,dept_name = row[0],row[1],row[2],row[3]
@@ -156,8 +152,8 @@ class ImportService(BaseService):
                         cursor.execute(sql,(instructor_id,))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
-                            sql = 'insert into account(ID,password) values(%s,%s)'
-                            cursor.execute(sql,(instructor_id,instructor_id))
+                            sql = 'insert into account(ID,password,role) values(%s,%s,%s)'
+                            cursor.execute(sql,(instructor_id,instructor_id,2))
                             
 
                         # same data check
@@ -182,7 +178,7 @@ class ImportService(BaseService):
                 connection.rollback()
                 self._init_response()
                 return self._get_response(SERVER_ERROR,-1)
-
+    # test ok
     def registerStudent(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
@@ -193,18 +189,17 @@ class ImportService(BaseService):
             try:
                 cursor = connection.cursor()
                 for row in raw_student_scores:
-                    row = row.split(",")
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and (row[0]!='' and row[1]!='' and row[2]!='' and row[3]!='') :
-                        student_id,student_name,student_major,student_dept_name = row[0],row[1],row[2],row[3]
+                        student_id,student_name,student_major,student_dept_name = str(int(row[0])),row[1],row[2],row[3]
 
                         # exist check
                         sql = 'select * from account where ID=%s'
                         cursor.execute(sql,(student_id,))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
-                            sql = 'insert into account(ID,password) values(%s,%s)'
-                            cursor.execute(sql,(student_id,student_id))
+                            sql = 'insert into account(ID,password,role) values(%s,%s,%s)'
+                            cursor.execute(sql,(student_id,student_id,1))
                             
                         # same data check
                         sql = 'select * from student where student_id = %s'
@@ -212,23 +207,21 @@ class ImportService(BaseService):
                         flag = sql_util.dictfetchone(cursor)
 
                         if flag == None:
-                            sql = 'insert into student(student_id,student_name,student_major,student_dept_name)'\
-                                'values(%s,%s,%s,%s)'
-                            cursor.execute(sql,(student_id,student_name,student_major,student_dept_name))
+                            sql = 'insert into student(student_id,student_name,student_major,student_dept_name,student_total_credit)'\
+                                'values(%s,%s,%s,%s,%s)'
+                            cursor.execute(sql,(student_id,student_name,student_major,student_dept_name,0))
                         else:
                             sql = 'update student set student_name=%s and student_major=%s and student_dept_name=%s where student_id=%s'
                             cursor.execute(sql,(student_name,student_major,student_dept_name,student_id))
-                    else:
-                        self._init_response()
-                        return self._get_response(INVALID_BLANK,-1)
+                 
                 self._init_response()
-                return self._get_response(IMPORT_OK,-1)
+                return self._get_response(IMPORT_OK,1)
             except Exception as error:
                 traceback.print_exc()
                 connection.rollback()
                 self._init_response()
                 return self._get_response(SERVER_ERROR,-1)
-
+    # test ok
     def registerCourse(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
@@ -239,10 +232,9 @@ class ImportService(BaseService):
             try:
                 cursor = connection.cursor()
                 for row in raw_courses:
-                    row = row.split(",")
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and(row[0]!='' and row[1]!='' and row[2]!='' and row[3]!=''):
-                        course_id,title,credits,dept_name = row[0],row[1],row[2],row[3]
+                        course_id,title,credits,dept_name = row[0],row[1],str(int(row[2])),row[3]
                         # same check
                         sql = 'select * from course where course_id=%s'
                         cursor.execute(sql,(course_id,))
@@ -254,11 +246,8 @@ class ImportService(BaseService):
                         else:
                             sql = 'update course set title=%s and credits=%s and dept_name=%s where course_id=%s'
                             cursor.execute(sql,(title,credits,dept_name,course_id,))
-                    else:
-                        self._init_response()
-                        return self._get_response(INVALID_BLANK,-1)
                 self._init_response()
-                return self._get_response(IMPORT_OK,-1)
+                return self._get_response(IMPORT_OK,1)
      
             except Exception as error:
                 traceback.print_exc()
@@ -276,7 +265,6 @@ class ImportService(BaseService):
             try:
                 cursor = connection.cursor()
                 for row in raw_sections:
-                    row = row.split(",")
                     flag = True
                     for i in range(8):
                         if row[i]==None:
@@ -288,7 +276,7 @@ class ImportService(BaseService):
 
                         # exist check
                         sql = 'select * from course where course_id =%s'
-                        cursor.execute(sql,(row[0]))
+                        cursor.execute(sql,(row[0],))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
                             msg = "no such course: "+str(row[0])
@@ -300,13 +288,14 @@ class ImportService(BaseService):
                         cursor.execute(sql,(row[0],row[1]))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
-                            sql = 'insert into section(course_id,section_id,start,end,classroom_no,lesson,limit,day)'\
+                            sql = 'insert into section(course_id,section_id,start,end,classroom_no,`limit`,day)'\
                                 'values(%s,%s,%s,%s,%s,%s,%s)'
-                            cursor.execute(sql,(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]))
+                            cursor.execute(sql,(row[0],str(int(row[1])),str(int(row[2])),str(int(row[3])),row[4],str(int(row[6])),str(int(row[7]))))
                         else:
-                            sql = 'update section set start=%s and end=%s and classroom_no=%s and lesson=%s and limit=%s and day=%s where course_id=%s and section_id=%s'
-                            cursor.execute(sql,(row[2],row[3],row[4],row[5],row[6],row[7],row[0],row[1]))
-
+                            sql = 'update section set start=%s and end=%s and classroom_no=%s and `limit`=%s and day=%s where course_id=%s and section_id=%s'
+                            cursor.execute(sql,(str(int(row[2])),str(int(row[3])),row[4],str(int(row[6])),str(int(row[7])),row[0],str(int(row[1]))))
+                self._init_response()
+                return self._get_response(IMPORT_OK,1)
         
             except Exception as error:
                 traceback.print_exc()

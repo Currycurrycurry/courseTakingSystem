@@ -65,7 +65,7 @@ def registerStudent(request):
     return ImportService(request).registerStudent()
 
 def registerScore(request):
-    return ImportService(request).registerCourse()
+    return ImportService(request).registerScore()
 
 def registerInstructor(request):
     return ImportService(request).registerInstructor()
@@ -73,6 +73,8 @@ def registerInstructor(request):
 def registerCourse(request):
     return ImportService(request).registerCourse()
 
+def registerSection(request):
+    return ImportService(request).registerSection()
 
 ###############ROOT SERVICE########################
 def deleteCourse(request):

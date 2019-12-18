@@ -7,6 +7,8 @@ from django.db import connection
 import json
 import xlrd
 
+from django.shortcuts import render
+from django.views.decorators import csrf
 ##################################Constants#################################################
 # AUTHORIZATION
 ROOT_ROLE = 0
@@ -27,6 +29,11 @@ SCORE_FILE = 3
 ##################################Index#################################################
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
+
+def test(request):
+    ctx = {}
+    return render(request, "test.html", ctx)
+
 
 ##################################Login in/out#################################################
 
