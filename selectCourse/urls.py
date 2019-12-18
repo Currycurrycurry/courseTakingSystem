@@ -30,7 +30,7 @@ urlpatterns = [
 ################################################v
     path('downloadFile/',service_view.downloadFile),
     
-    path('registerStudent/',service_view.registerStudent),
+    path('registerScore/',service_view.registerScore),
     path('registerInstructor/',service_view.registerInstructor),
     path('registerStudent/',service_view.registerStudent),
     path('registerCourse/',service_view.registerCourse),

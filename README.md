@@ -9,7 +9,7 @@
 ### 实体集
 
 + 课程信息 course (<u>course_id</u>, title, credits, dept_name)
-+ 开课信息 section (<u>course_id</u>, <u>section_id</u>, time, classroom_no, lesson, limit, day)
++ 开课信息 section (<u>course_id</u>, <u>section_id</u>, start, end, classroom_no, lesson, limit, day)
 
 + 学生信息 student(<u>student_id</u>,student_name, student_major, student_dept_name, student_total_credit)
 + 账户信息 account (<u>ID</u>, password, role)
