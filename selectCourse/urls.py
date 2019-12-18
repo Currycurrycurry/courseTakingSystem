@@ -33,8 +33,9 @@ urlpatterns = [
     
     path('registerStudent/',service_view.registerStudent),
     path('registerInstructor/',service_view.registerInstructor),
-    path('registerStudent/',service_view.registerStudent),
+    path('registerScore/',service_view.registerScore),
     path('registerCourse/',service_view.registerCourse),
+
 
 
 ################################################################################################

@@ -10,8 +10,6 @@ from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
 
-
-# TODO test the no_vacancy section_time_conflict conditions!
 class SelectService(BaseService):
     def __init__(self, request):
         super(SelectService, self).__init__(request)
@@ -83,8 +81,8 @@ class SelectService(BaseService):
             section_start_time = int(section_time.split("-")[0])
             section_end_time = int(section_time.split("-")[1])
 
-            find_takes_sql = 'select * from takes where course_id = %s and section_id = %s and student_id = %s'
-            cursor.execute(find_takes_sql,(course_id,section_id,user_id,))
+            find_takes_sql = 'select * from takes natural join section  where student_id = %s'
+            cursor.execute(find_takes_sql,(user_id,))
             takes_info = sql_util.dictfetchall(cursor)
             
             for item in takes_info:
@@ -92,19 +90,56 @@ class SelectService(BaseService):
                 tmp_time = item['time']
                 tmp_start_time = int(tmp_time.split("-")[0])
                 tmp_end_time = int(tmp_time.split("-")[1])
+                print("the day is ",tmp_day)
+                print("the section start time is ",section_start_time)
+                print("the section end time is ",section_end_time)
+                print("the tmp start time is ",tmp_start_time)
+                print("the tmp end time is ",tmp_end_time)
                 if tmp_day == section_day:
                     if (section_start_time >= tmp_start_time and section_start_time <= tmp_end_time) or \
-                        (section_start_time <= tmp_start_time and section_start_time >= tmp_end_time):
+                        (section_end_time >= tmp_start_time and section_end_time <= tmp_end_time):
+                     
                         self._init_response()
-                        return self._get_response(SECTION_TIME_CONFLICT)
+                        return self._get_response(SECTION_TIME_CONFLICT,-1)
             
+            # exam time conflict 
+            sql_exam = 'select * from exam where course_id=%s and section_id=%s'
+            cursor.execute(sql_exam,(course_id,section_id,))
+            target = sql_util.dictfetchone(cursor)
+            exam_type = int(target['type'])
+            if exam_type == 0:
+                exam_day = int(target['exam_day'])
+                exam_start_time = int(target['start_time'].split(":")[0])*60 + int(target['start_time'].split(":")[1]) 
+                exam_end_time = int(target['end_time'].split(":")[0])*60 + int(target['end_time'].split(":")[1]) 
+
+                sql = 'select * from takes natural join exam where student_id =%s'
+                cursor.execute(sql,(user_id,))
+                rows = sql_util.dictfetchall(cursor)
+                print("exam :",rows)
+                for row in rows:
+                    tmp_type = int(row['type'])
+                    if tmp_type == 0:
+                        tmp_day = int(row['exam_day'])
+                        tmp_start_time =  int(row['start_time'].split(":")[0])*60 + int(row['start_time'].split(":")[1]) 
+                        tmp_end_time = int(row['end_time'].split(":")[0])*60 + int(row['end_time'].split(":")[1]) 
+
+                        if (exam_start_time >= tmp_start_time and exam_start_time <=tmp_end_time)\
+                            or (exam_end_time >= tmp_start_time and exam_end_time <= tmp_end_time):
+                            self._init_response()
+                            return self._get_response(EXAM_TIME_CONFLICT,-1)
+
             # application conflict
             app_sql = 'select * from application where course_id=%s and section_id=%s and student_id=%s and if_drop=1'
             cursor.execute(app_sql,(course_id,section_id,user_id))
             raw_app = sql_util.dictfetchall(cursor)
-            if raw_app != None:
+            print("application",raw_app)
+            if raw_app != None and raw_app != []:
                 self._init_response()
                 return self._get_response(DROP_SELECT_ERROR)
+
+          
+            
+
 
             insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
             cursor.execute(insert_takes_sql)
