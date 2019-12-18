@@ -10,8 +10,6 @@ from selectCourse.constants.infoConstants import *
 from selectCourse.service.base_service import BaseService
 
 
-
-# TODO test the no_vacancy section_time_conflict conditions!
 class SelectService(BaseService):
     def __init__(self, request):
         super(SelectService, self).__init__(request)
@@ -91,7 +89,34 @@ class SelectService(BaseService):
                     if (section_start_time >= tmp_start_time and section_start_time <= tmp_end_time) or \
                         ( tmp_start_time >= section_start_time and tmp_start_time <= section_end_time):
                         self._init_response()
-                        return self._get_response(SECTION_TIME_CONFLICT)
+                        return self._get_response(SECTION_TIME_CONFLICT,-1)
+
+            # exam time conflict 
+            sql_exam = 'select * from exam where course_id=%s and section_id=%s'
+            cursor.execute(sql_exam,(course_id,section_id,))
+            target = sql_util.dictfetchone(cursor)
+            exam_type = int(target['type'])
+            if exam_type == 0:
+                exam_day = int(target['exam_day'])
+                exam_start_time = int(target['start_time'].split(":")[0])*60 + int(target['start_time'].split(":")[1]) 
+                exam_end_time = int(target['end_time'].split(":")[0])*60 + int(target['end_time'].split(":")[1]) 
+
+                sql = 'select * from takes natural join exam where student_id =%s'
+                cursor.execute(sql,(user_id,))
+                rows = sql_util.dictfetchall(cursor)
+                print("exam :",rows)
+
+                for row in rows:
+                    tmp_type = int(row['type'])
+                    if tmp_type == 0:
+                        tmp_day = int(row['exam_day'])
+                        tmp_start_time =  int(row['start_time'].split(":")[0])*60 + int(row['start_time'].split(":")[1]) 
+                        tmp_end_time = int(row['end_time'].split(":")[0])*60 + int(row['end_time'].split(":")[1]) 
+
+                        if (exam_start_time >= tmp_start_time and exam_start_time <=tmp_end_time)\
+                            or (exam_end_time >= tmp_start_time and exam_end_time <= tmp_end_time):
+                            self._init_response()
+                            return self._get_response(EXAM_TIME_CONFLICT,-1)
             
             # application conflict
             app_sql = "select * from application where course_id = '" + course_id + "' and section_id = " + section_id + " and if_drop=1 and student_id = '" + user_id  + "'"
