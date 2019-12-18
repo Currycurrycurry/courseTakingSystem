@@ -72,3 +72,7 @@ FILE_FORMAT_ERROR = "file format error"
 
 UPDATE_ERROR = "update error: nonexist"
 INSERT_ERROR = "insert error"
+
+
+INVALID_BLANK = "invalid blank value"
+IMPORT_OK = "insert/update successfully"
