@@ -23,6 +23,7 @@ class CheckService(BaseService):
             return self._get_response(UNAUTHORIZED_AS_STUDENT)
 
         try:
+            print('user_id' in self.data)
             user_id = self.data['user_id']
     
         except Exception as error:
@@ -35,9 +36,7 @@ class CheckService(BaseService):
             check_courses_sql = 'select * from section natural join course natural join teaches natural join takes natural join instructor natural join exam where student_id = %s'
             cursor.execute(check_courses_sql,(user_id,))
             raw_courses_taken = sql_util.dictfetchall(cursor)
-            print("raw courses taken are :",raw_courses_taken)
             total_num = len(raw_courses_taken)
-            print("total num is ",total_num)
             sections = []
             for row in raw_courses_taken:
                 tmp = {
@@ -47,11 +46,11 @@ class CheckService(BaseService):
                     'dept_name':row['dept_name'],
                     'instructor_name':row['instructor_name'],
                     'credits':row['credits'],
-                    'classroom_no':row['exam_classroom_no'],
+                    'classroom_no':row['classroom_no'],
                     'day':row['day'],
-                    'time':row['time'],
-                    'lesson':row['lesson'],  
-                    'exam_classroom_no':row['classroom_no'],
+                    'start': row['start'],
+                    'end': row['end'],
+                    'exam_classroom_no':row['exam_classroom_no'],
                     'exam_day':row['exam_day'],
                     'exam_type':row['type'],
                     'start_time':row['start_time'],
@@ -67,12 +66,12 @@ class CheckService(BaseService):
             self.response.update(res)
             self._init_response()
             return self._get_response(SHOW_COURSE_TABLE,1)
-
         except Exception as error:
+            print(error)
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkStudentInfo(self,user_id):
         try:
@@ -81,30 +80,33 @@ class CheckService(BaseService):
             cursor.execute(check_personal_info_sql)
             student_info = sql_util.dictfetchone(cursor)
             
-            sql = 'select * from takes natural join course where student_id = %s'
+            sql = 'select * from takes natural join course natural join section where student_id = %s'
             cursor.execute(sql,(user_id,))
             take_infos = sql_util.dictfetchall(cursor)
             gpa = 0
-            grade_dict = {}
+            grade_lis = []
             total_credit = 0
             for take_info in take_infos:
                 title = take_info['title']
                 grade = take_info['grade']
                 credits = take_info['credits']
                 if grade != None:
-                    grade_dict[title] = grade
-                else:
-                    grade_dict[title] = "无"
+                    grade_dict = {}
+                    grade_dict['title'] = title
+                    grade_dict['course_id'] = take_info['course_id']
+                    grade_dict['section_id'] = take_info['section_id']
+                    grade_dict['credits'] = credits
+                    grade_dict['grade'] = grade
+                    grade_lis.append(grade_dict)
+                    total_credit+= credits
 
-                total_credit+=credits
-                for item in GRADE_DICT:
-                    if grade == item:
-                        gpa += GRADE_DICT[grade] * credits
-                        break
+                if grade in GRADE_DICT.keys():
+                    gpa += GRADE_DICT[grade] * credits
+
             if total_credit != 0:
                 gpa = float(gpa/total_credit)          
 
-            res = {"grade_list":grade_dict,
+            res = {"grade_list":grade_lis,
                     "gpa":gpa}
             self._init_response()
             self.response.update(student_info)
@@ -115,7 +117,7 @@ class CheckService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkInstructorInfo(self,user_id):
         try:
@@ -132,7 +134,7 @@ class CheckService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkPersonalInfo(self):
         if self.request.session['is_login'] != True:
@@ -204,7 +206,7 @@ class CheckService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkTaughtCourses(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE:
@@ -237,8 +239,8 @@ class CheckService(BaseService):
                     'credits':row['credits'],
                     'classroom_no':row['classroom_no'],
                     'day':row['day'],
-                    'time':row['time'],
-                    'lesson':row['lesson'],    
+                    'start': row['start'],
+                    'end': row['end']
                 }
                 sections.append(tmp)
 
@@ -255,7 +257,7 @@ class CheckService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkCourseNameList(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE:
@@ -282,7 +284,6 @@ class CheckService(BaseService):
             students = []
             for row in raw_namelist:
                 tmp = {
-                    'title':row['title'],
                     'student_id':row['course_id'],
                     'student_name':row['student_name'],
                     'student_major':row["student_major"],
@@ -304,7 +305,7 @@ class CheckService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
         pass
 
 

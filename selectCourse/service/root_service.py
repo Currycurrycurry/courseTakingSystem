@@ -58,7 +58,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
             
     def insertCourse(self):
         if self.request.session['is_login'] != True or \
@@ -95,7 +95,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
         
     def checkCourses(self):
         if self.request.session['is_login'] != True or \
@@ -177,7 +177,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
    
     def updateCourse(self):
@@ -215,7 +215,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
         pass 
 
@@ -253,7 +253,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
         
     def insertSection(self):
         if self.request.session['is_login'] != True or \
@@ -308,7 +308,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkSections(self):
 
@@ -372,8 +372,8 @@ class RootService(BaseService):
                         'limit':row['limit'],
                         'classroom_no':row['classroom_no'],
                         'day':row['day'],
-                        'time':row['time'],
-                        'lesson':row['lesson'],    
+                        'start':row['start'],
+                        'end':row['end'],
                     }
                     sections.append(tmp)
 
@@ -390,7 +390,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
    
     def updateSection(self):
         if self.request.session['is_login'] != True or \
@@ -438,7 +438,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
         pass 
 
@@ -477,7 +477,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
         
     def insertStudent(self):
         if self.request.session['is_login'] != True or \
@@ -524,7 +524,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkStudents(self):
         if self.request.session['is_login'] != True or \
@@ -604,7 +604,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def updateStudent(self):
         if self.request.session['is_login'] != True or \
@@ -643,7 +643,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
 ############Instructor######################
 
@@ -687,7 +687,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def deleteInstructor(self):
         if self.request.session['is_login'] != True or \
@@ -722,7 +722,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
         
     def insertInstructor(self):
         if self.request.session['is_login'] != True or \
@@ -771,7 +771,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkInstructors(self):
         if self.request.session['is_login'] != True or \
@@ -781,7 +781,7 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['page_num']) #0,1,2,...
+            page_num = int(self.data['current_page_num']) #0,1,2,...
             instructor_id = self.data['instructor_id']
             instructor_name = self.data['instructor_name']
             instructor_class = self.data['instructor_class']
@@ -852,7 +852,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
 
 ############Exam######################
@@ -945,7 +945,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def insertExam(self):
         if self.request.session['is_login'] != True or \
@@ -996,7 +996,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def deleteExam(self):
         if self.request.session['is_login'] != True or \
@@ -1032,7 +1032,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def updateExam(self):
 
@@ -1083,7 +1083,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
 
         pass
@@ -1124,7 +1124,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def deleteClassroom(self):
         if self.request.session['is_login'] != True or \
@@ -1159,7 +1159,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
         
     def checkClassrooms(self):
         if self.request.session['is_login'] != True or \
@@ -1169,7 +1169,7 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['page_num']) #0,1,2,...
+            page_num = int(self.data['current_page_num']) #0,1,2,...
             classroom_no = self.data['classroom_no']
             capacity = self.data['capacity']
 
@@ -1239,7 +1239,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
         
         pass
@@ -1278,7 +1278,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
         pass
   
@@ -1320,7 +1320,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def deleteAccount(self):
         if self.request.session['is_login'] != True or \
@@ -1356,7 +1356,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def checkAccounts(self):
 
@@ -1436,7 +1436,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
         
         pass
@@ -1478,7 +1478,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
 
 ###########Application#####################
@@ -1567,7 +1567,7 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
 
 
@@ -1610,7 +1610,9 @@ class RootService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
+
+
 
 
 
@@ -1648,4 +1650,4 @@ class RootService(BaseService):
     #         traceback.print_exc()
     #         connection.rollback()
     #         self._init_response()
-    #         return self._get_response(SERVER_ERROR)
+    #         return self._get_response(SERVER_ERROR,-1)

@@ -92,7 +92,7 @@ class DropService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
 
 

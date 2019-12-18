@@ -1,8 +1,5 @@
 import json
 import traceback
-from django.http import JsonResponse
-
-from selectCourse.logs import logger
 from selectCourse.util import sql_util
 from django.db import connection
 from selectCourse.constants.errorConstants import *
@@ -24,7 +21,6 @@ class ApplyService(BaseService):
 
         try:
             user_id = self.data['user_id']
-    
         except Exception as error:
             self._init_response()
             return self._get_response(GET_ARG_ERROR,-1)
@@ -41,7 +37,7 @@ class ApplyService(BaseService):
     def checkApplicationsByStudent(self,user_id):
         try:
             cursor = connection.cursor()
-            check_app_sql = 'select * from application where student_id = %s'
+            check_app_sql = 'select * from application natural join course natural join teaches natural join instructor where student_id = %s'
             cursor.execute(check_app_sql,(user_id,))
             app_infos = sql_util.dictfetchall(cursor)
             total_num = len(app_infos)
@@ -64,7 +60,7 @@ class ApplyService(BaseService):
     def checkApplicationsByInstructor(self,user_id):
         try:
             cursor = connection.cursor()
-            sql = 'select * from teaches natural join application where instructor_id = %s'
+            sql = 'select * from teaches natural join application natural join course where instructor_id = %s'
             cursor.execute(sql,(user_id,))
             rows = sql_util.dictfetchall(cursor)
             total_num = len(rows)
@@ -84,7 +80,7 @@ class ApplyService(BaseService):
 
     def handleApplication(self):
 
-        if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE or self.request.session['role'] != ROOT_ROLE:
+        if self.request.session['is_login'] != True or (self.request.session['role'] != INSTRUCTOR_ROLE and self.request.session['role'] != ROOT_ROLE):
             self._init_response()
             return self._get_response(UNAUTHORIZED_AS_INSTRUCTOR)
 
@@ -100,8 +96,9 @@ class ApplyService(BaseService):
         
         try:
             cursor = connection.cursor()
-            sql ='update application set status = %s where course_id = %s and section_id = %s'
-            cursor.execute(sql,(status,course_id,section_id))
+            sql ="update application set status = " + status + " where course_id = '" +  course_id + "' and section_id = " + section_id
+            print(sql)
+            cursor.execute(sql)
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -109,11 +106,11 @@ class ApplyService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     def submitApplication(self):
 
-        if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE or self.request.session['role'] != ROOT_ROLE:
+        if self.request.session['is_login'] != True or self.request.session['role'] != STUDENT_ROLE:
             self._init_response()
             return self._get_response(UNAUTHORIZED_AS_STUDENT)
 
@@ -182,7 +179,7 @@ class ApplyService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
   
     def execute(self):
        pass

@@ -16,6 +16,7 @@ class ImportService(BaseService):
         super(ImportService, self).__init__(request)
         if request.method == 'POST':
             self.data = request.POST
+
     # TODO can only be test after merging into the frontend
     def importExcel(self,request):
         if request.method == 'POST':
@@ -43,9 +44,11 @@ class ImportService(BaseService):
             self._get_response(POST_ARG_ERROR)
         return rowValues
     
+
     def registerScore(self):  
         res = {}
-        raw_student_scores = importExcel(self.request)
+        raw_student_scores = self.importExcel(self.request)
+
         if raw_student_scores != None:
             print("the student scores are ",raw_student_scores)
             try:
@@ -252,7 +255,7 @@ class ImportService(BaseService):
                 traceback.print_exc()
                 connection.rollback()
                 self._init_response()
-                return self._get_response(SERVER_ERROR)
+                return self._get_response(SERVER_ERROR,-1)
 
 
     def registerSection(self):

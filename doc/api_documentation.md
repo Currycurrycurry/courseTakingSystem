@@ -4,14 +4,14 @@
 
 ```json
 {
-    "code": -1 or 1, // 由数字表示的广义msg，-1为失败，1为成功
-    "message": "" // 由字符串表示的特定msg，不同的api有不同的msg
+    "code": -1 or 1, // 由数字表示的广义错误码，-1为失败，1为成功
+    "message": "" // 由字符串表示的特定错误码，不同的api有不同的错误码
 }
 ```
 
-以下为通用msg：
+以下为通用错误码：
 
-| msg | 含义 | 可能出现该msg的 API |
+| 错误码 | 含义 | 可能出现该错误码的 API |
 | ---- | ---- | ---- |
 | server error | 服务器内部错误 | 全部 |
 | unauthorized | 当前用户没有权限执行该操作或session已过期 | 需要特定用户权限的 API |
@@ -41,9 +41,9 @@ POST /selectCourse/login/
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | wrong userid | 用户名不存在 |
 | wrong password | 密码错误 |
@@ -61,9 +61,9 @@ POST /selectCourse/login/
 
 无返回值
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | logout successfully | 登出成功 |
 
@@ -83,9 +83,9 @@ POST /selectCourse/select/
 
 无
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | wrong course id | 课程代码错误 |
 | wrong section id | 课程类别代码错误 |
@@ -112,9 +112,9 @@ POST /selectCourse/drop/
 
 无
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | drop error: haven\'t taken yet | 未选修该课程 |
 | drop successfully | 退课成功 |
@@ -151,9 +151,9 @@ POST /selectCourse/checkCourseTable
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | show course table | 显示课程信息 |
 
@@ -189,7 +189,7 @@ POST /selectCourse/checkAllCourses
 }
 ```
 
-### msg
+### 错误码
 
 无
 
@@ -242,9 +242,9 @@ POST /selectCourse/checkPersonalInfo
 
 
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | show personal info | 显示用户信息 |
 
@@ -284,9 +284,9 @@ POST /selectCourse/search
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | search succeessfully| 搜索成功 |
 | no search result| 无搜索结果 |
@@ -308,9 +308,9 @@ POST /selectCourse/submitApplication
 
 无
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 
 | can't apply course which is already applied | 不能申请已申请课程|
@@ -338,9 +338,9 @@ POST /selectCourse/handleApplication
 
 无
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | handle successfully| 处理成功 |
 
@@ -374,9 +374,9 @@ POST /selectCourse/handleApplication
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | check application info| 显示选课申请信息 |
 
@@ -411,9 +411,9 @@ POST /selectCourse/checkTaughtCourses/
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | show course table| 显示课程信息 |
 
@@ -447,9 +447,9 @@ POST /selectCourse/checkCourseNameList/
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | show course table| 显示课程信息 |
 
@@ -484,9 +484,9 @@ POST /selectCourse/checkExamTable/
 }
 ```
 
-### msg
+### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | show course table| 显示课程信息 |
 
@@ -543,9 +543,9 @@ POST /selectCourse/insertCourse/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -571,9 +571,9 @@ POST /selectCourse/insertSection/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 开课已存在 |
 ｜ handle successfully ｜ ok｜
@@ -599,9 +599,9 @@ POST /selectCourse/insertStudent/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 学生已存在 |
 ｜ handle successfully ｜ ok｜
@@ -624,9 +624,9 @@ POST /selectCourse/insertInstructor/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -648,9 +648,9 @@ POST /selectCourse/insertClassroom/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -672,9 +672,9 @@ POST /selectCourse/insertAccount/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -698,9 +698,9 @@ POST /selectCourse/insertExam/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 考试已存在 |
 ｜ handle successfully ｜ ok｜
@@ -722,9 +722,9 @@ POST /selectCourse/deleteCourse/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist course| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -746,9 +746,9 @@ POST /selectCourse/deleteSection/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist section| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -769,9 +769,9 @@ POST /selectCourse/deleteStudent/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist student| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -791,9 +791,9 @@ POST /selectCourse/deleteInstructor/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist instructor| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -814,9 +814,9 @@ POST /selectCourse/deleteClassroom/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist classroom| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -837,9 +837,9 @@ POST /selectCourse/deleteAccount/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist account| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -860,9 +860,9 @@ POST /selectCourse/deleteExam/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | delete nonexist exam| 课程不存在 |
 ｜ handle successfully ｜ ok｜
@@ -888,9 +888,9 @@ POST /selectCourse/updateCourse/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -917,9 +917,9 @@ POST /selectCourse/updateSection/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 开课已存在 |
 ｜ handle successfully ｜ ok｜
@@ -943,9 +943,9 @@ POST /selectCourse/updateStudent/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 学生已存在 |
 ｜ handle successfully ｜ ok｜
@@ -968,9 +968,9 @@ POST /selectCourse/updateInstructor/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -991,9 +991,9 @@ POST /selectCourse/updateClassroom/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -1016,9 +1016,9 @@ POST /selectCourse/updateAccount/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | insert error: already exist| 课程已存在 |
 ｜ handle successfully ｜ ok｜
@@ -1044,9 +1044,9 @@ POST /selectCourse/updateExam/
 
 None
 
-##### msg
+##### 错误码
 
-| msg | 含义 |
+| 错误码 | 含义 |
 | ---- | ---- |
 | update error: nonexist| 课程不存在 |
 ｜ handle successfully ｜ ok｜
@@ -1081,7 +1081,7 @@ POST /selectCourse/checkCourses/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 
@@ -1114,7 +1114,7 @@ POST /selectCourse/checkSections/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 
@@ -1147,7 +1147,7 @@ POST /selectCourse/checkStudents/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 
@@ -1178,7 +1178,7 @@ POST /selectCourse/checkInstructors/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 
@@ -1207,7 +1207,7 @@ POST /selectCourse/checkClassrooms/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 
@@ -1237,7 +1237,7 @@ POST /selectCourse/checkAccounts/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 
@@ -1271,7 +1271,7 @@ POST /selectCourse/checkExams/
 }
 ```
 
-##### msg
+##### 错误码
 
 无
 

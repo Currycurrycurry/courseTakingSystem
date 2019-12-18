@@ -28,7 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    '10.222.166.123'
+    '10.222.166.123',
+    '*'
     ]
 
 # server = 'http://127.0.0.1:8000'
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'CourseSelectionSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR+"/selectCourse/templates",],
+        'DIRS': [BASE_DIR+"/CourseSelectionSystem/templates",],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -155,7 +156,7 @@ STATIC_URL = '/static/'
 
 # ADD 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+CORS_ORIGIN_WHITELIST = ["http://localhost:8003"]
 
 CORS_ALLOW_METHODS = (
     'DELETE',

@@ -28,7 +28,7 @@ DROP_OK = 'drop successfully'
 
 
 SECTION_TIME_CONFLICT = 'section time conflict'
-EXAM_TIME_CONFLICT = 'exam time conflict'
+COURSE_TIME_CONFLICT = 'exam time conflict'
 
 SHOW_COURSE_TABLE = 'show course table'
 SHOW_EXAM_TABLE = 'show exam table'

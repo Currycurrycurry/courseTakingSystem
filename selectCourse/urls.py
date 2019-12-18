@@ -5,10 +5,9 @@ from selectCourse import views
 from selectCourse import service_view
 
 urlpatterns = [
-    path('index.html', views.index),
+    path('index/', views.index, name='index'),
 
     path('login/',service_view.login),
-    path('login.html', views.login_view),
     path('logout/',service_view.logout),
 ################################################
     path('select/',service_view.select),
@@ -33,9 +32,8 @@ urlpatterns = [
     
     path('registerStudent/',service_view.registerStudent),
     path('registerInstructor/',service_view.registerInstructor),
-    path('registerScore/',service_view.registerScore),
+    path('registerStudent/',service_view.registerStudent),
     path('registerCourse/',service_view.registerCourse),
-
 
 
 ################################################################################################
