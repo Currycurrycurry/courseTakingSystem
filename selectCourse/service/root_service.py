@@ -781,7 +781,7 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['current_page_num']) #0,1,2,...
+            page_num = int(self.data['page_num']) #0,1,2,...
             instructor_id = self.data['instructor_id']
             instructor_name = self.data['instructor_name']
             instructor_class = self.data['instructor_class']
@@ -1169,7 +1169,7 @@ class RootService(BaseService):
 
         try:
 
-            page_num = int(self.data['current_page_num']) #0,1,2,...
+            page_num = int(self.data['page_num']) #0,1,2,...
             classroom_no = self.data['classroom_no']
             capacity = self.data['capacity']
 

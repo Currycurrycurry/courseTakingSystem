@@ -30,7 +30,7 @@ class SearchService(BaseService):
             title = self.data['title']
             instructor_name = self.data['instructor_name']
             dept_name = self.data['dept_name']
-            page_num = self.data['page_num']
+            page_num = int(self.data['page_num'])
 
         except Exception as error:
             self._init_response()
