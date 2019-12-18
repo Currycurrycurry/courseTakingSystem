@@ -53,7 +53,8 @@ class LoginService(BaseService):
                         # logger.info(res_name)
 
                     if role_num == INSTRUCTOR_ROLE:
-                        find_instructor_name_sql = "SELECT 'instructor'.'instructor_name' FROM 'instructor' WHERE 'instructor'.'instructor_id' = '"+user_id+"'"
+                        find_instructor_name_sql = "SELECT instructor_name FROM 'instructor' WHERE 'instructor'.'instructor_id' = '"+user_id+"'"
+                        print(find_instructor_name_sql)
                         cursor.execute(find_instructor_name_sql)
                         raw_instructor_name = sql_util.dictfetchone(cursor)
                         res_name= raw_instructor_name["instructor_name"]
@@ -77,7 +78,7 @@ class LoginService(BaseService):
             # logger.error(error)
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
     # TODO log out fail test
     def logout(self):

@@ -30,7 +30,7 @@ class SearchService(BaseService):
             title = self.data['title']
             instructor_name = self.data['instructor_name']
             dept_name = self.data['dept_name']
-            page_num = self.data['page_num']
+            page_num = int(self.data['page_num'])
 
         except Exception as error:
             self._init_response()
@@ -81,8 +81,9 @@ class SearchService(BaseService):
                         'credits':row['credits'],
                         'classroom_no':row['classroom_no'],
                         'day':row['day'],
-                        'time':row['time'],
-                        'lesson':row['lesson'],    
+                        'start':row['start'],
+                        'end':row['end'],
+                        'limit': row['limit']
                     }
                     sections.append(res)
                 self._init_response()
@@ -98,6 +99,6 @@ class SearchService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
 
      

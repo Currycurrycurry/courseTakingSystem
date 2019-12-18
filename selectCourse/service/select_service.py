@@ -27,8 +27,6 @@ class SelectService(BaseService):
             user_id = self.data['user_id']
             course_id = self.data['course_id']
             section_id = self.data['section_id']
-            print("the course id is ",course_id)
-            print("the section id is ",section_id)
 
         except Exception as error:
             self._init_response()
@@ -39,7 +37,6 @@ class SelectService(BaseService):
             find_course_sql = "SELECT 'course'.'course_id' FROM 'course' WHERE 'course'.'course_id' ='"+course_id+"'"
             cursor.execute(find_course_sql)
             raw_course_id = sql_util.dictfetchone(cursor)
-            print("raw course id is ",raw_course_id)
 
             if raw_course_id == None:
                 self._init_response()
@@ -56,8 +53,7 @@ class SelectService(BaseService):
             
             find_whether_already_takes_sql = "SELECT * FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id+" AND 'takes'.'student_id'='"+user_id+"'"
             cursor.execute(find_whether_already_takes_sql)
-            raw_take_info =sql_util.dictfetchone(cursor)
-            print("raw take info is ",raw_take_info)
+            raw_take_info = sql_util.dictfetchone(cursor)
 
             if raw_take_info != None:
                 self._init_response()
@@ -66,11 +62,9 @@ class SelectService(BaseService):
             find_take_num_sql = "SELECT COUNT(*) FROM 'takes' WHERE 'takes'.'course_id' = '"+course_id+"' AND 'takes'.'section_id' ="+section_id
             cursor.execute(find_take_num_sql)
             raw_take_num =cursor.fetchone()
-            print("the take num is :",raw_take_num[0])
             find_section_limit = "SELECT 'section'.'limit' FROM 'section' WHERE 'section'.'course_id'='"+course_id+"' AND 'section'.'section_id' ="+section_id
             cursor.execute(find_section_limit)
             raw_section_limit =sql_util.dictfetchone(cursor)
-            print("the section limit is :",raw_section_limit['limit'])
 
             if raw_section_limit['limit'] <= raw_take_num[0]:
                 self._init_response()
@@ -79,30 +73,31 @@ class SelectService(BaseService):
             # section time conflict
 
             section_day = int(raw_section_info['day'])
-            section_time = raw_section_info['time']
-            section_start_time = int(section_time.split("-")[0])
-            section_end_time = int(section_time.split("-")[1])
+            section_start_time = int(raw_section_info['start'])
+            section_end_time = int(raw_section_info['end'])
 
-            find_takes_sql = 'select * from takes where course_id = %s and section_id = %s and student_id = %s'
-            cursor.execute(find_takes_sql,(course_id,section_id,user_id,))
+            find_takes_sql = "select * from takes natural join section where student_id = '" + user_id  + "'"
+            print(find_takes_sql)
+            cursor.execute(find_takes_sql)
             takes_info = sql_util.dictfetchall(cursor)
-            
+            print(takes_info)
             for item in takes_info:
                 tmp_day = int(item['day'])
-                tmp_time = item['time']
-                tmp_start_time = int(tmp_time.split("-")[0])
-                tmp_end_time = int(tmp_time.split("-")[1])
+                tmp_start_time = int(raw_section_info['start'])
+                tmp_end_time = int(raw_section_info['end'])
+                print(tmp_day,section_day)
                 if tmp_day == section_day:
+                    print(1)
                     if (section_start_time >= tmp_start_time and section_start_time <= tmp_end_time) or \
-                        (section_start_time <= tmp_start_time and section_start_time >= tmp_end_time):
+                        ( tmp_start_time >= section_start_time and tmp_start_time <= section_end_time):
                         self._init_response()
                         return self._get_response(SECTION_TIME_CONFLICT)
             
             # application conflict
-            app_sql = 'select * from application where course_id=%s and section_id=%s and student_id=%s and if_drop=1'
-            cursor.execute(app_sql,(course_id,section_id,user_id))
+            app_sql = "select * from application where course_id = '" + course_id + "' and section_id = " + section_id + " and if_drop=1 and student_id = '" + user_id  + "'"
+            cursor.execute(app_sql)
             raw_app = sql_util.dictfetchall(cursor)
-            if raw_app != None:
+            if raw_app != []:
                 self._init_response()
                 return self._get_response(DROP_SELECT_ERROR)
 
@@ -112,15 +107,12 @@ class SelectService(BaseService):
             cursor.execute(check_credit_sql)
             raw_credit = sql_util.dictfetchone(cursor)
             credit_before = raw_credit['student_total_credit']
-            print("before update: the raw_credit is : ",credit_before)
 
             find_course_credit_sql = "SELECT 'course'.'credits' FROM 'course' WHERE 'course'.'course_id'='"+course_id+"'"
             cursor.execute(find_course_credit_sql)
             raw_course_credit = sql_util.dictfetchone(cursor)
             course_credit = raw_course_credit['credits']
-            print("the course credit is ",course_credit)
             updated_credit = int(credit_before+course_credit)
-            print("updated credit is",updated_credit)
             add_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
             cursor.execute(add_credits_sql)
 
@@ -131,7 +123,7 @@ class SelectService(BaseService):
             traceback.print_exc()
             connection.rollback()
             self._init_response()
-            return self._get_response(SERVER_ERROR)
+            return self._get_response(SERVER_ERROR,-1)
             
 
 

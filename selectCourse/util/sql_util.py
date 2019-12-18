@@ -14,6 +14,8 @@ def dictfetchone(cursor):
        
 def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
+    # for row in cursor.fetchall():
+    #     print(row)
     return [
         dict(zip(columns,row))
         for row in cursor.fetchall()

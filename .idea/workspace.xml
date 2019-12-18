@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c5a118af-3a34-467b-9d19-9cfe97cd3be2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/courseTakingSystem.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CourseSelectionSystem/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/CourseSelectionSystem/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.idea/data.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/apply_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/apply_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/check_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/check_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/drop_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/drop_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/import_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/import_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/login_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/login_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/root_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/root_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/search_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/search_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/service/select_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/service/select_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/.idea/courseSelection.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/.idea/webServers.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/assets/login_background.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseApplication.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseApplicationManagement.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseApplicationManagementIns.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseGrade.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseManagement.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseSelection.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/courseTable.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/AdminLTE.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/bootstrap.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/courseSelection.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/courseTable.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/font-awesome.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/ionicons.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/login.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/_all-skins.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/_all-skins.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-black-light.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-black-light.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-black.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-black.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-blue-light.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-blue-light.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-blue.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-blue.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-green-light.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-green-light.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-green.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-green.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-purple-light.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-purple-light.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-purple.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-purple.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-red-light.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-red-light.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-red.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-red.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-yellow-light.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-yellow-light.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-yellow.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/css/skins/skin-yellow.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/FontAwesome.otf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/fontawesome-webfont.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/fontawesome-webfont.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/fontawesome-webfont.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/fontawesome-webfont.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/fontawesome-webfont.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/glyphicons-halflings-regular.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/glyphicons-halflings-regular.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/glyphicons-halflings-regular.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/ionicons.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/ionicons.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/ionicons.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/fonts/ionicons.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/arrow_right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/collapse.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/expand.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/img/login_background.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/instructorManagement.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/adminlte.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/api/course.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/api/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/api/users.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/bootstrap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/jquery-3.3.1.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/login.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/message.inc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/router/instructor.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/router/root.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/router/student.router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/router/user.rooter.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/js/utils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/message.inc.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/sectionManagement.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/sectionManagementInstructor.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/studentManagement.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/templates/courseSelection/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/selectCourse/util/sql_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/selectCourse/util/sql_util.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="MERGE" />
+  </component>
+  <component name="ProjectId" id="1UR6vfcH0XDs3H2iFgw4m1NC5H5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../courseSelection/courseSelection" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="courseTakingSystem" type="Python.DjangoServer" factoryName="Django server">
+      <module name="courseTakingSystem" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="CourseSelectionSystem.settings" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\86152\AppData\Local\Programs\Python\Python37\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8040" />
+      <option name="host" value="127.0.0.1" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="true" />
+      <option name="customRunCommand" value="runserver" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c5a118af-3a34-467b-9d19-9cfe97cd3be2" name="Default Changelist" comment="" />
+      <created>1575307292481</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1575307292481</updated>
+      <workItem from="1575307293736" duration="230000" />
+      <workItem from="1575334652325" duration="1656000" />
+      <workItem from="1575347381006" duration="57000" />
+      <workItem from="1576417570610" duration="90000" />
+      <workItem from="1576418048886" duration="737000" />
+      <workItem from="1576470777353" duration="415000" />
+      <workItem from="1576502695646" duration="596000" />
+      <workItem from="1576577306295" duration="5414000" />
+      <workItem from="1576584149371" duration="16000" />
+      <workItem from="1576600070575" duration="19000" />
+      <workItem from="1576600217137" duration="5138000" />
+      <workItem from="1576630804362" duration="20712000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="814" y="341" key="FileChooserDialogImpl" timestamp="1576417660207">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="814" y="341" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1576417660207" />
+    <state x="180" y="127" key="MergeDialog" timestamp="1576419052171">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="180" y="127" key="MergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576419052171" />
+    <state x="664" y="276" key="MultipleFileMergeDialog" timestamp="1576419052202">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="664" y="276" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576419052202" />
+    <state x="829" y="503" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1576419001504">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="829" y="503" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1576419001504" />
+  </component>
+</project>
