@@ -179,7 +179,6 @@ class RootService(BaseService):
             self._init_response()
             return self._get_response(SERVER_ERROR,-1)
 
-   
     def updateCourse(self):
         if self.request.session['is_login'] != True or \
             (self.request.session['role'] != ROOT_ROLE):
@@ -191,6 +190,7 @@ class RootService(BaseService):
             title = self.data['title']
             credits = self.data['credits']
             dept_name = self.data['dept_name']
+
     
         except Exception as error:
             self._init_response()
@@ -198,7 +198,6 @@ class RootService(BaseService):
 
         try:
             cursor = connection.cursor()
-
             sql = 'select * from course where course_id = %s'
             cursor.execute(sql,(course_id,))
             test = sql_util.dictfetchone(cursor)
@@ -207,6 +206,7 @@ class RootService(BaseService):
                 return self._get_response(UPDATE_ERROR,-1)
             sql = 'update course set title=%s,credits=%s,dept_name=%s where course_id = %s'
             cursor.execute(sql,(title,credits,dept_name,course_id,))
+            print(sql)
             connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
@@ -1573,8 +1573,6 @@ class RootService(BaseService):
 
         pass
 
-
-
     def deleteApplication(self):
         if self.request.session['is_login'] != True or \
             (self.request.session['role'] != ROOT_ROLE):
@@ -1611,9 +1609,6 @@ class RootService(BaseService):
             connection.rollback()
             self._init_response()
             return self._get_response(SERVER_ERROR,-1)
-
-
-
 
 
     # def delete(self,tb_name,*pk):

@@ -49,6 +49,8 @@ class ImportService(BaseService):
             print("the student scores are ",raw_student_scores)
             try:
                 cursor = connection.cursor()
+           
+                res = {"successed_item_num":0}
                 for row in raw_student_scores:
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and (row[0]!='' and row[1]!='' and row[2]!='' and row[3]!=''):
@@ -63,16 +65,19 @@ class ImportService(BaseService):
                         if flag == None:
                             msg = "no such account: "+str(student_id)
                             self._init_response()
+                 
+                            self.response.update(res)
                             return self._get_response(msg,-1)
                             
                         # (2) student
-                        
                         sql = 'select * from student where student_id=%s'
                         cursor.execute(sql,(student_id,))
                         flag = sql_util.dictfetchone(cursor)
                         if flag == None:
                             msg = "no such student: "+str(student_id)
                             self._init_response()
+                      
+                            self.response.update(res)
                             return self._get_response(msg,-1)
                         
                         # (3) course 
@@ -82,6 +87,8 @@ class ImportService(BaseService):
                         if flag == None:
                             msg = "no such course: "+str(course_id)
                             self._init_response()
+                      
+                            self.response.update(res)
                             return self._get_response(msg,-1)
 
                         # (4) section
@@ -91,6 +98,7 @@ class ImportService(BaseService):
                         if flag == None:
                             msg = "no such section: "+str(course_id)+"."+str(section_id)
                             self._init_response()
+                            self.response.update(res)
                             return self._get_response(msg,-1)
 
                         # (5) takes
@@ -100,8 +108,9 @@ class ImportService(BaseService):
                         if flag == None:
                             msg = "no such taking record: "+str(course_id)+"."+str(section_id)+" for "+str(student_id)
                             self._init_response()
+                            self.response.update(res)
                             return self._get_response(msg,-1)
-
+                 
                         # 2. insert the same data conflict
                         sql = 'select * from takes where course_id=%s and section_id=%s and student_id=%s and grade=%s'
                         cursor.execute(sql,(course_id,section_id,student_id,grade,))
@@ -109,21 +118,27 @@ class ImportService(BaseService):
                         if if_has != None:
                             continue
                             
-                        # 3. insert while should be update conflict
+                        # 3. insert while should be update conflict —— 
                         sql = 'select * from takes where course_id=%s and section_id=%s and student_id=%s'
                         cursor.execute(sql,(course_id,section_id,student_id,))
                         if_has = sql_util.dictfetchone(cursor)
                         if if_has != None:
-                            sql = 'update takes set grade=%s where course_id=%s and section_id=%s and student_id=%s'
-                            cursor.execute(sql,(grade,course_id,section_id,student_id,))
+                            msg = "data conflict: " + course_id+"."+str(section_id)+" : "+ str(student_id)
+                            self._init_response()
+                      
+                            self.response.update(res)
+                            return self._get_response(msg,-1)
                         else:
                             sql = 'insert into takes(course_id,section_id,student_id,grade)'\
                                 'values(%s,%s,%s,%s)'
                             cursor.execute(sql,( course_id,section_id,student_id,grade,))
+                            res['successed_item_num']+=1
                     else:
                         self._init_response()
+                        self.response.update(res)
                         return self._get_response(INVALID_BLANK,-1)
                 self._init_response()
+                self.response.update(res)
                 return self._get_response(IMPORT_OK,1)
 
             except Exception as error:
@@ -138,6 +153,8 @@ class ImportService(BaseService):
             self._init_response()
             return self._get_response(UNAUTHORIZED)
         raw_instructor_infos = self.importExcel(self.request)
+      
+        res = {"successed_item_num":0}
         if raw_instructor_infos != None:
             print("the raw_instructor_infos are ",raw_instructor_infos)
             try:
@@ -155,7 +172,6 @@ class ImportService(BaseService):
                             sql = 'insert into account(ID,password,role) values(%s,%s,%s)'
                             cursor.execute(sql,(instructor_id,instructor_id,2))
                             
-
                         # same data check
                         sql = 'select * from instructor where instructor_id = %s'
                         cursor.execute(sql,(instructor_id,))
@@ -164,14 +180,21 @@ class ImportService(BaseService):
                             sql = 'insert into instructor(instructor_id,instructor_name,instructor_class,dept_name)'\
                                 'values(%s,%s,%s,%s)'
                             cursor.execute(sql,(instructor_id,instructor_name,instructor_class,dept_name))
+                            res["successed_item_num"]+=1
                         else:
-                            sql = 'update instructor set instructor_name=%s and instructor_class=%s and dept_name=%s where instructor_id=%s'
-                            cursor.execute(sql,(instructor_name,instructor_class,dept_name,instructor_id))
+                            msg = "data conflict: " + instructor_id
+                            
+                            self._init_response()
+                            self.response.update(res)
+                            return self._get_response(msg,-1)
                         
                     else:
                         self._init_response()
+                        self.response.update(res)
                         return self._get_response(INVALID_BLANK,-1)
                 self._init_response()
+               
+                self.response.update(res)
                 return self._get_response(IMPORT_OK,1)
             except Exception as error:
                 traceback.print_exc()
@@ -184,6 +207,7 @@ class ImportService(BaseService):
             self._init_response()
             return self._get_response(UNAUTHORIZED)
         raw_student_scores = self.importExcel(self.request)
+        res = {"successed_item_num":0}
         if raw_student_scores != None:
             print("the student scores are ",raw_student_scores)
             try:
@@ -210,9 +234,12 @@ class ImportService(BaseService):
                             sql = 'insert into student(student_id,student_name,student_major,student_dept_name,student_total_credit)'\
                                 'values(%s,%s,%s,%s,%s)'
                             cursor.execute(sql,(student_id,student_name,student_major,student_dept_name,0))
+                            res["successed_item_num"]+=1
                         else:
-                            sql = 'update student set student_name=%s and student_major=%s and student_dept_name=%s where student_id=%s'
-                            cursor.execute(sql,(student_name,student_major,student_dept_name,student_id))
+                            self._init_response()
+                            msg = "data conflict: "+student_id
+                            self.response.update(res)
+                            return self._get_response(msg,-1)
                  
                 self._init_response()
                 return self._get_response(IMPORT_OK,1)
@@ -227,6 +254,7 @@ class ImportService(BaseService):
             self._init_response()
             return self._get_response(UNAUTHORIZED)
         raw_courses = self.importExcel(self.request)
+        res = {'successed_item_num':0}
         if raw_courses != None:
             print("the courses are ",raw_courses)
             try:
@@ -243,9 +271,13 @@ class ImportService(BaseService):
                             sql = 'insert into course(course_id,title,credits,dept_name)'\
                             'values(%s,%s,%s,%s)'
                             cursor.execute(sql,(course_id,title,credits,dept_name))
+                            res['successed_item_num']+=1
                         else:
-                            sql = 'update course set title=%s and credits=%s and dept_name=%s where course_id=%s'
-                            cursor.execute(sql,(title,credits,dept_name,course_id,))
+                            self._init_response()
+                            msg = 'data conflict: '+course_id
+                            self.response.update(res)
+                            return self._get_response(msg,1)
+                            
                 self._init_response()
                 return self._get_response(IMPORT_OK,1)
      
@@ -254,12 +286,13 @@ class ImportService(BaseService):
                 connection.rollback()
                 self._init_response()
                 return self._get_response(SERVER_ERROR,-1)
-
+    # test ok
     def registerSection(self):
         if self.request.session['is_login'] != True or self.request.session['role'] != ROOT_ROLE:
             self._init_response()
             return self._get_response(UNAUTHORIZED)
         raw_sections = self.importExcel(self.request)
+        res = {'successed_item_num':0}
         if raw_sections != None:
             print("the sections are ",raw_sections)
             try:
@@ -291,9 +324,13 @@ class ImportService(BaseService):
                             sql = 'insert into section(course_id,section_id,start,end,classroom_no,`limit`,day)'\
                                 'values(%s,%s,%s,%s,%s,%s,%s)'
                             cursor.execute(sql,(row[0],str(int(row[1])),str(int(row[2])),str(int(row[3])),row[4],str(int(row[6])),str(int(row[7]))))
+                            res['successed_item_num']+=1
                         else:
-                            sql = 'update section set start=%s and end=%s and classroom_no=%s and `limit`=%s and day=%s where course_id=%s and section_id=%s'
-                            cursor.execute(sql,(str(int(row[2])),str(int(row[3])),row[4],str(int(row[6])),str(int(row[7])),row[0],str(int(row[1]))))
+                            self._init_response()
+                            self.response.update(res)
+                            msg = "data conflict: "+ row[0]+"."+str(int(row[1]))
+                            return self._get_response(msg,1)
+                            
                 self._init_response()
                 return self._get_response(IMPORT_OK,1)
         
