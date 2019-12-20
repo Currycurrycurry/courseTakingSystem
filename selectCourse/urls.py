@@ -35,7 +35,7 @@ urlpatterns = [
     path('registerStudent/',service_view.registerStudent),
     path('registerCourse/',service_view.registerCourse),
     path('registerSection/',service_view.registerSection),
-
+    # TODO 考试的批量导入接口 注意检查教室的时间冲突
 
 ################################################################################################
     # only for root users
