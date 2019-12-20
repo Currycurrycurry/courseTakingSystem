@@ -54,7 +54,6 @@ class LoginService(BaseService):
 
                     if role_num == INSTRUCTOR_ROLE:
                         find_instructor_name_sql = "SELECT instructor_name FROM 'instructor' WHERE 'instructor'.'instructor_id' = '"+user_id+"'"
-                        print(find_instructor_name_sql)
                         cursor.execute(find_instructor_name_sql)
                         raw_instructor_name = sql_util.dictfetchone(cursor)
                         res_name= raw_instructor_name["instructor_name"]
@@ -63,7 +62,13 @@ class LoginService(BaseService):
                     if role_num == ROOT_ROLE:
                         res_name = "administrator"
 
+                    find_instructor_name_sql = "SELECT * FROM course_status"
+                    cursor.execute(find_instructor_name_sql)
+                    raw_instructor_name = sql_util.dictfetchone(cursor)
+                    status = raw_instructor_name["status"]
+
                     data = {'user_name':res_name,
+                            'course_status': status,
                             'role':role_num}
                     self.request.session['user_id'] = user_id
                     self.request.session['role'] = row['role']

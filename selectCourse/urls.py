@@ -6,7 +6,7 @@ from selectCourse import service_view
 
 urlpatterns = [
     path('index/', views.index, name='index'),
-    path('test.html',views.test),
+
     path('login/',service_view.login),
     path('logout/',service_view.logout),
 ################################################
@@ -29,7 +29,7 @@ urlpatterns = [
 
 ################################################v
     path('downloadFile/',service_view.downloadFile),
-    
+
     path('registerScore/',service_view.registerScore),
     path('registerInstructor/',service_view.registerInstructor),
     path('registerStudent/',service_view.registerStudent),
@@ -39,6 +39,8 @@ urlpatterns = [
 
 ################################################################################################
     # only for root users
+    path('updateCourseStatus/', service_view.updateCourseStatus),
+
     path('deleteCourse/',service_view.deleteCourse),
     path('insertCourse/',service_view.insertCourse),
     path('checkCourses/',service_view.checkCourses),

@@ -24,7 +24,7 @@ class ApplyService(BaseService):
         except Exception as error:
             self._init_response()
             return self._get_response(GET_ARG_ERROR,-1)
-        
+
         if self.request.session['role'] == STUDENT_ROLE:
             return self.checkApplicationsByStudent(user_id)
         

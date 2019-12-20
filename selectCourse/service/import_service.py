@@ -163,14 +163,6 @@ class ImportService(BaseService):
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and (row[0]!='' and row[1]!='' and row[2]!='' and row[3]!=''):
                         instructor_id,instructor_name,instructor_class,dept_name = row[0],row[1],row[2],row[3]
-
-                        # exist check
-                        sql = 'select * from account where ID=%s'
-                        cursor.execute(sql,(instructor_id,))
-                        flag = sql_util.dictfetchone(cursor)
-                        if flag == None:
-                            sql = 'insert into account(ID,password,role) values(%s,%s,%s)'
-                            cursor.execute(sql,(instructor_id,instructor_id,2))
                             
                         # same data check
                         sql = 'select * from instructor where instructor_id = %s'
@@ -180,6 +172,10 @@ class ImportService(BaseService):
                             sql = 'insert into instructor(instructor_id,instructor_name,instructor_class,dept_name)'\
                                 'values(%s,%s,%s,%s)'
                             cursor.execute(sql,(instructor_id,instructor_name,instructor_class,dept_name))
+
+                            sql = 'insert into account(id, password, role)'\
+                                'values(%s,%s,%s)'
+                            cursor.execute(sql,(instructor_id, instructor_id, 2))
                             res["successed_item_num"]+=1
                         else:
                             msg = "data conflict: " + instructor_id
@@ -217,13 +213,6 @@ class ImportService(BaseService):
                         and (row[0]!='' and row[1]!='' and row[2]!='' and row[3]!='') :
                         student_id,student_name,student_major,student_dept_name = str(int(row[0])),row[1],row[2],row[3]
 
-                        # exist check
-                        sql = 'select * from account where ID=%s'
-                        cursor.execute(sql,(student_id,))
-                        flag = sql_util.dictfetchone(cursor)
-                        if flag == None:
-                            sql = 'insert into account(ID,password,role) values(%s,%s,%s)'
-                            cursor.execute(sql,(student_id,student_id,1))
                             
                         # same data check
                         sql = 'select * from student where student_id = %s'
@@ -234,6 +223,11 @@ class ImportService(BaseService):
                             sql = 'insert into student(student_id,student_name,student_major,student_dept_name,student_total_credit)'\
                                 'values(%s,%s,%s,%s,%s)'
                             cursor.execute(sql,(student_id,student_name,student_major,student_dept_name,0))
+
+                            sql = 'insert into account(id, password, role)'\
+                                'values(%s,%s,%s)'
+                            cursor.execute(sql,(student_id,student_id, 1))
+
                             res["successed_item_num"]+=1
                         else:
                             self._init_response()
@@ -263,10 +257,14 @@ class ImportService(BaseService):
                     if (row[0]!=None and row[1]!=None and row[2]!=None and row[3]!=None)\
                         and(row[0]!='' and row[1]!='' and row[2]!='' and row[3]!=''):
                         course_id,title,credits,dept_name = row[0],row[1],str(int(row[2])),row[3]
+
+                        print(course_id,title,credits,dept_name)
                         # same check
-                        sql = 'select * from course where course_id=%s'
-                        cursor.execute(sql,(course_id,))
+                        sql = 'select * from course where course_id="%s"'
+
+                        cursor.execute(sql%(course_id,))
                         flag = sql_util.dictfetchone(cursor)
+
                         if flag == None:
                             sql = 'insert into course(course_id,title,credits,dept_name)'\
                             'values(%s,%s,%s,%s)'
@@ -276,7 +274,7 @@ class ImportService(BaseService):
                             self._init_response()
                             msg = 'data conflict: '+course_id
                             self.response.update(res)
-                            return self._get_response(msg,1)
+                            return self._get_response(msg, -1)
                             
                 self._init_response()
                 return self._get_response(IMPORT_OK,1)
@@ -315,21 +313,47 @@ class ImportService(BaseService):
                             msg = "no such course: "+str(row[0])
                             self._init_response()
                             return self._get_response(msg,-1)
-                        
+
+                        sql = 'select * from classroom where classroom_no = %s'
+                        cursor.execute(sql, (row[2],))
+                        test = sql_util.dictfetchone(cursor)
+
+                        if test == None:
+                            self._init_response()
+                            return self._get_response("no such classroom:" + row[2], -1)
+
+                        # TODO 老师的时空冲突检查 instructor_id 为 row[7]
+                        # TODO 教室的时空冲突检查 classroom_no 为 row[2]
+
+
+                        sql = 'select * from teaches where course_id = %s and section_id=%s and instructor_id=%s'
+                        cursor.execute(sql, (row[0],int(row[1]),row[7]))
+                        test = sql_util.dictfetchone(cursor)
+
+                        if test != None:
+                            self._init_response()
+                            return self._get_response("data conflict:" +  row[0]+"."+ row[1], -1)
+
                         # same check
                         sql = 'select * from section where course_id=%s and section_id=%s'
                         cursor.execute(sql,(row[0],row[1]))
                         flag = sql_util.dictfetchone(cursor)
+
                         if flag == None:
-                            sql = 'insert into section(course_id,section_id,start,end,classroom_no,`limit`,day)'\
+                            sql = 'insert into section(course_id, section_id, classroom_no, start, `end`, `limit`, `day`)'\
                                 'values(%s,%s,%s,%s,%s,%s,%s)'
-                            cursor.execute(sql,(row[0],str(int(row[1])),str(int(row[2])),str(int(row[3])),row[4],str(int(row[6])),str(int(row[7]))))
+                            cursor.execute(sql,(row[0], int(row[1]), row[2], int(row[3]), row[4], int(row[5]), int(row[6])))
+
+                            # 同时插入teaches表
+                            sql = 'insert into teaches(course_id, section_id, instructor_id)'\
+                                'values(%s,%s,%s)'
+                            cursor.execute(sql, (row[0], int(row[1]), row[7]))
                             res['successed_item_num']+=1
                         else:
                             self._init_response()
                             self.response.update(res)
-                            msg = "data conflict: "+ row[0]+"."+str(int(row[1]))
-                            return self._get_response(msg,1)
+                            msg = "data conflict: "+ row[0]+"."+ row[1]
+                            return self._get_response(msg, -1)
                             
                 self._init_response()
                 return self._get_response(IMPORT_OK,1)
