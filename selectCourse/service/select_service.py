@@ -87,7 +87,7 @@ class SelectService(BaseService):
                 if tmp_day == section_day:
                     print(1)
                     if (section_start_time >= tmp_start_time and section_start_time <= tmp_end_time) or \
-                        ( tmp_start_time >= section_start_time and tmp_start_time <= section_end_time):
+                        ( section_end_time >= tmp_start_time and section_end_time <= tmp_end_time):
                         self._init_response()
                         return self._get_response(SECTION_TIME_CONFLICT,-1)
 
