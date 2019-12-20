@@ -93,7 +93,7 @@ POST /selectCourse/select/
 | course with no vacancy | 课程无余量 |
 | already selected | 已经选过该课程 |
 | section time conflict | 课程时间冲突｜
-
+| exam time conflict | 考试时间冲突｜
 
 
 ## 退课
@@ -130,6 +130,7 @@ POST /selectCourse/checkCourseTable
 | 名称 | 类型 | 描述 |
 | ---- | ---- | ---- |
 | user_id | string | 用户 ID（留空则默认获取当前已登录用户的信息） |
+| current_page_num | int | 用户 ID（留空则默认获取当前已登录用户的信息） |
 
 ### 返回值
 
@@ -250,14 +251,13 @@ POST /selectCourse/checkPersonalInfo
 
 ## 搜索课程
 
-POST /selectCourse/search
+GET /selectCourse/search
 
 ### 参数列表
 
 | 名称 | 类型 | 描述 |
 | ---- | ---- | ---- |
 | user_id | string | 用户 ID |
-| search_type | int | 搜索类型 1/2/3/4分别表示 |
 | course_id | string | 根据course_id和section_id进行搜索|
 | section_id | int | 根据course_id和section_id进行搜索 |
 | title | string | 根据课程名称进行搜索|
@@ -454,8 +454,6 @@ POST /selectCourse/checkCourseNameList/
 | show course table| 显示课程信息 |
 
 
-
-
 ## 查看课程考试列表（学生权限）
 
 POST /selectCourse/checkExamTable/
@@ -518,7 +516,7 @@ INSTRUCTOR_FILE = 5 |
 
 ### 导入教师信息（root权限）
 
-
+### 导入考试信息（root权限）
 
 
 ## 管理员增删改查统一接口说明
