@@ -6,7 +6,7 @@ from selectCourse import service_view
 
 urlpatterns = [
     path('index/', views.index, name='index'),
-
+    path('test.html',views.test),
     path('login/',service_view.login),
     path('logout/',service_view.logout),
 ################################################
@@ -35,7 +35,7 @@ urlpatterns = [
     path('registerStudent/',service_view.registerStudent),
     path('registerCourse/',service_view.registerCourse),
     path('registerSection/',service_view.registerSection),
-    # TODO 考试的批量导入接口 注意检查教室的时间冲突
+    path('registerExam/',service_view.registerExam),
 
 ################################################################################################
     # only for root users

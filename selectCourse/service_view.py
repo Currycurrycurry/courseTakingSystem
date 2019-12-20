@@ -76,6 +76,9 @@ def registerCourse(request):
 def registerSection(request):
     return ImportService(request).registerSection()
 
+def registerExam(request):
+    return ImportService(request).registerExam()
+
 ###############ROOT SERVICE########################
 def updateCourseStatus(request):
     return RootService(request).updateCourseStatus()
