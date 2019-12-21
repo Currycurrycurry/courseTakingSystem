@@ -96,9 +96,14 @@ class ApplyService(BaseService):
         
         try:
             cursor = connection.cursor()
-            sql ="update application set status = " + status + " where course_id = '" +  course_id + "' and section_id = " + section_id
+            sql ="update application set status = " + status + " where course_id = '" +  course_id + "' and section_id = " + section_id + "' and student_id = " + user_id
             print(sql)
             cursor.execute(sql)
+            if status == 1:
+                sql = 'insert into takes(course_id,section_id,student_id,drop_flag) '\
+                    'values(%s,%s,%s,%s)'
+                cursor.execute(sql,(course_id,section_id,user_id,0))
+
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -171,7 +176,7 @@ class ApplyService(BaseService):
             # section time conflict
 
             sql = 'select * from section where course_id=%s and section_id=%s'
-            cursoe.execute(sql,(course_id,section_id,))
+            cursor.execute(sql,(course_id,section_id,))
             raw_section_info = sql_util.dictfetchone(cursor)
 
             section_day = int(raw_section_info['day'])
@@ -221,16 +226,11 @@ class ApplyService(BaseService):
                             or (exam_end_time >= tmp_start_time and exam_end_time <= tmp_end_time):
                             self._init_response()
                             return self._get_response(EXAM_TIME_CONFLICT,-1)
-                            
+
             sql = 'insert into application(course_id,section_id,student_id,application_reason) '\
                 'values(%s,%s,%s,%s)'
             print(sql)
             cursor.execute(sql,(course_id,section_id,user_id,app_reason,))
-
-            sql = 'insert into takes(course_id,section_id,student_id,drop_flag) '\
-                'values(%s,%s,%s,%s,%s)'
-            cursor.execute(sql,(course_id,section_id,student_id,0,))
-
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
