@@ -172,6 +172,11 @@ class ApplyService(BaseService):
                 'values(%s,%s,%s,%s)'
             print(sql)
             cursor.execute(sql,(course_id,section_id,user_id,app_reason,))
+
+            sql = 'insert into takes(course_id,section_id,student_id,drop_flag) '\
+                'values(%s,%s,%s,%s,%s)'
+            cursor.execute(sql,(course_id,section_id,student_id,0,))
+
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
