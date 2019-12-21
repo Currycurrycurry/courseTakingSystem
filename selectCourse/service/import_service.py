@@ -40,8 +40,9 @@ class ImportService(BaseService):
         return rowValues
     
     # test ok
-    def registerScore(self):  
-        if self.request.session['is_login'] != True or (self.request.session['role'] != ROOT_ROLE and self.request.session['role']!=INSTRUCTOR_ROLE):
+    def registerScore(self):
+        print(self.request.session['role'])
+        if self.request.session['is_login'] != True or self.request.session['role'] != INSTRUCTOR_ROLE:
             self._init_response()
             return self._get_response(UNAUTHORIZED)
         raw_student_scores = self.importExcel(self.request)
@@ -105,33 +106,14 @@ class ImportService(BaseService):
                         sql = 'select * from takes where course_id=%s and section_id=%s and student_id=%s'
                         cursor.execute(sql,(course_id,section_id,student_id,))
                         flag = sql_util.dictfetchone(cursor)
-                        if flag == None:
+                        if flag == None: # 没有选课这直接报错
                             msg = "no such taking record: "+str(course_id)+"."+str(section_id)+" for "+str(student_id)
                             self._init_response()
                             self.response.update(res)
                             return self._get_response(msg,-1)
-                 
-                        # 2. insert the same data conflict
-                        sql = 'select * from takes where course_id=%s and section_id=%s and student_id=%s and grade=%s'
-                        cursor.execute(sql,(course_id,section_id,student_id,grade,))
-                        if_has = sql_util.dictfetchone(cursor)
-                        if if_has != None:
-                            continue
-                            
-                        # 3. insert while should be update conflict —— 
-                        sql = 'select * from takes where course_id=%s and section_id=%s and student_id=%s'
-                        cursor.execute(sql,(course_id,section_id,student_id,))
-                        if_has = sql_util.dictfetchone(cursor)
-                        if if_has != None:
-                            msg = "data conflict: " + course_id+"."+str(section_id)+" : "+ str(student_id)
-                            self._init_response()
-                      
-                            self.response.update(res)
-                            return self._get_response(msg,-1)
-                        else:
-                            sql = 'insert into takes(course_id,section_id,student_id,grade)'\
-                                'values(%s,%s,%s,%s)'
-                            cursor.execute(sql,( course_id,section_id,student_id,grade,))
+                        else: # 选过课程则更新成绩
+                            sql = 'update takes set grade=%s where course_id=%s and section_id=%s and student_id=%s'
+                            cursor.execute(sql,(grade, course_id,section_id,student_id,))
                             res['successed_item_num']+=1
                     else:
                         self._init_response()

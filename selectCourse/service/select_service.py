@@ -81,13 +81,13 @@ class SelectService(BaseService):
             print(takes_info)
             for item in takes_info:
                 tmp_day = int(item['day'])
-                tmp_start_time = int(raw_section_info['start'])
-                tmp_end_time = int(raw_section_info['end'])
+                tmp_start_time = int(item['start'])
+                tmp_end_time = int(item['end'])
                 print(tmp_day,section_day)
                 if tmp_day == section_day:
-                    print(1)
                     if (section_start_time >= tmp_start_time and section_start_time <= tmp_end_time) or \
                         ( section_end_time >= tmp_start_time and section_end_time <= tmp_end_time):
+                        print(section_start_time,section_end_time,tmp_start_time ,tmp_end_time)
                         self._init_response()
                         return self._get_response(SECTION_TIME_CONFLICT,-1)
 
@@ -126,7 +126,7 @@ class SelectService(BaseService):
                 self._init_response()
                 return self._get_response(DROP_SELECT_ERROR)
 
-            insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
+            insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL"
             cursor.execute(insert_takes_sql)
             check_credit_sql = "SELECT 'student'.'student_total_credit' FROM 'student' WHERE 'student'.'student_id' = '"+user_id+"'"
             cursor.execute(check_credit_sql)

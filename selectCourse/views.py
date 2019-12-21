@@ -142,7 +142,7 @@ def select_sql(request):
                     print("the section limit is :",raw_section_limit[0])
 
                     if raw_section_limit[0] > raw_take_num[0]:
-                        insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade','drop_flag') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL,0"
+                        insert_takes_sql = "INSERT INTO 'takes' ('course_id','section_id','student_id','grade') SELECT '"+ course_id+"',"+section_id+",'"+user_id+"', NULL"
                         cursor.execute(insert_takes_sql)
                         check_credit_sql = "SELECT 'student'.'student_total_credit' FROM 'student' WHERE 'student'.'student_id' = '"+user_id+"'"
                         cursor.execute(check_credit_sql)

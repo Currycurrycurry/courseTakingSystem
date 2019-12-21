@@ -284,7 +284,7 @@ class CheckService(BaseService):
             students = []
             for row in raw_namelist:
                 tmp = {
-                    'student_id':row['course_id'],
+                    'student_id':row['student_id'],
                     'student_name':row['student_name'],
                     'student_major':row["student_major"],
                     'student_dept_name':row["student_dept_name"],

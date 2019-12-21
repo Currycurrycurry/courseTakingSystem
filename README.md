@@ -9,21 +9,133 @@
 ### 实体集
 
 + 课程信息 course (<u>course_id</u>, title, credits, dept_name)
-+ 开课信息 section (<u>course_id</u>, <u>section_id</u>, start, end, classroom_no, lesson, limit, day)
-
-+ 学生信息 student(<u>student_id</u>,student_name, student_major, student_dept_name, student_total_credit)
++ 开课信息 section (<u>course_id</u>, <u>section_id</u>, start, end, classroom_no, limit, day, lesson)
 + 账户信息 account (<u>ID</u>, password, role)
-+ 教室信息 classroom (classroom_no,capacity)
-+ 考试信息 exam (<u>course_id</u>, <u>section_id</u>, exam_classroom_no, exam_day, type, start_time, end_time, open_note_flag)
++ 学生信息 student(<u>student_id</u>,student_name, student_major, student_dept_name, student_total_credit)
 + 教师信息 instructor (<u>instructor_id</u>, instructor_name, instructor_class, dept_name)
++ 考试信息 exam (<u>course_id</u>, <u>section_id</u>, exam_classroom_no, exam_day, type, start_time, end_time, open_note_flag)
++ 教室信息 classroom (<u>classroom_no</u>,capacity)
+
 
 ### 关系集
 
 + 教师 & 开课 ：教授 teaches (<u>instructor_id</u>, <u>course_id</u>, <u>section_id</u>)
-+ 学生 & 开课 ：选课 takes (course_id, section_id, student_id, grade, drop_flag)
++ 学生 & 开课 ：选课 takes (<u>course_id</u>, <u>section_id</u>, <u>student_id</u>, grade)
 + 学生 & 开课：申请 application (<u>course_id</u>, <u>section_id</u>, <u>student_id</u>, status, application_reason, if_drop)
 
+## 表结构分析
++ course: 用于存储和管理课程信息的数据库表，主键是课程编号course_id。
+```sqlite
+CREATE TABLE "course" (
+  "course_id" TEXT(255) NOT NULL,
+  "title" TEXT(255) NOT NULL,
+  "credits" integer(10) NOT NULL,
+  "dept_name" TEXT(255),
+  PRIMARY KEY ("course_id")
+);
+```
++ section: 用于存储和管理本学期实际上开设的课程信息，是一个弱实体集。开课涉及到上课时间，如星期五 3-4这样的时间。为了保证原子性，
+系统拆分成了三部分：day表示是一周的第几天，start表示这门课的开始节次，end表示这门课的结束节次。lesson作为导出属性而存在。section
+作为弱实体集，它的主键由course_id和section_id联合组成。本数据库表引用了两个外键，一个是course的主键，一个是classroom的主键。针对这两个外键，数据库库表都设置了级联删除以及级联更新。
+```sqlite
+CREATE TABLE "section" (
+  "course_id" TEXT(255) NOT NULL,
+  "section_id" INTEGER(10) NOT NULL,
+  "classroom_no" TEXT(255),
+  "limit" INTEGER(10) NOT NULL,
+  "day" INTEGER(10) NOT NULL,
+  "start" integer(10) NOT NULL,
+  "end" integer(10) NOT NULL,
+  PRIMARY KEY ("course_id", "section_id"),
+  FOREIGN KEY ("course_id") REFERENCES "course" ("course_id") ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY ("classroom_no") REFERENCES "classroom" ("classroom_no") ON DELETE CASCADE ON UPDATE CASCADE
+);
+```
++ account: 用于存储管理账户信息的数据库表，含有用户名，密码和角色。主键是用户名ID。
+```sqlite
+CREATE TABLE "account" (
+  "ID" text(255) NOT NULL,
+  "password" text(255) NOT NULL,
+  "role" integer(10) NOT NULL,
+  PRIMARY KEY ("ID")
+);
+```
++ student: 用于存储和管理学生的相关信息。信息主要包括学号，姓名，专业，院系和总学分。主键是学号student_id。总学分的默认值是0。
+```sqlite
+CREATE TABLE "student" (
+  "student_id" TEXT(255) NOT NULL,
+  "student_name" TEXT(255) NOT NULL,
+  "student_major" TEXT(255) NOT NULL,
+  "student_dept_name" TEXT(255) NOT NULL,
+  "student_total_credit" INTEGER(10) DEFAULT 0,
+  PRIMARY KEY ("student_id")
+);
+```
++ instructor: 用于存储和管理教师的相关信息。信息主要包括教师编号，教师姓名，所属院系和职称。主键是教师编号。
+```sqlite
+CREATE TABLE "instructor" (
+  "instructor_id" TEXT(255) NOT NULL,
+  "instructor_name" TEXT(255),
+  "instructor_class" TEXT(255),
+  "dept_name" TEXT(255),
+  PRIMARY KEY ("instructor_id")
+);
+```
++ exam: 用于存储和管理课程考核的相关信息。含有属性课程编号，开课编号，考试类型（论文或者考试）等。其中教室，考试的开始时间以及是否开卷是在考核类型为考试时才有涵义。考核作为一个弱实体集，它的主键由课程编号和开课编号联合组成，与开课一一对应。本表引用了三个外键，分别是表section的联合主键和表classroom的主键。删除和更新都是级联执行。
+```sqlite
+CREATE TABLE "exam" (
+  "course_id" TEXT(255) NOT NULL,
+  "section_id" TEXT(255) NOT NULL,
+  "exam_classroom_no" TEXT(255),
+  "exam_day" integer(5) NOT NULL,
+  "type" integer(5) NOT NULL,
+  "start_time" TEXT(255),
+  "end_time" TEXT(255) NOT NULL,
+  "open_note_flag" integer(5),
+  PRIMARY KEY ("course_id", "section_id"),
+  FOREIGN KEY ("course_id", "section_id") REFERENCES "section" ("course_id", "section_id") ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY ("exam_classroom_no") REFERENCES "classroom" ("classroom_no") ON DELETE CASCADE ON UPDATE CASCADE
+);
+```
++ classroom: 教室信息。含有教室的编号以及容量。主键是教室编号。
 
++ teaches: 教师教授课程关系集对应的数据库表。主键是course_id，section_id和instructor_id。相关外键的删除和更新都是级联的。
+```sqlite
+CREATE TABLE "teaches" (
+  "instructor_id" TEXT(255) NOT NULL,
+  "course_id" TEXT(255) NOT NULL,
+  "section_id" INTEGER(10) NOT NULL,
+  PRIMARY KEY ("instructor_id", "course_id", "section_id"),
+  FOREIGN KEY ("course_id", "section_id") REFERENCES "section" ("course_id", "section_id") ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY ("instructor_id") REFERENCES "instructor" ("instructor_id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+```
++ takes: 学生选课关系集对应的数据库表。主键是course_id，section_id和student_id。相关外键的删除和更新都是级联的。
+```sqlite
+CREATE TABLE "takes" (
+  "course_id" text(255) NOT NULL,
+  "section_id" INTEGER(10) NOT NULL,
+  "student_id" text(255) NOT NULL,
+  "grade" TEXT(10),
+  PRIMARY KEY ("course_id", "section_id", "student_id"),
+  FOREIGN KEY ("course_id", "section_id") REFERENCES "section" ("course_id", "section_id") ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY ("student_id") REFERENCES "student" ("student_id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+```
++ application: 学生选课申请对应的数据库表。主键是course_id，section_id和student_id。相关外键的删除和更新都是级联的。特别的含有属性if_drop用来标志学生是否申请成功了改课程之后又退掉了。相关外键的删除和更新都是级联的。
+```sqlite
+CREATE TABLE "application" (
+  "course_id" text(255) NOT NULL,
+  "section_id" integer(5) NOT NULL,
+  "student_id" text(255) NOT NULL,
+  "status" integer(5) NOT NULL DEFAULT 0,
+  "application_reason" text(255),
+  "if_drop" integer(5) DEFAULT 0,
+  PRIMARY KEY ("course_id", "section_id", "student_id"),
+  FOREIGN KEY ("student_id") REFERENCES "student" ("student_id") ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY ("course_id", "section_id") REFERENCES "section" ("course_id", "section_id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+```
 ## 函数依赖与范式分析
 + 所有关系的属性的域都是原子的，不包含任何组合属性，所以上述关系模式都属于第一范式。
 
@@ -34,6 +146,37 @@
 + 没有任何属性传递依赖于键，所以符合BC范式。
 
 综上，我们设计的关系模式属于BC范式。
+
+## 功能点实现——数据库操作逻辑
+
+### 选课
+选退课功能开放后，学生才可以进行选课。学生选课，数据库需要先检查该课程的选课人数是否已经达到选课上限，并且检查选择的课程是否与已选课程具有时空冲突（包括上课和考试的时空冲突）。如果没超过上限并且没有冲突，则该学生可以选上该门课程。
+### 退课
+选退课功能开放后，学生才可以进行退课。学生退课，如果学生已经选择这门课程，直接去掉选课表中的一行数据。注意，如果用户是通过选课申请选上该门课程，需要标记选课申请记录的退课标志使得该生不能再申请该门课程。
+### 选课申请
+选退课功能开放后，学生才可以填写课程申请。当选课人数达到上限时，学生才能进行选课申请。当教室容量不允许多的人上课时或者该学生已经申请成功过这门课程但是退掉了的时候，系统会直接决绝掉他的选课申请。
+### 分数导入
+登分系统开放后，任课老师需要将学生的成绩导入系统中。在分数登录的界面中，系统提供了分数的样例文件。教师课进行下载并填入相应条目。对于每条课程成绩，系统会先检查成绩中学生是否选过这门课程。没有选择过这门课程，系统会给出提示并拒绝导入这门成绩，但错误之前的成绩都会成功导入。如果成绩重复导入以后导入的为准。
+### 课程申请处理
+学生进行选课申请，任课老师可以选择同意或者拒绝。如果同意，则会在takes数据库表中加入记录，并更新申请记录。如果拒绝，则只会更新选课申请记录未已拒绝。
+
+### 学生导入
+导入学生时，系统会先检查学生的编号是否在student表中已经存在，即是否导入已经存在的学生信息。如果编号不存在，并且其他信息完整，则支持本次导入。
+
+### 老师导入
+导入老师时，系统依旧只是检查相应的编号时否在instructor表中已经存在。如果不存在且其他信息填写完整，则可以导入。
+
+### 课程信息导入
+导入课程时，统依旧只是检查相应的编号时否在course表中已经存在。如果不存在且其他信息填写完整规范，则可以导入。
+
+### 开课信息导入
+开课信息的导入需要检查的信息繁多。首先需要在section表中检查该开课是否已经存在，同时需要检查course是否存在和老师是否存在。如果课程没有被重复开设，并且相应的course和老师都存在，则检查课程在老师和教室上是否存在时空冲突。如果有冲突，禁止导入并给出提示。
+
+### 考试信息导入
+考试信息的导入是建立在课程已经开始的情况下，如果课程还没由开设当然需要拒绝导入。除此以外，需要检查对于同一门开课是否已经导入过考试信息。重复导入不被允许，系统提供过修改的接口。此外，系统还要检查考试是否具有时空冲突。对于考核方式为论文的考核，我们认为不存在任何的冲突。而对于考试，就需要仔细检查。
+
+### 
+
 
 
 ## 选课系统后端架构——Django Sqlite Python3
@@ -46,8 +189,15 @@ Django是一个开放源代码的Web应用框架，由Python写成。采用了MT
 
 ```json
 {
-    "code": -1 or 1, // 由数字表示的广义message，-1为失败，1为成功
-    "message": "" // 由字符串表示的特定message，不同的api有不同的message
+    "code": -1,
+    "message": "" 
+}
+```
+OR 
+```json
+{
+    "code": 1,
+    "message": "" 
 }
 ```
 
@@ -78,8 +228,8 @@ POST /selectCourse/login/
 
 ```json
 {
-    "user_name": 黄佳妮,
-    "role": 1 // 1-student 2-instructor 0-root
+    "user_name": "黄佳妮",
+    "role": 1
 }
 ```
 
@@ -158,7 +308,7 @@ POST /selectCourse/drop/
 
 | message | 含义 |
 | ---- | ---- |
-| drop error: haven\'t taken yet | 未选修该课程 |
+| drop error: haven\"t taken yet | 未选修该课程 |
 | drop successfully | 退课成功 |
 
 
@@ -180,16 +330,16 @@ POST /selectCourse/checkCourseTable
 {
     "total_num" : 1,
     "sections" : {
-        'title': '大气环境科学'
-        'course_id': 'ATMO00000003'
-        'section_id':1,
-        'dept_name':“航空航天系”,
-        'instructor_name':'curry',
-        'credits':2,
-        'classroom_no':Z2202,
-        'day':2, //周二
-        'time':4-5, //第4到第5节
-        'lesson':2, //课时 
+        "title": "大气环境科学",
+        "course_id": "ATMO00000003",
+        "section_id":1,
+        "dept_name":"航空航天系",
+        "instructor_name":"curry",
+        "credits":2,
+        "classroom_no":"Z2202",
+        "day":2,
+        "start": 3,
+        "end": 4
     }   
 }
 ```
@@ -217,17 +367,17 @@ POST /selectCourse/checkAllCourses
 ```json
 {
     "total_num" : 1,
-    "ret_num": 15
+    "ret_num": 15,
     "sections" : {
-        'title': '大气环境科学'
-        'course_id': 'ATMO00000003'
-        'section_id':1,
-        'dept_name':“航空航天系”,
-        'credits':2,
-        'classroom_no':Z2202,
-        'day':2, //周二
-        'time':4-5, //第4到第5节
-        'lesson':2, //课时 
+        "title": "大气环境科学",
+        "course_id": "ATMO00000003",
+        "section_id":1,
+        "dept_name":"航空航天系",
+        "credits":2,
+        "classroom_no":"Z2202",
+        "day":2,
+        "start": 3,
+        "end": 4
     }   
 }
 ```
@@ -263,7 +413,7 @@ POST /selectCourse/checkPersonalInfo
         {
             "course_id": "MATH1000001",
             "section_id": 1,
-            "grade": A,
+            "grade": "A"
         }
 
     ]
@@ -278,7 +428,7 @@ POST /selectCourse/checkPersonalInfo
     "instructor_id": "SOFT00000001",
     "instructor_name": "王小明",
     "instructor_class": "副教授",
-    "dept_name":"软件学院",
+    "dept_name":"软件学院"
 
 }
 ```
@@ -313,15 +463,15 @@ GET /selectCourse/search
 {
     "total_num" : 1,
     "sections" : {
-        'title': '大气环境科学'
-        'course_id': 'ATMO00000003'
-        'section_id':1,
-        'dept_name':“航空航天系”,
-        'credits':2,
-        'classroom_no':Z2202,
-        'day':2, //周二
-        'time':4-5, //第4到第5节
-        'lesson':2, //课时 
+        "title": "大气环境科学",
+        "course_id": "ATMO00000003",
+        "section_id":1,
+        "dept_name":"航空航天系",
+        "credits":2,
+        "classroom_no":"Z2202",
+        "day":2,
+        "start": 3,
+        "end": 4
     }   
 }
 ```
@@ -355,11 +505,11 @@ POST /selectCourse/submitApplication
 | message | 含义 |
 | ---- | ---- |
 
-| can't apply course which is already applied | 不能申请已申请课程|
-| can't apply selected course| 不能申请已选课程 |
-| can't apply dropped course| 不能申请已退的申请通过课程 |
+| can"t apply course which is already applied | 不能申请已申请课程|
+| can"t apply selected course| 不能申请已选课程 |
+| can"t apply dropped course| 不能申请已退的申请通过课程 |
 | apply successfully| 提交成功 |
-| can't apply course with vacancy| 不能申请有余量课程 |
+| can"t apply course with vacancy| 不能申请有余量课程 |
 | exceed the classroom capacity| 不能申请人数已超过教室容量的课程 |
 
 
@@ -406,12 +556,12 @@ POST /selectCourse/handleApplication
 {
     "total_num" : 1,
     "applications" : {
-        'course_id': 'ATMO00000003'
-        'section_id': 1,
-        'student_id':"17302010063",
-        'status':1, // 0表示提交成功 1表示通过 -1表示不通过
-        'application_reason':"I love this course",
-        'if_drop':1, //1 表示退过 0 表示没退过
+        "course_id": "ATMO00000003",
+        "section_id": 1,
+        "student_id":"17302010063",
+        "status":1, 
+        "application_reason":"I love this course",
+        "if_drop":1
     }   
 }
 ```
@@ -439,16 +589,16 @@ POST /selectCourse/checkTaughtCourses/
     "total_num" : 1,
     "sections" : [
         {
-        'title': '大气环境科学'
-        'course_id': 'ATMO00000003'
-        'section_id':1,
-        'dept_name':“航空航天系”,
-        'credits':2,
-        'classroom_no':Z2202,
-        'day':2, //周二
-        'time':4-5, //第4到第5节
-        'lesson':2, //课时 
-        },   
+        "title": "大气环境科学",
+        "course_id": "ATMO00000003",
+        "section_id":1,
+        "dept_name":"航空航天系",
+        "credits":2,
+        "classroom_no":"Z2202",
+        "day":2,
+        "start": 3,
+        "end": 4
+        }
     ]
 }
 ```
@@ -478,13 +628,13 @@ POST /selectCourse/checkCourseNameList/
     "total_num" : 1,
     "sections" : [
         {
-        'title': '大气环境科学'
-        'student_id': '17302010063'
-        'student_name':"黄佳妮",
-        'student_major':“航空航天系”,
-        'student_dept_name':"航空航天学院",
-        'grade':“A”,
-    },
+        "title": "大气环境科学",
+        "student_id": "17302010063",
+        "student_name":"黄佳妮",
+        "student_major":"航空航天系",
+        "student_dept_name":"航空航天学院",
+        "grade":"A"
+    }
     ]  
 }
 ```
@@ -513,13 +663,13 @@ POST /selectCourse/checkExamTable/
     "total_num" : 1,
     "sections" : [
         {
-        'title': '大气环境科学'
-        'student_id': '17302010063'
-        'student_name':"黄佳妮",
-        'student_major':“航空航天系”,
-        'student_dept_name':"航空航天学院",
-        'grade':“A”,
-    },
+        "title": "大气环境科学",
+        "student_id": "17302010063",
+        "student_name":"黄佳妮",
+        "student_major":"航空航天系",
+        "student_dept_name":"航空航天学院",
+        "grade":"A"
+    }
     ]  
 }
 ```
@@ -1109,13 +1259,13 @@ POST /selectCourse/checkCourses/
 ```json
 {
     "total_num" : 1,
-    "ret_num": 15
+    "ret_num": 15,
     "courses" : [
         {
-        'title': '大气环境科学'
-        'course_id': 'ATMO00000003'
-        'dept_name':“航空航天系”,
-        'credits':2,
+        "title": "大气环境科学",
+        "course_id": "ATMO00000003",
+        "dept_name":"航空航天系",
+        "credits":2
         }  
     ] 
 }
@@ -1141,15 +1291,15 @@ POST /selectCourse/checkSections/
 ```json
 {
     "total_num" : 1,
-    "ret_num": 15
+    "ret_num": 15,
     "sections" : {
-        'course_id': 'ATMO00000003'
-        'section_id':1,
-        'credits':2,
-        'classroom_no':Z2202,
-        'day':2, //周二
-        'time':4-5, //第4到第5节
-        'lesson':2, //课时 
+        "course_id": "ATMO00000003",
+        "section_id":1,
+        "credits":2,
+        "classroom_no":"Z2202",
+        "day":2,
+        "start": 3,
+        "end": 4
     }   
 }
 ```
@@ -1182,7 +1332,7 @@ POST /selectCourse/checkStudents/
     "student_name": "黄佳妮",
     "student_major": "软件工程",
     "student_dept_name":"软件学院",
-    "student_total_creidt":95,
+    "student_total_creidt":95
     }
 }
 ```
@@ -1239,10 +1389,10 @@ POST /selectCourse/checkClassrooms/
 ```json
 {
     "total_num" : 1,
-    "ret_num": 15
+    "ret_num": 15,
     "classrooms" : {
-        'classroom_no':Z2202,
-        'capacity':90
+        "classroom_no":"Z2202",
+        "capacity":90
     }   
 }
 ```
@@ -1270,9 +1420,9 @@ POST /selectCourse/checkAccounts/
     "total_num" : 1,
     "ret_num": 15,
     "accounts" : [{
-       'id':'www',
-       'password':'www',
-       'role':1
+       "id":"www",
+       "password":"www",
+       "role":1
     } ]  
 }
 ```
@@ -1299,14 +1449,14 @@ POST /selectCourse/checkExams/
     "total_num" : 1,
     "ret_num": 15,
     "exams" : [{
-      'course_id’:"ATMO130004",
-      'section_id':1
-      'classroom_no':"Z2204",
-      'day':5,
-      'type':1,
-      'start_time':"13:00",
-      'end_time':"15:00",
-      'open_note_flag':1
+      "course_id": "ATMO130004",
+      "section_id":1,
+      "classroom_no":"Z2204",
+      "day":5,
+      "type":1,
+      "start_time":"13:00",
+      "end_time":"15:00",
+      "open_note_flag":1
     } ]  
 }
 ```

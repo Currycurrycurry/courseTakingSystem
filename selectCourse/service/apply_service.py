@@ -19,6 +19,7 @@ class ApplyService(BaseService):
             self._init_response()
             return self._get_response(UNAUTHORIZED)
 
+
         try:
             user_id = self.data['user_id']
         except Exception as error:
@@ -85,7 +86,8 @@ class ApplyService(BaseService):
             return self._get_response(UNAUTHORIZED_AS_INSTRUCTOR)
 
         try:
-            user_id = self.data['user_id']
+            # user_id = self.data['user_id']
+            student_id = self.data['student_id']
             course_id = self.data['course_id']
             section_id = self.data['section_id']
             status = self.data['status']
@@ -96,13 +98,13 @@ class ApplyService(BaseService):
         
         try:
             cursor = connection.cursor()
-            sql ="update application set status = " + status + " where course_id = '" +  course_id + "' and section_id = " + section_id + "' and student_id = " + user_id
+            sql ="update application set status = " + status + " where course_id = '" +  course_id + "' and section_id = '" + section_id + "' and student_id = '" + student_id+"'"
             print(sql)
             cursor.execute(sql)
-            if status == 1:
-                sql = 'insert into takes(course_id,section_id,student_id,drop_flag) '\
-                    'values(%s,%s,%s,%s)'
-                cursor.execute(sql,(course_id,section_id,user_id,0))
+            if int(status) == 1:
+                sql = 'insert into takes(course_id,section_id,student_id) '\
+                    'values(%s,%s,%s)'
+                cursor.execute(sql,(course_id,section_id,student_id))
 
             self._init_response()
             return self._get_response(HANDLE_OK,1)
@@ -134,13 +136,16 @@ class ApplyService(BaseService):
             sql = 'select * from application where course_id = %s and section_id = %s and student_id = %s'
             cursor.execute(sql,(course_id,section_id,user_id,))
             row = sql_util.dictfetchone(cursor)
+
+            if row != None and int(row['if_drop']) == 1:
+                self._init_response()
+                return self._get_response(APP_DROPPED, -1)
+
+
             if row != None:
                 self._init_response()
                 return self._get_response(APP_ALREADY,-1)
-            
-            if row != None and row['if_drop'] == 1:
-                self._init_response()
-                return self._get_response(APP_DROPPED,-1)
+
 
             sql = 'select * from takes where course_id = %s and section_id = %s and student_id = %s'
             cursor.execute(sql,(course_id,section_id,user_id,))
@@ -160,6 +165,7 @@ class ApplyService(BaseService):
                 self._init_response()
                 return self._get_response("nonexist section ",-1)
             print("the section limit is :",raw_section_limit[0])
+
 
             find_section_capacity = "SELECT capacity FROM classroom NATURAL JOIN section WHERE course_id='"+course_id+"' AND section_id='"+section_id+"'"
             cursor.execute(find_section_capacity)
@@ -204,28 +210,30 @@ class ApplyService(BaseService):
             sql_exam = 'select * from exam where course_id=%s and section_id=%s'
             cursor.execute(sql_exam,(course_id,section_id,))
             target = sql_util.dictfetchone(cursor)
-            exam_type = int(target['type'])
-            if exam_type == 0:
-                exam_day = int(target['exam_day'])
-                exam_start_time = int(target['start_time'].split(":")[0])*60 + int(target['start_time'].split(":")[1]) 
-                exam_end_time = int(target['end_time'].split(":")[0])*60 + int(target['end_time'].split(":")[1]) 
+            print("target",target)
+            if target != None:
+                exam_type = int(target['type'])
+                if exam_type == 0:
+                    exam_day = int(target['exam_day'])
+                    exam_start_time = int(target['start_time'].split(":")[0])*60 + int(target['start_time'].split(":")[1])
+                    exam_end_time = int(target['end_time'].split(":")[0])*60 + int(target['end_time'].split(":")[1])
 
-                sql = 'select * from takes natural join exam where student_id =%s'
-                cursor.execute(sql,(user_id,))
-                rows = sql_util.dictfetchall(cursor)
-                print("exam :",rows)
+                    sql = 'select * from takes natural join exam where student_id =%s'
+                    cursor.execute(sql,(user_id,))
+                    rows = sql_util.dictfetchall(cursor)
+                    print("exam :",rows)
 
-                for row in rows:
-                    tmp_type = int(row['type'])
-                    if tmp_type == 0:
-                        tmp_day = int(row['exam_day'])
-                        tmp_start_time =  int(row['start_time'].split(":")[0])*60 + int(row['start_time'].split(":")[1]) 
-                        tmp_end_time = int(row['end_time'].split(":")[0])*60 + int(row['end_time'].split(":")[1]) 
+                    for row in rows:
+                        tmp_type = int(row['type'])
+                        if tmp_type == 0:
+                            tmp_day = int(row['exam_day'])
+                            tmp_start_time =  int(row['start_time'].split(":")[0])*60 + int(row['start_time'].split(":")[1])
+                            tmp_end_time = int(row['end_time'].split(":")[0])*60 + int(row['end_time'].split(":")[1])
 
-                        if (exam_start_time >= tmp_start_time and exam_start_time <=tmp_end_time)\
-                            or (exam_end_time >= tmp_start_time and exam_end_time <= tmp_end_time):
-                            self._init_response()
-                            return self._get_response(EXAM_TIME_CONFLICT,-1)
+                            if (exam_start_time >= tmp_start_time and exam_start_time <=tmp_end_time)\
+                                or (exam_end_time >= tmp_start_time and exam_end_time <= tmp_end_time):
+                                self._init_response()
+                                return self._get_response(EXAM_TIME_CONFLICT,-1)
 
             sql = 'insert into application(course_id,section_id,student_id,application_reason) '\
                 'values(%s,%s,%s,%s)'
