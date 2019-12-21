@@ -34,6 +34,7 @@ CREATE TABLE "course" (
   PRIMARY KEY ("course_id")
 );
 ```
+
 + section: 用于存储和管理本学期实际上开设的课程信息，是一个弱实体集。开课涉及到上课时间，如星期五 3-4这样的时间。为了保证原子性，
 系统拆分成了三部分：day表示是一周的第几天，start表示这门课的开始节次，end表示这门课的结束节次。lesson作为导出属性而存在。section
 作为弱实体集，它的主键由course_id和section_id联合组成。本数据库表引用了两个外键，一个是course的主键，一个是classroom的主键。针对这两个外键，数据库库表都设置了级联删除以及级联更新。
