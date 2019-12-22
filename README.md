@@ -2,7 +2,7 @@
 
 ## 选课系统数据库设计
 
-![ER.png](./doc/requirement/ER.png)
+![ER.png](./doc/requirement/ER_png.png)
 
 ## 从ER图到表结构
 
