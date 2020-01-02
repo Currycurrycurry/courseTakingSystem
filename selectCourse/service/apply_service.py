@@ -106,6 +106,8 @@ class ApplyService(BaseService):
                     'values(%s,%s,%s)'
                 cursor.execute(sql,(course_id,section_id,student_id))
 
+
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -239,6 +241,7 @@ class ApplyService(BaseService):
                 'values(%s,%s,%s,%s)'
             print(sql)
             cursor.execute(sql,(course_id,section_id,user_id,app_reason,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 

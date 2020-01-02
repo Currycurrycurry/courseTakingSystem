@@ -85,6 +85,8 @@ class DropService(BaseService):
             if raw_app != None:
                 sql = 'update application set if_drop=1 where course_id=%s and section_id=%s and student_id=%s'
                 cursor.execute(sql,(course_id,section_id,user_id))
+                
+            connection.commit()
             self._init_response()
             return self._get_response(DROP_OK,1)
                             

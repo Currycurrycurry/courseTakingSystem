@@ -138,8 +138,11 @@ class SelectService(BaseService):
             raw_course_credit = sql_util.dictfetchone(cursor)
             course_credit = raw_course_credit['credits']
             updated_credit = int(credit_before+course_credit)
+            print("the updated credit is ",updated_credit)
             add_credits_sql = "UPDATE 'student' SET 'student_total_credit'="+str(updated_credit)+" WHERE 'student'.'student_id'='"+user_id+"'"
+            print(add_credits_sql)
             cursor.execute(add_credits_sql)
+            connection.commit()
 
             self._init_response()
             return self._get_response(SELECT_OK,1)

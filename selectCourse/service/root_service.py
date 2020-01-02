@@ -42,6 +42,7 @@ class RootService(BaseService):
 
             sql = 'update course_status set status=%s'
             cursor.execute(sql,(status,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -78,6 +79,7 @@ class RootService(BaseService):
 
             sql = 'delete from course where course_id = %s'
             cursor.execute(sql,(course_id,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -270,6 +272,7 @@ class RootService(BaseService):
 
             sql = 'delete from section where course_id = %s and section_id = %s'
             cursor.execute(sql,(course_id,section_id))
+            connection.commit()
 
             # 级联删除不需要考虑teaches,takes和其他冲突
             self._init_response()
@@ -333,8 +336,33 @@ class RootService(BaseService):
                 self._init_response()
                 return self._get_response("insert error: no such instructor " + instructor_id, -1)
 
-            # TODO 老师的时空冲突检查 instructor_id
-            # TODO 教室的时空冲突检查 classroom_no
+             # TODO 老师的时空冲突检查 instructor_id 为 row[7]
+            sql = 'select * from teaches natural join section where instructor_id=%s'
+            cursor.execute(sql,(instructor_id,))
+            items = sql_util.dictfetchall(cursor)
+            if items != []:
+                for item in items:
+                    day = int(item['day'])
+                    start = int(item['start'])
+                    end = int(item['end'])
+
+                    t_day = int(day)
+                    t_start = int(start)
+                    t_end = int(end)
+                    
+                    if t_day == day:
+                        if (start > t_start and start < t_end) or\
+                            (end > t_start and end < t_end):
+                            self._init_response()
+                            return self._get_response("instructor teaching time conflict: "+str(t_day)+":"+str(t_start)+"-"+str(t_end),-1)
+
+            # TODO 教室的时空冲突检查 classroom_no 为 row[2]
+            sql = 'select * from section where classroom_no=%s and day=%s and start=%s and end=%s'
+            cursor.execute(sql,(classroom_no,int(day),int(start),int(end)))
+            item = sql_util.dictfetchone(cursor)
+            if item != None:
+                self._init_response()
+                return self._get_response("classroom time conflict: "+classroom_no,-1)
 
             sql = 'insert into section(course_id, section_id, start, `end`,classroom_no,`limit`,`day`) values(%s,%s,%s,%s,%s,%s,%s)'
             cursor.execute(sql,(course_id,section_id, start, end, classroom_no,limit,day,))
@@ -465,8 +493,33 @@ class RootService(BaseService):
                 self._init_response()
                 return self._get_response("insert error: no such instructor " + instructor_id,-1)
 
-            # TODO 老师的时空冲突检查 instructor_id
-            # TODO 教室的时空冲突检查 classroom_no
+            # TODO 老师的时空冲突检查 instructor_id 为 row[7]
+            sql = 'select * from teaches natural join section where instructor_id=%s'
+            cursor.execute(sql,(instructor_id,))
+            items = sql_util.dictfetchall(cursor)
+            if items != []:
+                for item in items:
+                    day = int(item['day'])
+                    start = int(item['start'])
+                    end = int(item['end'])
+
+                    t_day = int(day)
+                    t_start = int(start)
+                    t_end = int(end)
+                    
+                    if t_day == day:
+                        if (start > t_start and start < t_end) or\
+                            (end > t_start and end < t_end):
+                            self._init_response()
+                            return self._get_response("instructor teaching time conflict: "+str(t_day)+":"+str(t_start)+"-"+str(t_end),-1)
+
+            # TODO 教室的时空冲突检查 classroom_no 为 row[2]
+            sql = 'select * from section where classroom_no=%s and day=%s and start=%s and end=%s'
+            cursor.execute(sql,(classroom_no,int(day),int(start),int(end)))
+            item = sql_util.dictfetchone(cursor)
+            if item != None:
+                self._init_response()
+                return self._get_response("classroom time conflict: "+classroom_no,-1)
 
             sql = 'update section set start=%s, end = %s, classroom_no=%s, `limit`=%s, `day`=%s where course_id=%s and section_id=%s'
             cursor.execute(sql,(start, end, classroom_no,  limit, day, course_id, section_id,))
@@ -518,6 +571,7 @@ class RootService(BaseService):
             # 同时删除学生和账户
             sql = 'delete from account where id = %s'
             cursor.execute(sql,(student_id,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -761,6 +815,8 @@ class RootService(BaseService):
 
             sql = 'delete from account where id = %s'
             cursor.execute(sql,(instructor_id,))
+            connection.commit()
+
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -1199,6 +1255,7 @@ class RootService(BaseService):
 
             sql = 'delete from account where id = %s'
             cursor.execute(sql,(user_id,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 
@@ -1451,6 +1508,7 @@ class RootService(BaseService):
 
             sql = 'delete from application where student_id = %s and course_id=%s and section_id=%s'
             cursor.execute(sql,(user_id,))
+            connection.commit()
             self._init_response()
             return self._get_response(HANDLE_OK,1)
 

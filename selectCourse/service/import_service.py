@@ -119,6 +119,8 @@ class ImportService(BaseService):
                         self._init_response()
                         self.response.update(res)
                         return self._get_response(INVALID_BLANK,-1)
+
+                connection.commit()
                 self._init_response()
                 self.response.update(res)
                 return self._get_response(IMPORT_OK,1)
@@ -157,6 +159,7 @@ class ImportService(BaseService):
 
                             sql = 'insert into account(id, password, role)'\
                                 'values(%s,%s,%s)'
+                            connection.commit()
                             cursor.execute(sql,(instructor_id, instructor_id, 2))
                             res["successed_item_num"]+=1
                         else:
@@ -171,7 +174,6 @@ class ImportService(BaseService):
                         self.response.update(res)
                         return self._get_response(INVALID_BLANK,-1)
                 self._init_response()
-               
                 self.response.update(res)
                 return self._get_response(IMPORT_OK,1)
             except Exception as error:
@@ -209,7 +211,7 @@ class ImportService(BaseService):
                             sql = 'insert into account(id, password, role)'\
                                 'values(%s,%s,%s)'
                             cursor.execute(sql,(student_id,student_id, 1))
-
+                            connection.commit()
                             res["successed_item_num"]+=1
                         else:
                             self._init_response()
@@ -251,6 +253,7 @@ class ImportService(BaseService):
                             sql = 'insert into course(course_id,title,credits,dept_name)'\
                             'values(%s,%s,%s,%s)'
                             cursor.execute(sql,(course_id,title,credits,dept_name))
+                            connection.commit()
                             res['successed_item_num']+=1
                         else:
                             self._init_response()
@@ -361,6 +364,8 @@ class ImportService(BaseService):
                             sql = 'insert into teaches(course_id, section_id, instructor_id)'\
                                 'values(%s,%s,%s)'
                             cursor.execute(sql, (row[0], int(row[1]), row[7]))
+
+                            connection.commit()
                             res['successed_item_num']+=1
                         else:
                             self._init_response()
@@ -456,6 +461,7 @@ class ImportService(BaseService):
                             sql = 'insert into exam(course_id, section_id, exam_classroom_no, exam_day, type, start_time, end_time, open_note_flag)'\
                                 'values(%s,%s,%s,%s,%s,%s,%s,%s)'
                             cursor.execute(sql,(row[0], int(row[1]), row[6], int(row[3]), t_type,str(t_start_time*24),str(t_end_time*24),0))
+                            connection.commit()
                             res['successed_item_num']+=1  
                         else:
                             self._init_response()
